@@ -8,6 +8,7 @@ from gi.repository import Gtk
 import backend.title as title
 import backend.utils.file as file
 import frontend.gtk.header as header
+import frontend.gtk.preview as preview
 
 
 class MyWindow(Gtk.Window):
@@ -29,6 +30,10 @@ class MyWindow(Gtk.Window):
         # Header
         self.header = header.StackHeader()
         self.main_box.pack_start(self.header, True, True, 0)
+
+        # Preview
+        self.preview = preview.Preview()
+        self.main_box.pack_start(self.preview, True, True, 0)
 
         # Test
         self.button_test = Gtk.Button(label='ok', margin_top=30)

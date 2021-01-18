@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import utils.file as file
+import backend.utils.file as file
 
 
 markup_template = {
@@ -89,6 +89,7 @@ class Rename(object):
                 else:
                     nums.append(str(n))
         else:
+            # noinspection PyUnusedLocal
             nums = list('' for x in range(1, num_items))
 
         return nums

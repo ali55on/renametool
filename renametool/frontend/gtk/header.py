@@ -95,6 +95,7 @@ class PageRename(Gtk.VBox):
         self.pack_start(self.text_box, True, True, 0)
 
         self.entry = Gtk.Entry(margin_start=50)
+        self.entry.connect('backspace', self.on_backspace_signal)
         self.text_box.pack_start(self.entry, True, True, 0)
 
         self.icon = Gtk.Image(icon_name='value-increase-symbolic')
@@ -125,7 +126,12 @@ class PageRename(Gtk.VBox):
             Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def __on_menu(self, widget):
-        Popover(parent_widget=widget, interaction_widget=self.entry)
+        PopoverMenu(parent_widget=widget, interaction_widget=self.entry)
+
+    # noinspection PyUnusedLocal
+    def on_backspace_signal(self, widget):
+        # print(self.entry.get_text())
+        pass
 
     def get_text(self):
         """"""
@@ -183,11 +189,11 @@ class PageReplace(Gtk.HBox):
         return self.replace_entry.get_text()
 
 
-class Popover(Gtk.Popover):
+class PopoverMenu(Gtk.PopoverMenu):
     """"""
     def __init__(self, parent_widget, interaction_widget, *args, **kwargs):
         """"""
-        Gtk.Popover.__init__(self, *args, **kwargs)
+        Gtk.PopoverMenu.__init__(self, *args, **kwargs)
         self.parent_widget = parent_widget
         self.entry_widget = interaction_widget
 
@@ -230,18 +236,22 @@ class Popover(Gtk.Popover):
 
         self.__check_sensitive_buttons()
 
+    # noinspection PyUnusedLocal
     def on_button_1(self, widget):
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, markup_template['[1, 2, 3]'])
 
+    # noinspection PyUnusedLocal
     def on_button_01(self, widget):
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, markup_template['[01, 02, 03]'])
 
+    # noinspection PyUnusedLocal
     def on_button_001(self, widget):
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, markup_template['[001, 002, 003]'])
 
+    # noinspection PyUnusedLocal
     def on_button_original_name(self, widget):
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, markup_template['[original-name]'])
