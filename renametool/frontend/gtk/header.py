@@ -6,6 +6,14 @@ from gi.repository import Gdk
 import frontend.gtk.utils.hackstring as hack_string
 
 
+markup_template = {
+    '[1, 2, 3]': '[1, 2, 3]',
+    '[01, 02, 03]': '[01, 02, 03]',
+    '[001, 002, 003]': '[001, 002, 003]',
+    '[original-name]': '[Original filename]'
+}
+
+
 class StackHeader(Gtk.VBox):
     """"""
     def __init__(self, *args, **kwargs):
@@ -116,9 +124,8 @@ class PageRename(Gtk.VBox):
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    @staticmethod
-    def __on_menu(widget):
-        Popover(widget)
+    def __on_menu(self, widget):
+        Popover(parent_widget=widget, interaction_widget=self.entry)
 
     def get_text(self):
         """"""
@@ -178,16 +185,93 @@ class PageReplace(Gtk.HBox):
 
 class Popover(Gtk.Popover):
     """"""
-    def __init__(self, widget, *args, **kwargs):
+    def __init__(self, parent_widget, interaction_widget, *args, **kwargs):
         """"""
         Gtk.Popover.__init__(self, *args, **kwargs)
+        self.parent_widget = parent_widget
+        self.entry_widget = interaction_widget
 
-        vbox = Gtk.VBox()
-        vbox.pack_start(Gtk.ModelButton(label="Item 1"), False, True, 10)
-        vbox.pack_start(Gtk.Label(label="Item 2"), False, True, 10)
-        vbox.show_all()
-        self.add(vbox)
+        # Container
+        self.vbox = Gtk.VBox(margin=12)
+
+        # Button 1
+        self.button_1 = Gtk.ModelButton(
+            label=markup_template['[1, 2, 3]'][1:-1], halign=Gtk.Align.START)
+        self.button_1.connect('clicked', self.on_button_1)
+        self.vbox.pack_start(self.button_1, True, True, 0)
+
+        # Button 01
+        self.button_01 = Gtk.ModelButton(
+            label=markup_template['[01, 02, 03]'][1:-1], halign=Gtk.Align.START)
+        self.button_01.connect('clicked', self.on_button_01)
+        self.vbox.pack_start(self.button_01, True, True, 0)
+
+        # Button 001
+        self.button_001 = Gtk.ModelButton(
+            label=markup_template['[001, 002, 003]'][1:-1], halign=Gtk.Align.START)
+        self.button_001.connect('clicked', self.on_button_001)
+        self.vbox.pack_start(self.button_001, True, True, 0)
+
+        # Separator
+        self.vbox.pack_start(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL), True, True, 0)
+
+        # Button original-name
+        self.button_original_name = Gtk.ModelButton(
+            label=markup_template['[original-name]'][1:-1], halign=Gtk.Align.START)
+        self.button_original_name.connect('clicked', self.on_button_original_name)
+        self.vbox.pack_start(self.button_original_name, True, True, 0)
+
+        self.vbox.show_all()
+        self.add(self.vbox)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.set_relative_to(widget)
+        self.set_relative_to(self.parent_widget)
         self.show_all()
         self.popup()
+
+        self.__check_sensitive_buttons()
+
+    def on_button_1(self, widget):
+        self.entry_widget.do_insert_at_cursor(
+            self.entry_widget, markup_template['[1, 2, 3]'])
+
+    def on_button_01(self, widget):
+        self.entry_widget.do_insert_at_cursor(
+            self.entry_widget, markup_template['[01, 02, 03]'])
+
+    def on_button_001(self, widget):
+        self.entry_widget.do_insert_at_cursor(
+            self.entry_widget, markup_template['[001, 002, 003]'])
+
+    def on_button_original_name(self, widget):
+        self.entry_widget.do_insert_at_cursor(
+            self.entry_widget, markup_template['[original-name]'])
+
+    def __block_num_buttons(self, block: bool):
+        buttons = [self.button_1, self.button_01, self.button_001]
+        if block:
+            for button in buttons:
+                button.set_sensitive(False)
+        else:
+            for button in buttons:
+                button.set_sensitive(True)
+
+    def __check_sensitive_buttons(self):
+        # Text
+        text = self.entry_widget.get_text()
+
+        # Numbers
+        con = [
+            markup_template['[1, 2, 3]'] in text,
+            markup_template['[01, 02, 03]'] in text,
+            markup_template['[001, 002, 003]'] in text,
+        ]
+        if any(con):
+            self.__block_num_buttons(block=True)
+        else:
+            self.__block_num_buttons(block=False)
+
+        # Original name
+        if markup_template['[original-name]'] in text:
+            self.button_original_name.set_sensitive(False)
+        else:
+            self.button_original_name.set_sensitive(True)

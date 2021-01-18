@@ -6,7 +6,7 @@ markup_template = {
     '[1, 2, 3]': '[1, 2, 3]',
     '[01, 02, 03]': '[01, 02, 03]',
     '[001, 002, 003]': '[001, 002, 003]',
-    '[original-name]': '[original-name]'
+    '[original-name]': '[Original filename]'
 }
 
 

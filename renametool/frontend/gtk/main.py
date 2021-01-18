@@ -35,6 +35,10 @@ class MyWindow(Gtk.Window):
         self.button_test.connect('clicked', self.on_test)
         self.main_box.pack_start(self.button_test, True, True, 0)
 
+        # Focus
+        self.activate_focus()
+        self.set_focus(self.header.page_rename.entry)
+
     # noinspection PyUnusedLocal
     def on_test(self, widget):
         if self.header.get_page() == 'rename':
