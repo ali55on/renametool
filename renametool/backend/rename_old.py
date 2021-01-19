@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-import os
-
 import backend.utils.file as file
 
 
@@ -13,9 +11,10 @@ markup_template = {
 
 
 class Rename(object):
-    def __init__(self, list_files: list, new_name: str):
+    def __init__(self, list_files: list, new_name: str, markup_number: str):
         self.__list_files = list_files
         self.__new_name = new_name
+        self.__markup_number = markup_number
 
         self.__resume_error = None
         self.__resume_warning = None
@@ -34,10 +33,8 @@ class Rename(object):
         # Renomear arquivos
         all_names = list()
         for item_file, item_markup_num in zip(self.__list_files, list_markup_nums):
-            new_name = self.__new_name.replace(markup_template['[1, 2, 3]'], item_markup_num)
-            new_name = new_name.replace(markup_template['[01, 02, 03]'], item_markup_num)
-            new_name = new_name.replace(markup_template['[001, 002, 003]'], item_markup_num)
-            new_name = new_name.replace(markup_template['[original-name]'], item_file.get_original_name())
+            new_name = self.__new_name.replace(self.__markup_number, item_markup_num)\
+                .replace(markup_template['[original-name]'], item_file.get_original_name())
             item_file.set_name(new_name)
 
             # Validar
@@ -73,16 +70,16 @@ class Rename(object):
 
     def __generate_markup_numbers(self):
         num_items = len(self.__list_files) + 1
-        if markup_template['[1, 2, 3]'] in self.__new_name:
+        if self.__markup_number == markup_template['[1, 2, 3]']:
             nums = list(str(x) for x in range(1, num_items))
-        elif markup_template['[01, 02, 03]'] in self.__new_name:
+        elif self.__markup_number == markup_template['[01, 02, 03]']:
             nums = list()
             for n in range(1, num_items):
                 if n < 10:
                     nums.append('0' + str(n))
                 else:
                     nums.append(str(n))
-        elif markup_template['[001, 002, 003]'] in self.__new_name:
+        elif self.__markup_number == markup_template['[001, 002, 003]']:
             nums = list()
             for n in range(1, num_items):
                 if n < 10:
@@ -109,7 +106,7 @@ if __name__ == '__main__':
 
     # Rename
     rename_status = Rename(
-        list_files=l_files, new_name='.Gambá [original-name] [1, 2, 3]')
+        list_files=l_files, new_name='.Gambá [original-name] [1, 2, 3]', markup_number='[1, 2, 3]')
 
     if rename_status.get_resume_error():
         print('ERROR:', rename_status.get_resume_error())

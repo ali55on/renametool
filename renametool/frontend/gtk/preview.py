@@ -7,6 +7,14 @@ from gi.repository import GLib
 import backend.rename as rename
 
 
+markup_template = {
+    '[1, 2, 3]': '[1, 2, 3]',
+    '[01, 02, 03]': '[01, 02, 03]',
+    '[001, 002, 003]': '[001, 002, 003]',
+    '[original-name]': '[Original filename]'
+}
+
+
 class Preview(Gtk.VBox):
     """"""
     def __init__(self, header, list_files, *args, **kwargs):
@@ -91,13 +99,25 @@ class Preview(Gtk.VBox):
     def rename_preview(self, rename_text: str):
         print('Rename')
         list_store = Gtk.ListStore(str, str)
+        if not rename_text:
+            rename_text = markup_template['[original-name]']
+
+        rename_status = rename.Rename(
+            list_files=self.list_files, new_name=rename_text)
+        """
+        if rename_status.get_resume_error():
+            print('ERROR:', rename_status.get_resume_error())
+        if rename_status.get_resume_warning():
+            print('WARNING:', rename_status.get_resume_warning())
+        """
+
         for i in self.list_files:
-            list_store.append([i.get_name(), i.get_name()])
+            list_store.append([i.get_original_name() + i.get_extension(), i.get_name() + i.get_extension()])
         self.tree_view.set_model(list_store)
 
     def replace_preview(self, search_text: str, replace_text: str):
         print('Replace')
         list_store = Gtk.ListStore(str, str)
         for i in self.list_files:
-            list_store.append([i.get_name(), i.get_name()])
+            list_store.append([i.get_original_name() + i.get_extension(), i.get_name() + i.get_extension()])
         self.tree_view.set_model(list_store)
