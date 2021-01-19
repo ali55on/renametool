@@ -42,7 +42,7 @@ class MyWindow(Gtk.Window):
 
         # Focus
         self.activate_focus()
-        self.set_focus(self.header.page_rename.entry)
+        self.set_focus(self.header.tab_rename.entry)
 
     # noinspection PyUnusedLocal
     def on_test(self, widget):

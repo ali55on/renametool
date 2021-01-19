@@ -50,7 +50,7 @@ class Preview(Gtk.VBox):
         self.tree_view.append_column(self.tree_view_column_1)
 
         # Vars for comparison
-        self.prev_rename_text = self.header.get_text()
+        self.prev_rename_text = self.header.get_rename_text()
         self.prev_existing_text = self.header.get_existing_text()
         self.prev_replace_text = self.header.get_replace_text()
         self.is_the_first_preview_loop = True
@@ -67,7 +67,7 @@ class Preview(Gtk.VBox):
     def preview_threading_glib(self):
         # Rename
         if self.header.get_active_work_tab() == 'rename':
-            rename_text = self.header.get_text()
+            rename_text = self.header.get_rename_text()
 
             if self.can_update_rename_preview(rename_text=rename_text):
                 self.rename_preview(rename_text=rename_text)

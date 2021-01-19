@@ -22,8 +22,8 @@ class StackHeader(Gtk.VBox):
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
             width_request=550, margin=18, *args, **kwargs)
         # Current page flag
-        self.current_page = 'rename'
-        self.switch_page = True
+        self.active_work_tab = 'rename'
+        self.changed_work_tab = True
 
         # Hacking
         hack_str = hack_string.SameSizeString(
@@ -35,11 +35,11 @@ class StackHeader(Gtk.VBox):
         self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
         self.stack.set_transition_duration(300)
         # Set "rename" Stack-Page
-        self.page_rename = PageRename()
-        self.stack.add_titled(self.page_rename, 'rename', hack_str.get_first_str())
+        self.tab_rename = TabRename()
+        self.stack.add_titled(self.tab_rename, 'rename', hack_str.get_first_str())
         # Set "replace" Stack-Page
-        self.page_replace = PageReplace()
-        self.stack.add_titled(self.page_replace, 'replace', hack_str.get_last_str())
+        self.tab_replace = TabReplace()
+        self.stack.add_titled(self.tab_replace, 'replace', hack_str.get_last_str())
 
         # Create Stack-Switcher on top
         self.stack_switcher = Gtk.StackSwitcher(halign=Gtk.Align.CENTER)
@@ -65,35 +65,35 @@ class StackHeader(Gtk.VBox):
 
     def get_active_work_tab(self):
         """"""
-        return self.current_page
+        return self.active_work_tab
 
     def get_changed_work_tab(self):
         """"""
-        return self.switch_page
+        return self.changed_work_tab
 
     def set_changed_work_tab(self, changed: bool):
         """"""
-        self.switch_page = changed
+        self.changed_work_tab = changed
 
-    def get_text(self):
+    def get_rename_text(self):
         """"""
-        return self.page_rename.get_text()
+        return self.tab_rename.get_rename_text()
 
     def get_existing_text(self):
         """"""
-        return self.page_replace.get_existing_text()
+        return self.tab_replace.get_existing_text()
 
     def get_replace_text(self):
         """"""
-        return self.page_replace.get_replace_text()
+        return self.tab_replace.get_replace_text()
 
     # noinspection PyUnusedLocal
     def __set_page(self, widget, data):
-        self.current_page = self.stack_switcher.get_stack().get_visible_child_name()
-        self.switch_page = True
+        self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
+        self.changed_work_tab = True
 
 
-class PageRename(Gtk.VBox):
+class TabRename(Gtk.VBox):
     """"""
     def __init__(self, *args, **kwargs):
         """"""
@@ -143,12 +143,12 @@ class PageRename(Gtk.VBox):
         # print(self.entry.get_text())
         pass
 
-    def get_text(self):
+    def get_rename_text(self):
         """"""
         return self.entry.get_text()
 
 
-class PageReplace(Gtk.HBox):
+class TabReplace(Gtk.HBox):
     """"""
     def __init__(self, *args, **kwargs):
         """"""
