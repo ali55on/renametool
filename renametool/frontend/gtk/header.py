@@ -23,6 +23,7 @@ class StackHeader(Gtk.VBox):
             width_request=550, *args, **kwargs)
         # Current page flag
         self.current_page = 'rename'
+        self.switch_page = True
 
         # Hacking
         hack_str = hack_string.SameSizeString(
@@ -66,6 +67,14 @@ class StackHeader(Gtk.VBox):
         """"""
         return self.current_page
 
+    def get_switch_page(self):
+        """"""
+        return self.switch_page
+
+    def set_switch_page(self, state: bool):
+        """"""
+        self.switch_page = state
+
     def get_text(self):
         """"""
         return self.page_rename.get_text()
@@ -81,6 +90,7 @@ class StackHeader(Gtk.VBox):
     # noinspection PyUnusedLocal
     def __set_page(self, widget, data):
         self.current_page = self.stack_switcher.get_stack().get_visible_child_name()
+        self.switch_page = True
 
 
 class PageRename(Gtk.VBox):

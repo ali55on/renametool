@@ -69,9 +69,10 @@ class Preview(Gtk.VBox):
             # Saved variable. Run the method only once
             rename_text = self.header.get_text()
             # Compare whether the text has been updated
-            if rename_text != self.rename_text_tmp or self.first_update:
+            if rename_text != self.rename_text_tmp or self.first_update or self.header.get_switch_page():
                 # Update temporary comparison variable
                 self.rename_text_tmp = rename_text
+                self.header.set_switch_page(state=False)
                 self.first_update = False
 
                 # Run the preview
@@ -86,13 +87,15 @@ class Preview(Gtk.VBox):
             # Compare whether the text has been updated
             cond = [
                 search_text != self.search_text_tmp,
-                replace_text != self.replace_text_tmp
+                replace_text != self.replace_text_tmp,
+                self.header.get_switch_page()
             ]
             if any(cond):
 
                 # Update temporary comparison variable
                 self.search_text_tmp = search_text
                 self.replace_text_tmp = replace_text
+                self.header.set_switch_page(state=False)
 
                 # Run the preview
                 self.replace_preview(
