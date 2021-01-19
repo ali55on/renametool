@@ -11,21 +11,17 @@ class MarkMatchText(object):
         self.markup_end = markup_end
 
     def mark_match(self) -> str:
-        # return self.text.replace(self.regex_match, self.markup_start + self.regex_match + self.markup_end)
         try:
-            re_match = None
-            r_match = re.findall(r'{}'.format(self.regex_match), self.text)
-            if r_match:
-                re_match = r_match[0]
-
-            if re_match:
-                if re_match in self.text:
-                    txt = re.sub(self.regex_match, self.markup_start + re_match + self.markup_end, self.text)
+            re_search = re.search(self.regex_match, self.text)
+            if re_search:
+                find = re_search.group(0)
+                if find in self.text:
+                    txt = re.sub(find, self.markup_start + find + self.markup_end, self.text)
                 else:
                     txt = self.text
             else:
                 txt = self.text
-            # txt = re.sub(self.regex_match, self.markup_start + self.regex_match + self.markup_end, self.text)
+
         except Exception as error:
             print(error)
             txt = self.regex_match

@@ -138,11 +138,11 @@ class Preview(Gtk.VBox):
             print('WARNING:', replace_status.get_resume_warning())
         """
 
-        replace_status = replace_preview.ReplacePreview(
-            list_files=self.list_files, search_text=search_text, replace_text=replace_text)
-        list_match = replace_status.get_match_list()
-        list_replace = replace_status.get_replace_list()
-
-        for m, r in zip(list_match, list_replace):
-            list_store.append([m, r])
+        old_color = '<span background="#ef356444">'
+        new_color = '<span background="#00b96b44">'
+        end_color = '</span>'
+        for file in self.list_files:
+            old = file.get_original_name().replace(search_text, old_color + search_text + end_color)
+            new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)
+            list_store.append([old + file.get_extension(), new + file.get_extension()])
         self.tree_view.set_model(list_store)
