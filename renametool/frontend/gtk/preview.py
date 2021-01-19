@@ -6,6 +6,7 @@ from gi.repository import Gtk
 from gi.repository import GLib
 
 import backend.rename as rename
+import backend.replace as replace
 import backend.replacepreview as replace_preview
 
 
@@ -127,19 +128,21 @@ class Preview(Gtk.VBox):
         if not search_text:
             replace_text = ''
 
-        """replace_status = replace.Replace(
-            list_files=self.list_files, search_text=search_text, replace_text=replace_text)"""
-
-        replace_status = replace_preview.ReplacePreview(
+        replace_status = replace.Replace(
             list_files=self.list_files, search_text=search_text, replace_text=replace_text)
-        list_match = replace_status.get_match_list()
-        list_replace = replace_status.get_replace_list()
+
         """
         if replace_status.get_resume_error():
             print('ERROR:', replace_status.get_resume_error())
         if replace_status.get_resume_warning():
             print('WARNING:', replace_status.get_resume_warning())
         """
+
+        replace_status = replace_preview.ReplacePreview(
+            list_files=self.list_files, search_text=search_text, replace_text=replace_text)
+        list_match = replace_status.get_match_list()
+        list_replace = replace_status.get_replace_list()
+
         for m, r in zip(list_match, list_replace):
             list_store.append([m, r])
         self.tree_view.set_model(list_store)

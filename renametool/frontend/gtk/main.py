@@ -46,12 +46,8 @@ class MyWindow(Gtk.Window):
 
     # noinspection PyUnusedLocal
     def on_test(self, widget):
-        if self.header.get_page() == 'rename':
-            print(self.header.get_text())
-        else:
-            print(self.header.get_existing_text())
-            print(self.header.get_replace_text())
-        print('-----')
+        for i in self.list_files:
+            print(i.get_name() + i.get_extension())
 
 
 if __name__ == '__main__':
