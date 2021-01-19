@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import re
 
 import backend.utils.file as file
@@ -27,7 +28,11 @@ class Replace(object):
     def __rename_file_in_the_list(self):
         all_names = list()
         for item_file in self.__list_files:
-            new_name = re.sub(self.__search_text, self.__replace_text, item_file.get_original_name())
+            try:
+                new_name = re.sub(r'{}'.format(self.__search_text), self.__replace_text, item_file.get_original_name())
+            except Exception as error:
+                print(error)
+                new_name = self.__search_text
             item_file.set_name(new_name)
 
             # Validar

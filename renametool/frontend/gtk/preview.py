@@ -1,10 +1,12 @@
 import threading
+
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import GLib
 
 import backend.rename as rename
+import backend.replacepreview as replace_preview
 
 
 markup_template = {
@@ -118,6 +120,23 @@ class Preview(Gtk.VBox):
     def replace_preview(self, search_text: str, replace_text: str):
         print('Replace')
         list_store = Gtk.ListStore(str, str)
-        for i in self.list_files:
-            list_store.append([i.get_original_name() + i.get_extension(), i.get_name() + i.get_extension()])
+
+        if not search_text:
+            replace_text = ''
+
+        """replace_status = replace.Replace(
+            list_files=self.list_files, search_text=search_text, replace_text=replace_text)"""
+
+        replace_status = replace_preview.ReplacePreview(
+            list_files=self.list_files, search_text=search_text, replace_text=replace_text)
+        list_match = replace_status.get_match_list()
+        list_replace = replace_status.get_replace_list()
+        """
+        if replace_status.get_resume_error():
+            print('ERROR:', replace_status.get_resume_error())
+        if replace_status.get_resume_warning():
+            print('WARNING:', replace_status.get_resume_warning())
+        """
+        for m, r in zip(list_match, list_replace):
+            list_store.append([m, r])
         self.tree_view.set_model(list_store)

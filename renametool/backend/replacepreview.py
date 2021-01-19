@@ -5,8 +5,8 @@ import backend.utils.file as file
 import backend.utils.markmatchtext as mark_match_text
 
 
-markup_start = '<<'
-markup_end = '>>'
+markup_start = '<span background="#24885688">'
+markup_end = '</span>'
 
 
 class ReplacePreview(object):
