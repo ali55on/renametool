@@ -32,7 +32,7 @@ class MyWindow(Gtk.Window):
         self.main_box.pack_start(self.header, True, True, 0)
 
         # Preview
-        self.preview = preview.Preview()
+        self.preview = preview.Preview(header=self.header, list_files=self.list_files)
         self.main_box.pack_start(self.preview, True, True, 0)
 
         # Test
