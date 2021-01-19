@@ -63,17 +63,17 @@ class StackHeader(Gtk.VBox):
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def get_page(self):
+    def get_active_work_tab(self):
         """"""
         return self.current_page
 
-    def get_switch_page(self):
+    def get_changed_work_tab(self):
         """"""
         return self.switch_page
 
-    def set_switch_page(self, state: bool):
+    def set_changed_work_tab(self, changed: bool):
         """"""
-        self.switch_page = state
+        self.switch_page = changed
 
     def get_text(self):
         """"""

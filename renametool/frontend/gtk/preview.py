@@ -49,11 +49,11 @@ class Preview(Gtk.VBox):
         self.tree_view_column_1.set_expand(True)
         self.tree_view.append_column(self.tree_view_column_1)
 
-        # Temp var to compare
-        self.rename_text_tmp = self.header.get_text()
-        self.search_text_tmp = self.header.get_existing_text()
-        self.replace_text_tmp = self.header.get_replace_text()
-        self.first_update = True
+        # Vars for comparison
+        self.prev_rename_text = self.header.get_text()
+        self.prev_existing_text = self.header.get_existing_text()
+        self.prev_replace_text = self.header.get_replace_text()
+        self.is_the_first_preview_loop = True
 
         # Iniciar pré visualização
         thread = threading.Thread(target=self.preview_threading)
@@ -61,20 +61,26 @@ class Preview(Gtk.VBox):
         thread.start()
 
     def preview_threading(self):
-        GLib.idle_add(self.preview_gtk_glib)
+        GLib.idle_add(self.preview_threading_glib)
         GLib.timeout_add(300, self.preview_threading)
 
-    def preview_gtk_glib(self):
+    def preview_threading_glib(self):
         # Rename
-        if self.header.get_page() == 'rename':
+        if self.header.get_active_work_tab() == 'rename':
             # Saved variable. Run the method only once
             rename_text = self.header.get_text()
-            # Compare whether the text has been updated
-            if rename_text != self.rename_text_tmp or self.first_update or self.header.get_switch_page():
-                # Update temporary comparison variable
-                self.rename_text_tmp = rename_text
-                self.header.set_switch_page(state=False)
-                self.first_update = False
+
+            # Check if the Gtk.Entry text is new updated text
+            condition = [
+                rename_text != self.prev_rename_text,
+                self.is_the_first_preview_loop,
+                self.header.get_changed_work_tab()
+            ]
+            if any(condition):
+                # Update information
+                self.prev_rename_text = rename_text
+                self.header.set_changed_work_tab(changed=False)
+                self.is_the_first_preview_loop = False
 
                 # Run the preview
                 self.rename_preview(rename_text=rename_text)
@@ -85,18 +91,17 @@ class Preview(Gtk.VBox):
             search_text = self.header.get_existing_text()
             replace_text = self.header.get_replace_text()
 
-            # Compare whether the text has been updated
-            cond = [
-                search_text != self.search_text_tmp,
-                replace_text != self.replace_text_tmp,
-                self.header.get_switch_page()
+            # Check if the Gtk.Entry text is new updated text
+            condition = [
+                search_text != self.prev_existing_text,
+                replace_text != self.prev_replace_text,
+                self.header.get_changed_work_tab()
             ]
-            if any(cond):
-
-                # Update temporary comparison variable
-                self.search_text_tmp = search_text
-                self.replace_text_tmp = replace_text
-                self.header.set_switch_page(state=False)
+            if any(condition):
+                # Update information
+                self.prev_existing_text = search_text
+                self.prev_replace_text = replace_text
+                self.header.set_changed_work_tab(changed=False)
 
                 # Run the preview
                 self.replace_preview(
@@ -110,12 +115,11 @@ class Preview(Gtk.VBox):
 
         rename_status = rename.Rename(
             list_files=self.list_files, new_name=rename_text)
-        """
+
         if rename_status.get_resume_error():
             print('ERROR:', rename_status.get_resume_error())
         if rename_status.get_resume_warning():
             print('WARNING:', rename_status.get_resume_warning())
-        """
 
         for i in self.list_files:
             list_store.append([i.get_original_name() + i.get_extension(), i.get_name() + i.get_extension()])
@@ -131,12 +135,10 @@ class Preview(Gtk.VBox):
         replace_status = replace.Replace(
             list_files=self.list_files, search_text=search_text, replace_text=replace_text)
 
-        """
         if replace_status.get_resume_error():
             print('ERROR:', replace_status.get_resume_error())
         if replace_status.get_resume_warning():
             print('WARNING:', replace_status.get_resume_warning())
-        """
 
         old_color = '<span background="#ef356444">'
         new_color = '<span background="#00b96b44">'
