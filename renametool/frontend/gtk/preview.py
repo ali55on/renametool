@@ -127,7 +127,12 @@ class Preview(Gtk.VBox):
             print('WARNING:', rename_status.get_resume_warning())
 
         for i in self.list_files:
-            list_store.append([i.get_original_name() + i.get_extension(), i.get_name() + i.get_extension()])
+            list_store.append(
+                [
+                    i.get_original_name() + i.get_extension() + '   ',
+                    '   → ' + i.get_name() + i.get_extension()
+                ]
+            )
         self.tree_view.set_model(list_store)
 
     def replace_preview(self, search_text: str, replace_text: str):
@@ -151,5 +156,5 @@ class Preview(Gtk.VBox):
         for file in self.list_files:
             old = file.get_original_name().replace(search_text, old_color + search_text + end_color)
             new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)
-            list_store.append([old + file.get_extension(), new + file.get_extension()])
+            list_store.append([old + file.get_extension() + '   ', '   → ' + new + file.get_extension()])
         self.tree_view.set_model(list_store)

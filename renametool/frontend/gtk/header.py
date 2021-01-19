@@ -20,7 +20,7 @@ class StackHeader(Gtk.VBox):
         """"""
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
-            width_request=550, *args, **kwargs)
+            width_request=550, margin=18, *args, **kwargs)
         # Current page flag
         self.current_page = 'rename'
         self.switch_page = True

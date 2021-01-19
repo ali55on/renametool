@@ -24,7 +24,7 @@ class MyWindow(Gtk.Window):
         self.set_title(title_obj.get_title())
 
         # Main box
-        self.main_box = Gtk.VBox(margin=18)
+        self.main_box = Gtk.VBox()
         self.add(self.main_box)
 
         # Header
