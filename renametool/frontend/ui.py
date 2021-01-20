@@ -6,7 +6,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-import frontend.gtk.main as gtk_main
+import frontend.gtk.gtkmain as gtk_main
 import backend.utils.file as file
 
 
