@@ -140,13 +140,48 @@ class TabRename(Gtk.VBox):
 
     # noinspection PyUnusedLocal
     def on_backspace_signal(self, widget):
+        can_delete_template = False
         txt = self.entry.get_text()
-        point = self.entry.get_position()
+        cursor = self.entry.get_position()
+        new_txt = str()
+        cursor_position = None
 
+        # Delete template markup
         for template in markup_template.values():
             for num in range(1, len(txt) + 1):
-                if txt[point - num: point] + txt[point:(point + len(template)) - num] == template:
-                    self.entry.set_text(txt.replace(template, ''))
+                if txt[cursor - num: cursor] + txt[cursor:(cursor + len(template)) - num] == template:
+                    # Quando o cursor é movido para a posição correta,
+                    # ele (Gtk) "come" um caractere (*), por isso o novo
+                    # texto recebe um caractere que será deletado quando o
+                    # cursor voltar a posição esperada.
+                    new_txt = txt.replace(template, '*')
+                    can_delete_template = True
+                    break
+
+        # Configure the correct cursor position
+        for step in range(len(new_txt)):
+            if new_txt[step] != txt[step]:
+                # O cursor ganha um incremento de 1
+                # unidade, pois quando ele for movido para
+                # o lugar correto, ele (Gtk) "comerá"/apagará
+                # 1 caractere (*)
+                cursor_position = step + 1
+                break
+
+        # O range() para achar a posição correta do cursor, é feito no texto novo
+        # e menor para evitar o erro -> "IndexError: string index out of range".
+        # Por essa razão, quando o range chega no fim texto sem achar a diferença,
+        # significa que o 'template de marcação' que foi removido, ficava originalmente
+        # no fim do texto. Então se o cursor_position não foi configurado (None),
+        # significa que ele deveria ficar no fim do texto
+        if cursor_position is None:
+            cursor_position = len(new_txt)
+
+        # Set
+        if can_delete_template:
+            self.entry.set_text(new_txt)
+            self.entry.do_move_cursor(
+                self.entry, Gtk.MovementStep.LOGICAL_POSITIONS, cursor_position, False)
 
     def get_rename_text(self):
         """"""

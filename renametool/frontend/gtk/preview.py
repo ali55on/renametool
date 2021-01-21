@@ -7,7 +7,6 @@ from gi.repository import GLib
 
 import backend.rename as rename
 import backend.replace as replace
-import backend.replacepreview as replace_preview
 
 
 markup_template = {
