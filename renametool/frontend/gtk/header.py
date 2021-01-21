@@ -104,7 +104,7 @@ class TabRename(Gtk.VBox):
         self.text_box = Gtk.HBox()
         self.pack_start(self.text_box, True, True, 0)
 
-        self.entry = Gtk.Entry(margin_start=50)
+        self.entry = Gtk.Entry(margin_start=50, editable=True)
         self.entry.connect('backspace', self.on_backspace_signal)
         self.text_box.pack_start(self.entry, True, True, 0)
 
@@ -138,10 +138,13 @@ class TabRename(Gtk.VBox):
     def __on_menu(self, widget):
         PopoverMenu(parent_widget=widget, interaction_widget=self.entry)
 
-    # noinspection PyUnusedLocal
     def on_backspace_signal(self, widget):
-        # print(self.entry.get_text())
-        pass
+        txt = self.entry.get_text()
+        point = self.entry.get_position()
+        tag_1 = '[1, 2, 3]'
+        for i in range(1, len(txt) + 1):
+            if txt[point - i: point] + txt[point:(point + len(tag_1)) - i] == tag_1:
+                self.entry.set_text(txt.replace(tag_1, ''))
 
     def get_rename_text(self):
         """"""
