@@ -119,17 +119,18 @@ class Preview(Gtk.VBox):
         for i in self.list_files:
             note = i.get_note()
             if note and note != 'hidden-file-error' and note == rename_status.get_error_found():
+                # Error
                 list_store.append(
                     [
                         i.get_original_name() + i.get_extension() + '   ',
-                        '  <span color="#ff234544">✖</span> ' + i.get_name() + i.get_extension()
+                        '   <span color="#c33348">→</span> ' + i.get_name() + i.get_extension()
                     ]
                 )
             elif note and note == 'hidden-file-error' and note == rename_status.get_error_found():
                 list_store.append(
                     [
                         i.get_original_name() + i.get_extension() + '   ',
-                        '  <span color="#ffeb4944">✱</span> ' + i.get_name() + i.get_extension()
+                        '   <span color="#ac9339">→</span> ' + i.get_name() + i.get_extension()
                     ]
                 )
             else:
@@ -165,11 +166,11 @@ class Preview(Gtk.VBox):
             if note and note != 'hidden-file-error' and note == replace_status.get_error_found():
                 list_store.append(
                     [old + file.get_extension() + '   ',
-                     '  <span color="#ff234544">✖</span> ' + new + file.get_extension()])
+                     '   <span color="#c33348">→</span> ' + new + file.get_extension()])
             elif note and note == 'hidden-file-error' and note == replace_status.get_error_found():
                 list_store.append(
                     [old + file.get_extension() + '   ',
-                     '  <span color="#ffeb4944">✱</span> ' + new + file.get_extension()])
+                     '   <span color="#ac9339">→</span> ' + new + file.get_extension()])
             else:
                 list_store.append([old + file.get_extension() + '   ', '   → ' + new + file.get_extension()])
         self.tree_view.set_model(list_store)
