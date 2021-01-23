@@ -17,6 +17,7 @@ class Preview(Gtk.VBox):
         self.header = header
         self.list_files = list_files
         self.markup_template = markup_template
+        self.status_error = None
 
         # Pré visualização
         self.scrolled_window = Gtk.ScrolledWindow(
@@ -114,32 +115,27 @@ class Preview(Gtk.VBox):
         error_found = rename_status.get_error_found()
 
         if error_found:
+            self.status_error = rename_status.get_error_found()
             print('ERROR:', rename_status.get_error_found())
+        else:
+            self.status_error = None
 
         for i in self.list_files:
             note = i.get_note()
             if note and note != 'hidden-file-error' and note == rename_status.get_error_found():
                 # Error
                 list_store.append(
-                    [
-                        i.get_original_name() + i.get_extension() + '   ',
-                        '   <span color="#c33348">→</span> ' + i.get_name() + i.get_extension()
-                    ]
-                )
+                    [i.get_original_name() + i.get_extension() + '   ',
+                     '   <span color="#c33348">→</span> ' + i.get_name() + i.get_extension()])
             elif note and note == 'hidden-file-error' and note == rename_status.get_error_found():
                 list_store.append(
-                    [
-                        i.get_original_name() + i.get_extension() + '   ',
-                        '   <span color="#ac9339">→</span> ' + i.get_name() + i.get_extension()
-                    ]
-                )
+                    [i.get_original_name() + i.get_extension() + '   ',
+                     '   <span color="#ac9339">→</span> ' + i.get_name() + i.get_extension()])
             else:
                 list_store.append(
-                    [
-                        i.get_original_name() + i.get_extension() + '   ',
-                        '   → ' + i.get_name() + i.get_extension()
-                    ]
-                )
+                    [i.get_original_name() + i.get_extension() + '   ',
+                     '   → ' + i.get_name() + i.get_extension()])
+
         self.tree_view.set_model(list_store)
 
     def replace_preview(self, search_text: str, replace_text: str):
@@ -153,7 +149,10 @@ class Preview(Gtk.VBox):
         error_found = replace_status.get_error_found()
 
         if error_found:
+            self.status_error = replace_status.get_error_found()
             print('ERROR:', replace_status.get_error_found())
+        else:
+            self.status_error = None
 
         old_color = '<span background="#ff511e44">'
         new_color = '<span background="#69a75344">'

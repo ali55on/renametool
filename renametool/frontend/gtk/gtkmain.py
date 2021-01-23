@@ -9,6 +9,7 @@ import backend.title as title
 import backend.utils.file as file
 import frontend.gtk.header as header
 import frontend.gtk.preview as preview
+import frontend.gtk.base as base
 
 
 class MyWindow(Gtk.Window):
@@ -16,9 +17,8 @@ class MyWindow(Gtk.Window):
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
             icon_name='document-edit-symbolic')
-        # List files
+        self.status_error = None
         self.list_files = list_files
-        #
         self.markup_template = {
             '[1, 2, 3]': '[1, 2, 3]',
             '[01, 02, 03]': '[01, 02, 03]',
@@ -43,19 +43,12 @@ class MyWindow(Gtk.Window):
             header=self.header, markup_template=self.markup_template, list_files=self.list_files)
         self.main_box.pack_start(self.preview, True, True, 0)
 
-        # Test
-        self.button_test = Gtk.Button(label='ok', margin_top=30)
-        self.button_test.connect('clicked', self.on_test)
-        self.main_box.pack_start(self.button_test, True, True, 0)
+        self.base = base.Base(preview=self.preview, list_files=self.list_files)
+        self.main_box.pack_start(self.base, True, True, 0)
 
         # Focus
         self.activate_focus()
         self.set_focus(self.header.tab_rename.entry)
-
-    # noinspection PyUnusedLocal
-    def on_test(self, widget):
-        for i in self.list_files:
-            print(i.get_name() + i.get_extension())
 
 
 if __name__ == '__main__':
