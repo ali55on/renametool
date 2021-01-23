@@ -9,7 +9,7 @@ from gi.repository import GLib
 class Base(Gtk.VBox):
     def __init__(self, list_files, preview, *args, **kwargs):
         """"""
-        Gtk.VBox.__init__(self, margin=18, *args, **kwargs)
+        Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         self.list_files = list_files
         self.preview = preview
         self.can_rename = False
@@ -18,7 +18,7 @@ class Base(Gtk.VBox):
         self.warning_box = Gtk.HBox()
         self.pack_start(self.warning_box, True, True, 0)
 
-        self.label_warning = Gtk.Label(use_markup=True)
+        self.label_warning = Gtk.Label(use_markup=True, ellipsize=3)
         self.warning_box.pack_start(self.label_warning, True, True, 0)
 
         # Buttons
@@ -46,17 +46,24 @@ class Base(Gtk.VBox):
     def status_error_threading_glib(self):
         status_error = self.preview.status_error
         sensitive = self.button_rename.get_sensitive()
+        visible = self.label_warning.get_visible()
 
         if status_error:
+            if not visible:
+                self.label_warning.set_visible(True)
             if status_error != 'hidden-file-error':
                 if sensitive:
+                    self.label_warning.set_text(status_error)
                     self.button_rename.set_sensitive(False)
                     self.can_rename = False
             elif status_error == 'hidden-file-error':
+                self.label_warning.set_text(status_error)
+                self.can_rename = True
                 if not sensitive:
                     self.button_rename.set_sensitive(True)
-                    self.can_rename = True
         else:
             self.can_rename = True
             if not sensitive:
                 self.button_rename.set_sensitive(True)
+            if visible:
+                self.label_warning.set_visible(False)
