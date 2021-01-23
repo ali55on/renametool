@@ -9,21 +9,14 @@ import backend.rename as rename
 import backend.replace as replace
 
 
-markup_template = {
-    '[1, 2, 3]': '[1, 2, 3]',
-    '[01, 02, 03]': '[01, 02, 03]',
-    '[001, 002, 003]': '[001, 002, 003]',
-    '[original-name]': '[Original filename]'
-}
-
-
 class Preview(Gtk.VBox):
     """"""
-    def __init__(self, header, list_files, *args, **kwargs):
+    def __init__(self, header, markup_template, list_files, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(self, *args, **kwargs)
         self.header = header
         self.list_files = list_files
+        self.markup_template = markup_template
 
         # Pré visualização
         self.scrolled_window = Gtk.ScrolledWindow(
@@ -114,28 +107,25 @@ class Preview(Gtk.VBox):
     def rename_preview(self, rename_text: str):
         list_store = Gtk.ListStore(str, str)
         if not rename_text:
-            rename_text = markup_template['[original-name]']
+            rename_text = self.markup_template['[original-name]']
 
         rename_status = rename.Rename(
             list_files=self.list_files, new_name=rename_text)
+        error_found = rename_status.get_error_found()
 
-        if rename_status.get_resume_error():
-            print('ERROR:', rename_status.get_resume_error())
-        if rename_status.get_resume_warning():
-            print('WARNING:', rename_status.get_resume_warning())
+        if error_found:
+            print('ERROR:', rename_status.get_error_found())
 
-        found_a_warning = False
         for i in self.list_files:
-            if i.get_note() == 'error' and not found_a_warning:
-                found_a_warning = True
+            note = i.get_note()
+            if note and note != 'hidden-file-error' and note == rename_status.get_error_found():
                 list_store.append(
                     [
                         i.get_original_name() + i.get_extension() + '   ',
                         '  <span background="#ef356444"> → </span> ' + i.get_name() + i.get_extension()
                     ]
                 )
-            elif i.get_note() == 'warning' and not found_a_warning:
-                found_a_warning = True
+            elif note and note == 'hidden-file-error' and note == rename_status.get_error_found():
                 list_store.append(
                     [
                         i.get_original_name() + i.get_extension() + '   ',
@@ -159,27 +149,24 @@ class Preview(Gtk.VBox):
 
         replace_status = replace.Replace(
             list_files=self.list_files, search_text=search_text, replace_text=replace_text)
+        error_found = replace_status.get_error_found()
 
-        if replace_status.get_resume_error():
-            print('ERROR:', replace_status.get_resume_error())
-        if replace_status.get_resume_warning():
-            print('WARNING:', replace_status.get_resume_warning())
+        if error_found:
+            print('ERROR:', replace_status.get_error_found())
 
         old_color = '<span background="#f9885444">'
         new_color = '<span background="#69a75344">'
         end_color = '</span>'
-        found_a_warning = False
         for file in self.list_files:
+            note = file.get_note()
             old = file.get_original_name().replace(search_text, old_color + search_text + end_color)
             new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)
 
-            if file.get_note() == 'error' and not found_a_warning:
-                found_a_warning = True
+            if note and note != 'hidden-file-error' and note == replace_status.get_error_found():
                 list_store.append(
                     [old + file.get_extension() + '   ',
                      '  <span background="#ef356444"> → </span> ' + new + file.get_extension()])
-            elif file.get_note() == 'warning' and not found_a_warning:
-                found_a_warning = True
+            elif note and note == 'hidden-file-error' and note == replace_status.get_error_found():
                 list_store.append(
                     [old + file.get_extension() + '   ',
                      '  <span background="#ffdb5744"> → </span> ' + new + file.get_extension()])

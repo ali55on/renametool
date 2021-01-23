@@ -11,63 +11,79 @@ class Replace(object):
         self.__search_text = search_text
         self.__replace_text = replace_text
 
-        self.__resume_error = None
-        self.__resume_warning = None
+        self.__error_found = None
 
         self.__rename_file_in_the_list()
 
-    def get_resume_error(self):
-        return self.__resume_error
-
-    def get_resume_warning(self):
-        return self.__resume_warning
+    def get_error_found(self):
+        return self.__error_found
 
     def get_invalid_file(self):
         return self.__invalid_file
 
     def __rename_file_in_the_list(self):
         all_names = list()
+        errors_found = {
+            'repeated-name-error': False,
+            'character-error': False,
+            'name-not-allowed-error': False,
+            'existing-name-error': False,
+            'length-error': False,
+            'hidden-file-error': False
+        }
         for item_file in self.__list_files:
-            new_name = item_file.get_original_name().replace(self.__search_text, self.__replace_text)
-            item_file.set_name(new_name)
-
-            # Validar
             path = item_file.get_path()
             extension = item_file.get_extension()
             item_file.set_note(None)
 
-            if not self.__resume_error:
-                if new_name + extension in all_names:
-                    # 'Filename already exists in the list'
-                    self.__resume_error = 'repeated-name-error'
-                    item_file.set_note('error')
-                elif '/' in new_name:
-                    # 'Names cannot contain the / (slash) character'
-                    self.__resume_error = 'character-error'
-                    item_file.set_note('error')
-                elif new_name + extension == '.' or new_name + extension == '..':
-                    # 'It is not possible to use one dot (.) or two dots (..) as a filename'
-                    self.__resume_error = 'name-not-allowed-error'
-                    item_file.set_note('error')
-                elif new_name + extension in os.listdir(path):
-                    # 'A file with that name already exists in the directory'
-                    if new_name + extension != item_file.get_original_name() + extension:
-                        self.__resume_error = 'existing-name-error'
-                        item_file.set_note('error')
-                elif len(new_name + extension) > 255:
-                    # 'Filename longer than 255 characters (including extension)'
-                    self.__resume_error = 'length-error'
-                    item_file.set_note('error')
+            new_name = item_file.get_original_name().replace(self.__search_text, self.__replace_text)
+            item_file.set_name(new_name)
 
-            if not self.__resume_warning:
-                if new_name + extension != '.' and new_name + extension != '..':
-                    if (new_name + extension)[0] == '.':
-                        # 'Files that start with a dot (.) will be hidden'
-                        self.__resume_warning = 'hidden-file-error'
-                        item_file.set_note('warning')
+            # Completely unnamed
+            if new_name + extension == '':
+                item_file.set_note('completely-unnamed')
+                errors_found['completely-unnamed'] = True
+
+            # 'Filename already exists in the list'
+            elif new_name + extension in all_names:
+                item_file.set_note('repeated-name-error')
+                errors_found['repeated-name-error'] = True
+
+            # 'Names cannot contain the / (slash) character'
+            elif '/' in new_name:
+                item_file.set_note('character-error')
+                errors_found['character-error'] = True
+
+            # 'It is not possible to use one dot (.) or two dots (..) as a filename'
+            elif new_name + extension == '.' or new_name + extension == '..':
+                item_file.set_note('name-not-allowed-error')
+                errors_found['name-not-allowed-error'] = True
+
+            # 'A file with that name already exists in the directory'
+            elif new_name + extension in os.listdir(path):
+                if new_name + extension != item_file.get_original_name() + extension:
+                    item_file.set_note('existing-name-error')
+                    errors_found['existing-name-error'] = True
+
+            # 'Filename longer than 255 characters (including extension)'
+            elif len(new_name + extension) > 255:
+                item_file.set_note('length-error')
+                errors_found['length-error'] = True
+
+            # 'Files that start with a dot (.) will be hidden'
+            elif new_name + extension != '.' and new_name + extension != '..':
+                if new_name + extension and (new_name + extension)[0] == '.':
+                    item_file.set_note('hidden-file-error')
+                    errors_found['hidden-file-error'] = True
 
             # Registrar para comparar nome repetido
             all_names.append(new_name + item_file.get_extension())
+
+        # Highest level error
+        for key, value in errors_found.items():
+            if value:
+                self.__error_found = key
+                break
 
 
 if __name__ == '__main__':
@@ -83,8 +99,8 @@ if __name__ == '__main__':
     # Replace
     replace_status = Replace(list_files=l_files, search_text='re', replace_text='RE')
 
-    if replace_status.get_resume_error():
-        print('ERROR:', replace_status.get_resume_error())
+    if replace_status.get_error_found():
+        print('ERROR:', replace_status.get_error_found())
     if replace_status.get_resume_warning():
         print('WARNING:', replace_status.get_resume_warning())
 

@@ -18,6 +18,13 @@ class MyWindow(Gtk.Window):
             icon_name='document-edit-symbolic')
         # List files
         self.list_files = list_files
+        #
+        self.markup_template = {
+            '[1, 2, 3]': '[1, 2, 3]',
+            '[01, 02, 03]': '[01, 02, 03]',
+            '[001, 002, 003]': '[001, 002, 003]',
+            '[original-name]': '[Original filename]'
+        }
 
         # Window title
         title_obj = title.Title(self.list_files)
@@ -28,11 +35,12 @@ class MyWindow(Gtk.Window):
         self.add(self.main_box)
 
         # Header
-        self.header = header.StackHeader()
+        self.header = header.StackHeader(markup_template=self.markup_template)
         self.main_box.pack_start(self.header, True, True, 0)
 
         # Preview
-        self.preview = preview.Preview(header=self.header, list_files=self.list_files)
+        self.preview = preview.Preview(
+            header=self.header, markup_template=self.markup_template, list_files=self.list_files)
         self.main_box.pack_start(self.preview, True, True, 0)
 
         # Test
