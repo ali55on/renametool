@@ -112,7 +112,6 @@ class Preview(Gtk.VBox):
         return False
 
     def rename_preview(self, rename_text: str):
-        print('Loop -> "Rename"')
         list_store = Gtk.ListStore(str, str)
         if not rename_text:
             rename_text = markup_template['[original-name]']
@@ -125,17 +124,34 @@ class Preview(Gtk.VBox):
         if rename_status.get_resume_warning():
             print('WARNING:', rename_status.get_resume_warning())
 
+        found_a_warning = False
         for i in self.list_files:
-            list_store.append(
-                [
-                    i.get_original_name() + i.get_extension() + '   ',
-                    '   → ' + i.get_name() + i.get_extension()
-                ]
-            )
+            if i.get_note() == 'error' and not found_a_warning:
+                found_a_warning = True
+                list_store.append(
+                    [
+                        i.get_original_name() + i.get_extension() + '   ',
+                        '  <span background="#ef356444"> → </span> ' + i.get_name() + i.get_extension()
+                    ]
+                )
+            elif i.get_note() == 'warning' and not found_a_warning:
+                found_a_warning = True
+                list_store.append(
+                    [
+                        i.get_original_name() + i.get_extension() + '   ',
+                        '  <span background="#ffdb5744"> → </span> ' + i.get_name() + i.get_extension()
+                    ]
+                )
+            else:
+                list_store.append(
+                    [
+                        i.get_original_name() + i.get_extension() + '   ',
+                        '   → ' + i.get_name() + i.get_extension()
+                    ]
+                )
         self.tree_view.set_model(list_store)
 
     def replace_preview(self, search_text: str, replace_text: str):
-        print('Loop -> "Replace"')
         list_store = Gtk.ListStore(str, str)
 
         if not search_text:
@@ -149,11 +165,24 @@ class Preview(Gtk.VBox):
         if replace_status.get_resume_warning():
             print('WARNING:', replace_status.get_resume_warning())
 
-        old_color = '<span background="#ef356444">'
-        new_color = '<span background="#00b96b44">'
+        old_color = '<span background="#f9885444">'
+        new_color = '<span background="#69a75344">'
         end_color = '</span>'
+        found_a_warning = False
         for file in self.list_files:
             old = file.get_original_name().replace(search_text, old_color + search_text + end_color)
             new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)
-            list_store.append([old + file.get_extension() + '   ', '   → ' + new + file.get_extension()])
+
+            if file.get_note() == 'error' and not found_a_warning:
+                found_a_warning = True
+                list_store.append(
+                    [old + file.get_extension() + '   ',
+                     '  <span background="#ef356444"> → </span> ' + new + file.get_extension()])
+            elif file.get_note() == 'warning' and not found_a_warning:
+                found_a_warning = True
+                list_store.append(
+                    [old + file.get_extension() + '   ',
+                     '  <span background="#ffdb5744"> → </span> ' + new + file.get_extension()])
+            else:
+                list_store.append([old + file.get_extension() + '   ', '   → ' + new + file.get_extension()])
         self.tree_view.set_model(list_store)

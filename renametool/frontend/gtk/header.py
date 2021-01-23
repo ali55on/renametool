@@ -104,7 +104,8 @@ class TabRename(Gtk.VBox):
         self.text_box = Gtk.HBox()
         self.pack_start(self.text_box, True, True, 0)
 
-        self.entry = Gtk.Entry(margin_start=50, editable=True)
+        self.entry = Gtk.Entry(
+            text=markup_template['[original-name]'], margin_start=50, editable=True)
         self.entry.connect('backspace', self.on_backspace_signal)
         self.text_box.pack_start(self.entry, True, True, 0)
 
@@ -119,7 +120,7 @@ class TabRename(Gtk.VBox):
         # Style
         self.entry.set_name('entry')
         self.button.set_name('button')
-        css = b"""
+        css = b'''
             #entry{
                 border-top-right-radius: 0px;
                 border-bottom-right-radius: 0px;
@@ -129,7 +130,7 @@ class TabRename(Gtk.VBox):
                 border-bottom-left-radius: 0px;
                 border-left: 0px;
             }
-            """
+            '''
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(css)
         Gtk.StyleContext.add_provider_for_screen(
@@ -202,6 +203,7 @@ class TabReplace(Gtk.HBox):
 
         # Search
         self.search_label = Gtk.Label(label='Existing text', halign=Gtk.Align.END)
+        self.search_label.set_sensitive(False)
         self.label_box.pack_start(self.search_label, True, True, 0)
 
         self.search_entry = Gtk.Entry()
@@ -209,26 +211,11 @@ class TabReplace(Gtk.HBox):
 
         # Replace
         self.replace_label = Gtk.Label(label='Replace with', halign=Gtk.Align.END)
+        self.replace_label.set_sensitive(False)
         self.label_box.pack_start(self.replace_label, True, True, 0)
 
         self.replace_entry = Gtk.Entry()
         self.entry_box.pack_start(self.replace_entry, True, True, 0)
-
-        # Style
-        self.search_label.set_name('search-label')
-        self.replace_label.set_name('replace-label')
-        css = b"""
-            #search-label{
-                opacity: 0.5;
-            }
-            #replace-label{
-                opacity: 0.5;
-            }
-            """
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data(css)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def get_existing_text(self):
         """"""
@@ -249,6 +236,11 @@ class PopoverMenu(Gtk.PopoverMenu):
 
         # Container
         self.vbox = Gtk.VBox(margin=12)
+
+        # Automatic numbers
+        self.label_numbers_title = Gtk.Label(label='Automatic numbers')
+        self.label_numbers_title.set_sensitive(False)
+        self.vbox.pack_start(self.label_numbers_title, True, True, 0)
 
         # Button 1
         self.button_1 = Gtk.ModelButton(

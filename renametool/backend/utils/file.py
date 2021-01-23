@@ -32,6 +32,7 @@ class File(object):
         self.__extension = self.__resolve_extension()  # isdir, path
         self.__name = self.__resolve_name()  # path, extension
         self.__original_name = self.__name
+        self.__note = None
 
     def get_url(self) -> str:
         """File URL
@@ -211,6 +212,12 @@ class File(object):
         extension = self.get_extension()
         self.__url = self.get_path() + name + extension
         self.__name = name
+
+    def get_note(self):
+        return self.__note
+
+    def set_note(self, note: str):
+        self.__note = note
 
 
 class ValidateFile(object):
