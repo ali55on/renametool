@@ -29,14 +29,7 @@ class Rename(object):
 
         # Renomear arquivos
         all_names = list()
-        errors_found = {
-            'repeated-name-error': False,
-            'character-error': False,
-            'name-not-allowed-error': False,
-            'existing-name-error': False,
-            'length-error': False,
-            'hidden-file-error': False
-        }
+        errors_found = dict()
         for item_file, item_markup_num in zip(self.__list_files, list_markup_nums):
             new_name = self.__new_name.replace(markup_template['[1, 2, 3]'], item_markup_num)
             new_name = new_name.replace(markup_template['[01, 02, 03]'], item_markup_num)
@@ -84,9 +77,13 @@ class Rename(object):
             all_names.append(new_name + item_file.get_extension())
 
         # Highest level error
-        for key, value in errors_found.items():
-            if value:
-                self.__error_found = key
+        errors_list = [
+            'repeated-name-error', 'character-error', 'name-not-allowed-error',
+            'existing-name-error', 'length-error', 'hidden-file-error']
+
+        for error in errors_list:
+            if error in errors_found and errors_found[error]:
+                self.__error_found = error
                 break
 
     def __generate_markup_numbers(self):

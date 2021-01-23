@@ -80,9 +80,14 @@ class Replace(object):
             all_names.append(new_name + item_file.get_extension())
 
         # Highest level error
-        for key, value in errors_found.items():
-            if value:
-                self.__error_found = key
+        errors_list = [
+            'completely-unnamed', 'repeated-name-error', 'character-error',
+            'name-not-allowed-error', 'existing-name-error', 'length-error',
+            'hidden-file-error']
+
+        for error in errors_list:
+            if error in errors_found and errors_found[error]:
+                self.__error_found = error
                 break
 
 
