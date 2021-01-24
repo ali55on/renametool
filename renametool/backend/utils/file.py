@@ -26,11 +26,12 @@ class File(object):
         :param file_url: String in the format of a file URL-> "/home/user/foo.txt"
         :param use_extensions_list: List of file extensions-> [".txt", ".mkv", ".png"]
         """
+        print('BRANCH V.0.1..............')
         self.extensions_list = use_extensions_list
-        self.__url = self.__resolve_url(file_url)  # isdir
-        self.__path = self.__resolve_path()
-        self.__extension = self.__resolve_extension()  # isdir, path
-        self.__name = self.__resolve_name()  # path, extension
+        self.__url = unquote(r'{}'.format(file_url))
+        self.__path = '{}{}'.format(os.path.dirname(self.__url), os.sep)
+        self.__extension = self.__resolve_extension()  # need path
+        self.__name = self.__url.replace(self.__path, '').replace(self.__extension, '')
         self.__original_name = self.__name
         self.__note = None
 
@@ -47,20 +48,6 @@ class File(object):
         """
         return self.__url
 
-    @staticmethod
-    def __resolve_url(arg: str) -> str:
-        # Limpa a url dos arquivos
-        url_file = unquote(arg.replace('file://', ''))
-
-        # Garantir que url sempre comece com apenas uma barra,
-        # porque a validação da url com os.path() não levanta erro
-        # em url com várias barras
-        if '//' in url_file:
-            while '//' in url_file:
-                url_file = url_file.replace('//', '/')
-
-        return url_file
-
     def get_path(self) -> str:
         """Get the file path
 
@@ -74,12 +61,6 @@ class File(object):
         """
         return self.__path
 
-    def __resolve_path(self) -> str:
-        path = os.path.dirname(self.__url)
-        if path == '/':
-            return path
-        return path + '/'
-
     def get_name(self) -> str:
         """Get the file name
 
@@ -92,10 +73,6 @@ class File(object):
         :return: String containing the file name
         """
         return self.__name
-
-    def __resolve_name(self) -> str:
-        name = self.__url.replace(self.get_path(), '').replace(self.get_extension(), '')
-        return name
 
     def get_extension(self) -> str:
         """Get the file extension
@@ -124,7 +101,7 @@ class File(object):
         # o fim do nome do arquivo a partir do último ponto, não produz o
         # resultado esperado, pois um arquivo de nome '.txt' não pode ser
         # reconhecido como um arquivo de nome vazio '' e extensão '.txt'
-        file_name = self.__url.replace(self.get_path(), '').lstrip('.')
+        file_name = self.__url.replace(self.__path, '').lstrip('.')
 
         # Arquivos sem extensão
         condition = [
@@ -212,8 +189,7 @@ class File(object):
 
         :param name: New name for the file
         """
-        extension = self.get_extension()
-        self.__url = self.get_path() + name + extension
+        self.__url = self.__path + name + self.__extension
         self.__name = name
 
     def get_note(self):
