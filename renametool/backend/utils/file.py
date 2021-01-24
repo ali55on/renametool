@@ -28,7 +28,7 @@ class File(object):
         """
         print('BRANCH V.0.1..............')
         self.extensions_list = use_extensions_list
-        self.__url = unquote(r'{}'.format(file_url))
+        self.__url = unquote(r'{}'.format(file_url.replace('file://', '')))
         self.__path = '{}{}'.format(os.path.dirname(self.__url), os.sep)
         self.__extension = self.__resolve_extension()  # need path
         self.__name = self.__url.replace(self.__path, '').replace(self.__extension, '')

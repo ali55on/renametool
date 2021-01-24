@@ -54,7 +54,8 @@ class Base(Gtk.VBox):
         self.pack_start(self.buttons_base_box, True, True, 0)
 
         # Preferences
-        self.icon = Gtk.Image(icon_name='preferences-system-symbolic')
+        # preferences-other-symbolic remmina-preferences-system-symbolic
+        self.icon = Gtk.Image(icon_name='preferences-other-symbolic')
         self.button_preferences = Gtk.Button(
             image=self.icon, always_show_image=True, halign=Gtk.Align.START)
         self.button_preferences.connect('clicked', self.on_preferences)
