@@ -29,11 +29,22 @@ class Base(Gtk.VBox):
         self.button_rename.connect('clicked', self.rename)
         self.buttons_box.pack_start(self.button_rename, True, True, 0)
 
+        # Messages
+        self.message = {
+            'completely-unnamed': 'Completely unnamed',
+            'repeated-name-error': 'Repeated name',
+            'character-error': 'Character /',
+            'name-not-allowed-error': 'Name not allowed',
+            'existing-name-error': 'Existing name',
+            'length-error': 'Length name',
+            'hidden-file-error': 'Hidden file'}
+
         # Iniciar pré visualização
         thread = threading.Thread(target=self.status_error_threading)
         thread.daemon = True
         thread.start()
 
+    # noinspection PyUnusedLocal
     def rename(self, widget):
         if self.can_rename:
             for i in self.list_files:
@@ -53,11 +64,11 @@ class Base(Gtk.VBox):
                 self.label_warning.set_visible(True)
             if status_error != 'hidden-file-error':
                 if sensitive:
-                    self.label_warning.set_text(status_error)
+                    self.label_warning.set_markup('<span color="#c33348">→</span>: ' + self.message[status_error])
                     self.button_rename.set_sensitive(False)
                     self.can_rename = False
             elif status_error == 'hidden-file-error':
-                self.label_warning.set_text(status_error)
+                self.label_warning.set_markup('<span color="#ac9339">→</span>: ' + self.message[status_error])
                 self.can_rename = True
                 if not sensitive:
                     self.button_rename.set_sensitive(True)
