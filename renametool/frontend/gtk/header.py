@@ -99,11 +99,12 @@ class TabRename(Gtk.VBox):
         self.pack_start(self.text_box, True, True, 0)
 
         self.entry = Gtk.Entry(
-            text=self.markup_template['[original-name]'], margin_start=50, editable=True)
+            text=self.markup_template['[original-name]'], margin_start=50,
+            activates_default=True, editable=True)
         self.entry.connect('backspace', self.on_backspace_signal)
         self.text_box.pack_start(self.entry, True, True, 0)
 
-        self.icon = Gtk.Image(icon_name='value-increase-symbolic')
+        self.icon = Gtk.Image(icon_name='list-add-symbolic')
 
         self.button = Gtk.Button(
             image=self.icon, margin_end=50,
@@ -201,7 +202,7 @@ class TabReplace(Gtk.HBox):
         self.search_label.set_sensitive(False)
         self.label_box.pack_start(self.search_label, True, True, 0)
 
-        self.search_entry = Gtk.Entry()
+        self.search_entry = Gtk.Entry(activates_default=True)
         self.entry_box.pack_start(self.search_entry, True, True, 0)
 
         # Replace
@@ -209,7 +210,7 @@ class TabReplace(Gtk.HBox):
         self.replace_label.set_sensitive(False)
         self.label_box.pack_start(self.replace_label, True, True, 0)
 
-        self.replace_entry = Gtk.Entry()
+        self.replace_entry = Gtk.Entry(activates_default=True)
         self.entry_box.pack_start(self.replace_entry, True, True, 0)
 
     def get_existing_text(self):

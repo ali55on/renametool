@@ -122,15 +122,15 @@ class Preview(Gtk.VBox):
 
         for i in self.list_files:
             note = i.get_note()
-            if note and note != 'hidden-file-error' and note == rename_status.get_error_found():
+            if note and note != 'hidden-file-error' and note == error_found:
                 # Error
                 list_store.append(
                     [i.get_original_name() + i.get_extension() + '   ',
                      '   <span color="#c33348">→</span> ' + i.get_name() + i.get_extension()])
-            elif note and note == 'hidden-file-error' and note == rename_status.get_error_found():
+            elif note and note == 'hidden-file-error' and note == error_found:
                 list_store.append(
                     [i.get_original_name() + i.get_extension() + '   ',
-                     '   <span color="#ac9339">→</span> ' + i.get_name() + i.get_extension()])
+                     '   <span color="#b8b445">→</span> ' + i.get_name() + i.get_extension()])
             else:
                 list_store.append(
                     [i.get_original_name() + i.get_extension() + '   ',
@@ -154,22 +154,22 @@ class Preview(Gtk.VBox):
         else:
             self.status_error = None
 
-        old_color = '<span background="#ff511e44">'
-        new_color = '<span background="#69a75344">'
+        old_color = '<span background="#d5440066">'
+        new_color = '<span background="#3b731e66">'
         end_color = '</span>'
         for file in self.list_files:
             note = file.get_note()
             old = file.get_original_name().replace(search_text, old_color + search_text + end_color)
             new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)
 
-            if note and note != 'hidden-file-error' and note == replace_status.get_error_found():
+            if note and note != 'hidden-file-error' and note == error_found:
                 list_store.append(
                     [old + file.get_extension() + '   ',
                      '   <span color="#c33348">→</span> ' + new + file.get_extension()])
-            elif note and note == 'hidden-file-error' and note == replace_status.get_error_found():
+            elif note and note == 'hidden-file-error' and note == error_found:
                 list_store.append(
                     [old + file.get_extension() + '   ',
-                     '   <span color="#ac9339">→</span> ' + new + file.get_extension()])
+                     '   <span color="#b8b445">→</span> ' + new + file.get_extension()])
             else:
                 list_store.append([old + file.get_extension() + '   ', '   → ' + new + file.get_extension()])
         self.tree_view.set_model(list_store)

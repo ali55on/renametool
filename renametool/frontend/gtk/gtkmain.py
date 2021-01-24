@@ -39,9 +39,20 @@ class MyWindow(Gtk.Window):
         self.main_box.pack_start(self.header, True, True, 0)
 
         # Preview
+        self.main_box.pack_start(
+            Gtk.Separator(
+                orientation=Gtk.Orientation.HORIZONTAL,
+                valign=Gtk.Align.START), True, True, 0)
+
         self.preview = preview.Preview(
             header=self.header, markup_template=self.markup_template, list_files=self.list_files)
         self.main_box.pack_start(self.preview, True, True, 0)
+
+        # Base
+        self.main_box.pack_start(
+            Gtk.Separator(
+                orientation=Gtk.Orientation.HORIZONTAL,
+                valign=Gtk.Align.START), True, True, 0)
 
         self.base = base.Base(preview=self.preview, list_files=self.list_files)
         self.main_box.pack_start(self.base, True, True, 0)
@@ -49,6 +60,9 @@ class MyWindow(Gtk.Window):
         # Focus
         self.activate_focus()
         self.set_focus(self.header.tab_rename.entry)
+        # Default
+        self.activate_default()
+        self.set_default(self.base.button_rename)
 
 
 if __name__ == '__main__':

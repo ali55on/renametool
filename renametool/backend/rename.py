@@ -31,6 +31,7 @@ class Rename(object):
         all_names = list()
         errors_found = dict()
         for item_file, item_markup_num in zip(self.__list_files, list_markup_nums):
+            # item_file.set_note(None)
             new_name = self.__new_name.replace(markup_template['[1, 2, 3]'], item_markup_num)
             new_name = new_name.replace(markup_template['[01, 02, 03]'], item_markup_num)
             new_name = new_name.replace(markup_template['[001, 002, 003]'], item_markup_num)

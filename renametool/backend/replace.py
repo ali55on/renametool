@@ -32,9 +32,9 @@ class Replace(object):
             'hidden-file-error': False
         }
         for item_file in self.__list_files:
+            # item_file.set_note(None)
             path = item_file.get_path()
             extension = item_file.get_extension()
-            item_file.set_note(None)
 
             new_name = item_file.get_original_name().replace(self.__search_text, self.__replace_text)
             item_file.set_name(new_name)
