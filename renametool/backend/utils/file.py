@@ -75,7 +75,10 @@ class File(object):
         return self.__path
 
     def __resolve_path(self) -> str:
-        return os.path.dirname(self.__url) + '/'
+        path = os.path.dirname(self.__url)
+        if path == '/':
+            return path
+        return path + '/'
 
     def get_name(self) -> str:
         """Get the file name
@@ -220,92 +223,6 @@ class File(object):
         self.__note = note
 
 
-class ValidateFile(object):
-    def __init__(self, file: File):
-        """Create an object of type 'ValidateFile'
-
-        Validates if the file URL is valid, that is, if the file already
-        exists in the directory or if there are errors in the file name.
-
-        Use method 'is_valid_file' to see if the file is valid,
-        and 'get_error' to see what errors were found.
-
-        :param file: Object of type 'File'
-        """
-        self.__file = file
-        self.__error = dict()
-        self.__is_valid_file = self.__validate_file()
-
-    def is_valid_file(self) -> bool:
-        """Whether the file is valid
-
-        Returns 'True' for valid files or 'False' for invalid files.
-
-        :return: True or False
-        """
-        return self.__is_valid_file
-
-    def get_error(self) -> dict:
-        """Get a dictionary containing errors found in the file URL
-
-        The errors that can be found are:
-
-        ° character-error:
-            Characters that cannot exist in filenames,
-            such as the slash (/)
-        ° name-not-allowed-error:
-            Filenames, including the extension, that cannot
-            be used, such as one (.) or two (..) dots
-        ° existing-name-error:
-            When a file with the same name and extension
-            already exists in the directory
-        ° length-error:
-            Very long file names, longer than 255 characters
-        ° hidden-file-error:
-            Files that start with a dot (.) will be hidden
-
-        Ex:
-        ››› file = File('/home/user/user name.txt')
-        ››› file.set_name('.foo/bar')
-        ››› validate = ValidateFile(file)
-        ››› if not validate.is_valid_file():
-        ...     for error_keys in validate.get_error().keys():
-        ...         print(error_keys)
-        ...
-        character-error
-        hidden-file-error
-        ›››
-
-        :return: Dictionary containing errors
-        """
-        return self.__error
-
-    def __validate_file(self) -> bool:
-        path = self.__file.get_path()
-        name = self.__file.get_name()
-        extension = self.__file.get_extension()
-
-        if '/' in name:
-            msg = 'Names cannot contain the / (slash) character'
-            self.__error['character-error'] = msg
-        if name + extension == '.' or name + extension == '..':
-            msg = 'It is not possible to use one dot (.) or two dots (..) as a filename'
-            self.__error['name-not-allowed-error'] = msg
-        if name + extension in os.listdir(path):
-            msg = 'A file with that name already exists in the directory'
-            self.__error['existing-name-error'] = msg
-        if len(name + extension) > 255:
-            msg = 'Filename longer than 255 characters (including extension)'
-            self.__error['length-error'] = msg
-        """
-        if name[0] == '.' and name + extension != '.' and name + extension != '..':
-            msg = 'Files that start with a dot (.) will be hidden'
-            self.__error['hidden-file-error'] = msg
-        """
-
-        return True if not self.__error else False
-
-
 if __name__ == '__main__':
     f = File(file_url=os.path.abspath(__file__))
     print('      url:', f.get_url())
@@ -316,10 +233,6 @@ if __name__ == '__main__':
     print('  is link:', os.path.islink(f.get_url()))
     print()
     f.set_name('.foo')
-    validate = ValidateFile(f)
-    if not validate.is_valid_file():
-        for error_keys, value_error in validate.get_error().items():
-            print('[' + error_keys + '] ' + value_error)
     print()
     print('     name:', f.get_name())
     print('      url:', f.get_url())

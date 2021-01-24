@@ -1,26 +1,53 @@
+#!/usr/bin/env python3
 import threading
 import os
 
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+from gi.repository import Gdk
 from gi.repository import GLib
+
+import frontend.gtk.preferences as preferences
 
 
 class Base(Gtk.VBox):
-    def __init__(self, list_files, preview, *args, **kwargs):
+    def __init__(self, preview, colors, list_files, transient, *args, **kwargs):
         """"""
-        Gtk.VBox.__init__(self, margin=18, margin_top=12, spacing=6, *args, **kwargs)
-        self.list_files = list_files
+        Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         self.preview = preview
+        self.colors = colors
+        self.list_files = list_files
         self.can_rename = False
+        self.transient = transient
 
         # Warnings
-        self.warning_box = Gtk.HBox()
+        self.warning_box = Gtk.HBox(homogeneous=True)
         self.pack_start(self.warning_box, True, True, 0)
 
         self.label_warning = Gtk.Label(use_markup=True, ellipsize=3, halign=Gtk.Align.START)
         self.warning_box.pack_start(self.label_warning, True, True, 0)
+
+        self.label_error = Gtk.Label(use_markup=True, ellipsize=3, halign=Gtk.Align.START)
+        self.warning_box.pack_start(self.label_error, True, True, 0)
+
+        # Style
+        self.label_warning.set_name('label-warning')
+        self.label_error.set_name('label-error')
+        css = b'''
+            #label-warning{
+                border-bottom: 1px solid #b8b445;
+                padding: 3px;
+            }
+            #label-error{
+                border-bottom: 1px solid #c33348;
+                padding: 3px;
+            }
+            '''
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(css)
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         # Buttons
         self.buttons_base_box = Gtk.HBox(homogeneous=True)
@@ -28,10 +55,10 @@ class Base(Gtk.VBox):
 
         # Preferences
         self.icon = Gtk.Image(icon_name='preferences-system-symbolic')
-        self.button_settings = Gtk.Button(
+        self.button_preferences = Gtk.Button(
             image=self.icon, always_show_image=True, halign=Gtk.Align.START)
-        self.button_settings.connect('clicked', self.on_cancel)
-        self.buttons_base_box.pack_start(self.button_settings, True, True, 0)
+        self.button_preferences.connect('clicked', self.on_preferences)
+        self.buttons_base_box.pack_start(self.button_preferences, True, True, 0)
 
         # Cancel and rename
         self.buttons_box = Gtk.HBox(spacing=6, homogeneous=True)
@@ -66,15 +93,20 @@ class Base(Gtk.VBox):
         thread.daemon = True
         thread.start()
 
+    # noinspection PyUnusedLocal,PyMethodMayBeStatic
+    def on_preferences(self, widget):
+        preferences_win = preferences.PreferencesWindow(transient_for=self.transient)
+        preferences_win.show_all()
+
     # noinspection PyUnusedLocal
     def on_rename(self, widget):
         if self.can_rename:
             for file in self.list_files:
                 path = file.get_path()
                 ext = file.get_extension()
-
                 old_name = path + file.get_original_name() + ext
                 new_name = path + file.get_name() + ext
+
                 if new_name != old_name:
                     os.rename(old_name, new_name)
             Gtk.main_quit()
@@ -90,26 +122,41 @@ class Base(Gtk.VBox):
     def status_error_threading_glib(self):
         status_error = self.preview.status_error
         sensitive = self.button_rename.get_sensitive()
-        visible = self.label_warning.get_visible()
+        visible_war = self.label_warning.get_visible()
+        visible_err = self.label_error.get_visible()
 
         if status_error:
-            if not visible:
-                self.label_warning.set_visible(True)
             if status_error != 'hidden-file-error':
-                self.label_warning.set_markup(
-                    '<span color="#c33348">→</span>: ' + self.message[status_error])
+                prefix = '<span color="{}">→</span>  '.format(self.colors['error-color'])
+                self.label_error.set_markup(
+                    prefix + self.message[status_error])
                 self.can_rename = False
+
+                if not visible_err:
+                    self.label_error.set_visible(True)
+                if visible_war:
+                    self.label_warning.set_visible(False)
+
                 if sensitive:
                     self.button_rename.set_sensitive(False)
             elif status_error == 'hidden-file-error':
+                prefix = '<span color="{}">→</span>  '.format(self.colors['warning-color'])
                 self.label_warning.set_markup(
-                    '<span color="#b8b445">→</span>: ' + self.message[status_error])
+                    prefix + self.message[status_error])
                 self.can_rename = True
+
+                if not visible_war:
+                    self.label_warning.set_visible(True)
+                if visible_err:
+                    self.label_error.set_visible(False)
+
                 if not sensitive:
                     self.button_rename.set_sensitive(True)
         else:
             self.can_rename = True
             if not sensitive:
                 self.button_rename.set_sensitive(True)
-            if visible:
+            if visible_war:
                 self.label_warning.set_visible(False)
+            if visible_err:
+                self.label_error.set_visible(False)

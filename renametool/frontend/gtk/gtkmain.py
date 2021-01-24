@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import os
 
@@ -7,6 +8,7 @@ from gi.repository import Gtk
 
 import backend.title as title
 import backend.utils.file as file
+import backend.settings as settings
 import frontend.gtk.header as header
 import frontend.gtk.preview as preview
 import frontend.gtk.base as base
@@ -19,12 +21,10 @@ class MyWindow(Gtk.Window):
             icon_name='document-edit-symbolic')
         self.status_error = None
         self.list_files = list_files
-        self.markup_template = {
-            '[1, 2, 3]': '[1, 2, 3]',
-            '[01, 02, 03]': '[01, 02, 03]',
-            '[001, 002, 003]': '[001, 002, 003]',
-            '[original-name]': '[Original filename]'
-        }
+        # Settings
+        self.settings = settings.UserSettings()
+        self.markup_template = self.settings.get_markup_settings()
+        self.colors = self.settings.get_color_settings()
 
         # Window title
         title_obj = title.Title(self.list_files)
@@ -41,20 +41,20 @@ class MyWindow(Gtk.Window):
         # Preview
         self.main_box.pack_start(
             Gtk.Separator(
-                orientation=Gtk.Orientation.HORIZONTAL,
-                valign=Gtk.Align.START), True, True, 0)
+                orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.END), True, True, 0)
 
         self.preview = preview.Preview(
-            header=self.header, markup_template=self.markup_template, list_files=self.list_files)
+            header=self.header, colors=self.colors,
+            markup_template=self.markup_template, list_files=self.list_files)
         self.main_box.pack_start(self.preview, True, True, 0)
 
         # Base
         self.main_box.pack_start(
             Gtk.Separator(
-                orientation=Gtk.Orientation.HORIZONTAL,
-                valign=Gtk.Align.START), True, True, 0)
+                orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.START), True, True, 0)
 
-        self.base = base.Base(preview=self.preview, list_files=self.list_files)
+        self.base = base.Base(
+            preview=self.preview, colors=self.colors, list_files=self.list_files, transient=self)
         self.main_box.pack_start(self.base, True, True, 0)
 
         # Focus

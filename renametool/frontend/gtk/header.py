@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -12,7 +13,7 @@ class StackHeader(Gtk.VBox):
         """"""
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
-            width_request=550, margin=18, *args, **kwargs)
+            width_request=550, margin=18, margin_bottom=0, *args, **kwargs)
         self.markup_template = markup_template
         # Current page flag
         self.active_work_tab = 'rename'
@@ -92,7 +93,7 @@ class TabRename(Gtk.VBox):
         """"""
         # hig 18px: 12 + 6(spacing) = 18
         Gtk.VBox.__init__(
-            self, spacing=6, valign=Gtk.Align.START, margin_top=12, *args, **kwargs)
+            self, spacing=6, valign=Gtk.Align.START, *args, **kwargs)
         self.markup_template = markup_template
 
         self.text_box = Gtk.HBox()
@@ -189,7 +190,7 @@ class TabReplace(Gtk.HBox):
     """"""
     def __init__(self, *args, **kwargs):
         """"""
-        Gtk.HBox.__init__(self, spacing=6, margin_top=12, *args, **kwargs)
+        Gtk.HBox.__init__(self, spacing=6, *args, **kwargs)
         # Label box
         self.label_box = Gtk.VBox(spacing=6, margin_start=50)
         self.pack_start(self.label_box, False, True, 0)

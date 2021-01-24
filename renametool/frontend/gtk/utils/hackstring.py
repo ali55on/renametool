@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 class SameSizeString(object):
     def __init__(self, first_str: str, last_str: str):
         self.first_str = first_str
