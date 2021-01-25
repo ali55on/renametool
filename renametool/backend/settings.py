@@ -86,15 +86,19 @@ class UserSettings(object):
             json.dump(color_settings, fp)
 
     def get_markup_settings(self):
+        """"""
         return self.__markup_settings
 
     def get_color_settings(self):
+        """"""
         return self.__color_settings
 
     def set_markup_settings(self, settings: dict):
+        """"""
         self.__create_markup_settings(settings=settings)
 
     def set_color_settings(self, settings: dict):
+        """"""
         self.__create_color_settings(settings=settings)
 
 

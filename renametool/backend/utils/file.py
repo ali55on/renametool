@@ -26,7 +26,6 @@ class File(object):
         :param file_url: String in the format of a file URL-> "/home/user/foo.txt"
         :param use_extensions_list: List of file extensions-> [".txt", ".mkv", ".png"]
         """
-        print('BRANCH V.0.1..............')
         self.extensions_list = use_extensions_list
         self.__url = unquote(r'{}'.format(file_url.replace('file://', '')))
         self.__path = '{}{}'.format(os.path.dirname(self.__url), os.sep)

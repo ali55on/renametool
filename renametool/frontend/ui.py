@@ -15,10 +15,13 @@ list_files = list(file.File(x) for x in sys.argv)
 
 
 class GtkUi(object):
+    """"""
     def __init__(self):
+        """"""
         self.list_files = list_files
 
     def main(self):
+        """"""
         win = gtk_main.MyWindow(self.list_files)
         win.connect("destroy", Gtk.main_quit)
         win.show_all()
@@ -26,8 +29,11 @@ class GtkUi(object):
 
 
 class ChangeUi(object):
+    """"""
     def __init__(self):
+        """"""
         self.gtk_ui = GtkUi()
 
     def main(self):
+        """"""
         self.gtk_ui.main()
