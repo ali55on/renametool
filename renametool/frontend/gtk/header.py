@@ -9,17 +9,19 @@ import frontend.gtk.utils.hackstring as hack_string
 
 class StackHeader(Gtk.VBox):
     """"""
-    def __init__(self, markup_template, *args, **kwargs):
+    def __init__(self, markup_settings, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
             width_request=550, margin=18, margin_bottom=0, *args, **kwargs)
-        self.markup_template = markup_template
-        # Current page flag
+        # Args
+        self.markup_settings = markup_settings
+
+        # Flags
         self.active_work_tab = 'rename'
         self.changed_work_tab = True
 
-        # Hacking
+        # Hacking - same size strings
         hack_str = hack_string.SameSizeString(
             first_str='Rename using a template',
             last_str='Search and replace text')
@@ -28,10 +30,12 @@ class StackHeader(Gtk.VBox):
         self.stack = Gtk.Stack()
         self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
         self.stack.set_transition_duration(300)
-        # Set "rename" Stack-Page
-        self.tab_rename = TabRename(markup_template=self.markup_template)
+
+        # "Rename" Stack-Page
+        self.tab_rename = TabRename(markup_settings=self.markup_settings)
         self.stack.add_titled(self.tab_rename, 'rename', hack_str.get_first_str())
-        # Set "replace" Stack-Page
+
+        # "Replace" Stack-Page
         self.tab_replace = TabReplace()
         self.stack.add_titled(self.tab_replace, 'replace', hack_str.get_last_str())
 
@@ -39,6 +43,7 @@ class StackHeader(Gtk.VBox):
         self.stack_switcher = Gtk.StackSwitcher(halign=Gtk.Align.CENTER)
         self.stack_switcher.set_stack(self.stack)
         self.pack_start(self.stack_switcher, True, True, 0)
+
         # Set Stack-Pages on bottom
         self.pack_start(self.stack, True, True, 0)
 
@@ -89,24 +94,26 @@ class StackHeader(Gtk.VBox):
 
 class TabRename(Gtk.VBox):
     """"""
-    def __init__(self, markup_template, *args, **kwargs):
+    def __init__(self, markup_settings, *args, **kwargs):
         """"""
-        # hig 18px: 12 + 6(spacing) = 18
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, *args, **kwargs)
-        self.markup_template = markup_template
+        # Args
+        self.markup_settings = markup_settings
 
+        # Main box
         self.text_box = Gtk.HBox()
         self.pack_start(self.text_box, True, True, 0)
 
+        # Entry - new name
         self.entry = Gtk.Entry(
-            text=self.markup_template['[original-name]'], margin_start=50,
+            text=self.markup_settings['[original-name]'], margin_start=50,
             activates_default=True, editable=True)
         self.entry.connect('backspace', self.on_backspace_signal)
         self.text_box.pack_start(self.entry, True, True, 0)
 
+        # Entry button (+ Add)
         self.icon = Gtk.Image(icon_name='list-add-symbolic')
-
         self.button = Gtk.Button(
             image=self.icon, margin_end=50,
             always_show_image=True, label='Add', halign=Gtk.Align.END)
@@ -134,7 +141,7 @@ class TabRename(Gtk.VBox):
 
     def __on_menu(self, widget):
         PopoverMenu(
-            parent_widget=widget, interaction_widget=self.entry, markup_template=self.markup_template)
+            parent_widget=widget, interaction_widget=self.entry, markup_settings=self.markup_settings)
 
     # noinspection PyUnusedLocal
     def on_backspace_signal(self, widget):
@@ -145,7 +152,7 @@ class TabRename(Gtk.VBox):
         cursor_position = None
 
         # Delete template markup
-        for template in self.markup_template.values():
+        for template in self.markup_settings.values():
             for num in range(1, len(txt) + 1):
                 if txt[cursor - num: cursor] + txt[cursor:(cursor + len(template)) - num] == template:
                     # Quando o cursor é movido para a posição correta,
@@ -194,23 +201,26 @@ class TabReplace(Gtk.HBox):
         # Label box
         self.label_box = Gtk.VBox(spacing=6, margin_start=50)
         self.pack_start(self.label_box, False, True, 0)
+
         # Entry box
         self.entry_box = Gtk.VBox(spacing=6, margin_end=50)
         self.pack_start(self.entry_box, True, True, 0)
 
-        # Search
+        # Search Label
         self.search_label = Gtk.Label(label='Existing text', halign=Gtk.Align.END)
         self.search_label.set_sensitive(False)
         self.label_box.pack_start(self.search_label, True, True, 0)
 
+        # Search Entry
         self.search_entry = Gtk.Entry(activates_default=True)
         self.entry_box.pack_start(self.search_entry, True, True, 0)
 
-        # Replace
+        # Replace Label
         self.replace_label = Gtk.Label(label='Replace with', halign=Gtk.Align.END)
         self.replace_label.set_sensitive(False)
         self.label_box.pack_start(self.replace_label, True, True, 0)
 
+        # Replace Entry
         self.replace_entry = Gtk.Entry(activates_default=True)
         self.entry_box.pack_start(self.replace_entry, True, True, 0)
 
@@ -225,48 +235,50 @@ class TabReplace(Gtk.HBox):
 
 class PopoverMenu(Gtk.PopoverMenu):
     """"""
-    def __init__(self, parent_widget, interaction_widget, markup_template, *args, **kwargs):
+    def __init__(self, parent_widget, interaction_widget, markup_settings, *args, **kwargs):
         """"""
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
+        # Args
         self.parent_widget = parent_widget
         self.entry_widget = interaction_widget
-        self.markup_template = markup_template
+        self.markup_settings = markup_settings
 
-        # Container
+        # Main box
         self.vbox = Gtk.VBox(margin=12)
 
-        # Automatic numbers
+        # Automatic numbers title
         self.label_numbers_title = Gtk.Label(label='Automatic numbers')
         self.label_numbers_title.set_sensitive(False)
         self.vbox.pack_start(self.label_numbers_title, True, True, 0)
 
-        # Button 1
+        # Button - Automatic numbers 1, 2, 3
         self.button_1 = Gtk.ModelButton(
-            label=self.markup_template['[1, 2, 3]'][1:-1], halign=Gtk.Align.START)
+            label=self.markup_settings['[1, 2, 3]'][1:-1], halign=Gtk.Align.START)
         self.button_1.connect('clicked', self.on_button_1)
         self.vbox.pack_start(self.button_1, True, True, 0)
 
-        # Button 01
+        # Button - Automatic numbers 01, 02, 03
         self.button_01 = Gtk.ModelButton(
-            label=self.markup_template['[01, 02, 03]'][1:-1], halign=Gtk.Align.START)
+            label=self.markup_settings['[01, 02, 03]'][1:-1], halign=Gtk.Align.START)
         self.button_01.connect('clicked', self.on_button_01)
         self.vbox.pack_start(self.button_01, True, True, 0)
 
-        # Button 001
+        # Button - Automatic numbers 001, 002, 003
         self.button_001 = Gtk.ModelButton(
-            label=self.markup_template['[001, 002, 003]'][1:-1], halign=Gtk.Align.START)
+            label=self.markup_settings['[001, 002, 003]'][1:-1], halign=Gtk.Align.START)
         self.button_001.connect('clicked', self.on_button_001)
         self.vbox.pack_start(self.button_001, True, True, 0)
 
         # Separator
         self.vbox.pack_start(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL), True, True, 0)
 
-        # Button original-name
+        # Button - Original filename
         self.button_original_name = Gtk.ModelButton(
-            label=self.markup_template['[original-name]'][1:-1], halign=Gtk.Align.START)
+            label=self.markup_settings['[original-name]'][1:-1], halign=Gtk.Align.START)
         self.button_original_name.connect('clicked', self.on_button_original_name)
         self.vbox.pack_start(self.button_original_name, True, True, 0)
 
+        # Config PopoverMenu
         self.vbox.show_all()
         self.add(self.vbox)
         self.set_position(Gtk.PositionType.BOTTOM)
@@ -279,22 +291,22 @@ class PopoverMenu(Gtk.PopoverMenu):
     # noinspection PyUnusedLocal
     def on_button_1(self, widget):
         self.entry_widget.do_insert_at_cursor(
-            self.entry_widget, self.markup_template['[1, 2, 3]'])
+            self.entry_widget, self.markup_settings['[1, 2, 3]'])
 
     # noinspection PyUnusedLocal
     def on_button_01(self, widget):
         self.entry_widget.do_insert_at_cursor(
-            self.entry_widget, self.markup_template['[01, 02, 03]'])
+            self.entry_widget, self.markup_settings['[01, 02, 03]'])
 
     # noinspection PyUnusedLocal
     def on_button_001(self, widget):
         self.entry_widget.do_insert_at_cursor(
-            self.entry_widget, self.markup_template['[001, 002, 003]'])
+            self.entry_widget, self.markup_settings['[001, 002, 003]'])
 
     # noinspection PyUnusedLocal
     def on_button_original_name(self, widget):
         self.entry_widget.do_insert_at_cursor(
-            self.entry_widget, self.markup_template['[original-name]'])
+            self.entry_widget, self.markup_settings['[original-name]'])
 
     def __block_num_buttons(self, block: bool):
         buttons = [self.button_1, self.button_01, self.button_001]
@@ -311,9 +323,9 @@ class PopoverMenu(Gtk.PopoverMenu):
 
         # Numbers
         con = [
-            self.markup_template['[1, 2, 3]'] in text,
-            self.markup_template['[01, 02, 03]'] in text,
-            self.markup_template['[001, 002, 003]'] in text,
+            self.markup_settings['[1, 2, 3]'] in text,
+            self.markup_settings['[01, 02, 03]'] in text,
+            self.markup_settings['[001, 002, 003]'] in text,
         ]
         if any(con):
             self.__block_num_buttons(block=True)
@@ -321,7 +333,7 @@ class PopoverMenu(Gtk.PopoverMenu):
             self.__block_num_buttons(block=False)
 
         # Original name
-        if self.markup_template['[original-name]'] in text:
+        if self.markup_settings['[original-name]'] in text:
             self.button_original_name.set_sensitive(False)
         else:
             self.button_original_name.set_sensitive(True)

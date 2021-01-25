@@ -4,12 +4,18 @@ import os
 
 class Title(object):
     def __init__(self, file_list: list):
+        # Args
         self.__file_list = file_list
+
+        # Flags
         self.__have_dirs = False
         self.__have_files = False
+
+        # Title
         self.__title = self.__set_title()
 
     def get_title(self):
+        """"""
         return self.__title
 
     def __set_title(self):

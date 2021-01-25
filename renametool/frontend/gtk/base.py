@@ -15,19 +15,24 @@ class Base(Gtk.VBox):
     def __init__(self, preview, colors, list_files, transient, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
+        # Args
         self.preview = preview
         self.colors = colors
         self.list_files = list_files
-        self.can_rename = False
         self.transient = transient
 
-        # Warnings
+        # Flags
+        self.can_rename = False
+
+        # Warnings box
         self.warning_box = Gtk.HBox(homogeneous=True)
         self.pack_start(self.warning_box, True, True, 0)
 
+        # Warning - Warning
         self.label_warning = Gtk.Label(use_markup=True, ellipsize=3, halign=Gtk.Align.START)
         self.warning_box.pack_start(self.label_warning, True, True, 0)
 
+        # Warning - Error
         self.label_error = Gtk.Label(use_markup=True, ellipsize=3, halign=Gtk.Align.START)
         self.warning_box.pack_start(self.label_error, True, True, 0)
 
@@ -54,7 +59,7 @@ class Base(Gtk.VBox):
         self.pack_start(self.buttons_base_box, True, True, 0)
 
         # Preferences
-        self.icon = Gtk.Image(icon_name='preferences-system-symbolic')
+        self.icon = Gtk.Image(icon_name='preferences-other-symbolic')
         self.button_preferences = Gtk.Button(
             image=self.icon, always_show_image=True, halign=Gtk.Align.START)
         self.button_preferences.connect('clicked', self.on_preferences)

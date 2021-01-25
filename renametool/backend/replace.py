@@ -7,12 +7,15 @@ import backend.utils.file as file
 
 class Replace(object):
     def __init__(self, list_files: list, search_text: str, replace_text: str):
+        # Args
         self.__list_files = list_files
         self.__search_text = search_text
         self.__replace_text = replace_text
 
+        # Flags
         self.__error_found = None
 
+        # Sett
         self.__rename_file_in_the_list()
 
     def get_error_found(self):
@@ -23,16 +26,9 @@ class Replace(object):
 
     def __rename_file_in_the_list(self):
         all_names = list()
-        errors_found = {
-            'repeated-name-error': False,
-            'character-error': False,
-            'name-not-allowed-error': False,
-            'existing-name-error': False,
-            'length-error': False,
-            'hidden-file-error': False
-        }
+        errors_found = dict()
         for item_file in self.__list_files:
-            # item_file.set_note(None)
+            item_file.set_note(None)
             path = item_file.get_path()
             extension = item_file.get_extension()
 
