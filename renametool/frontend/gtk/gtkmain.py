@@ -25,7 +25,7 @@ class MyWindow(Gtk.Window):
         # Settings
         self.settings = settings.UserSettings()
         self.markup_settings = self.settings.get_markup_settings()
-        self.colors = self.settings.get_color_settings()
+        self.color_settings = self.settings.get_color_settings()
 
         # Flags
         self.status_error = None
@@ -47,7 +47,7 @@ class MyWindow(Gtk.Window):
         self.main_box.pack_start(sep_up, True, True, 0)
 
         self.preview = preview.Preview(
-            header=self.header, colors=self.colors, markup_settings=self.markup_settings,
+            header=self.header, color_settings=self.color_settings, markup_settings=self.markup_settings,
             list_files=self.list_files)
         self.main_box.pack_start(self.preview, True, True, 0)
 
@@ -56,7 +56,7 @@ class MyWindow(Gtk.Window):
         self.main_box.pack_start(sep_dw, True, True, 0)
 
         self.base = base.Base(
-            preview=self.preview, colors=self.colors, list_files=self.list_files,
+            preview=self.preview, color_settings=self.color_settings, list_files=self.list_files,
             transient=self)
         self.main_box.pack_start(self.base, True, True, 0)
 

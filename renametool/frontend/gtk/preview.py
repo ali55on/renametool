@@ -12,12 +12,12 @@ import backend.replace as replace
 
 class Preview(Gtk.VBox):
     """"""
-    def __init__(self, header, colors, markup_settings, list_files, *args, **kwargs):
+    def __init__(self, header, color_settings, markup_settings, list_files, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(self, *args, **kwargs)
         # Args
         self.header = header
-        self.colors = colors
+        self.color_settings = color_settings
         self.list_files = list_files
         self.markup_settings = markup_settings
         self.status_error = None
@@ -137,13 +137,13 @@ class Preview(Gtk.VBox):
             note = i.get_note()
             # Error
             if note and note != 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(self.colors['error-color'])
+                prefix = '   <span color="{}">→</span> '.format(self.color_settings['error-color'])
                 list_store.append(
                     [i.get_original_name() + i.get_extension() + '   ',
                      prefix + i.get_name() + i.get_extension()])
             # Warning
             elif note and note == 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(self.colors['warning-color'])
+                prefix = '   <span color="{}">→</span> '.format(self.color_settings['warning-color'])
                 list_store.append(
                     [i.get_original_name() + i.get_extension() + '   ',
                      prefix + i.get_name() + i.get_extension()])
@@ -176,8 +176,8 @@ class Preview(Gtk.VBox):
             self.status_error = None
 
         # Config ListStore
-        old_color = '<span background="{}">'.format(self.colors['old-matching-color'])
-        new_color = '<span background="{}">'.format(self.colors['new-matching-color'])
+        old_color = '<span background="{}">'.format(self.color_settings['old-matching-color'])
+        new_color = '<span background="{}">'.format(self.color_settings['new-matching-color'])
         end_color = '</span>'
         for file in self.list_files:
             note = file.get_note()
@@ -185,13 +185,13 @@ class Preview(Gtk.VBox):
             new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)
             # Error
             if note and note != 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(self.colors['error-color'])
+                prefix = '   <span color="{}">→</span> '.format(self.color_settings['error-color'])
                 list_store.append(
                     [old + file.get_extension() + '   ',
                      prefix + new + file.get_extension()])
             # Warning
             elif note and note == 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(self.colors['warning-color'])
+                prefix = '   <span color="{}">→</span> '.format(self.color_settings['warning-color'])
                 list_store.append(
                     [old + file.get_extension() + '   ',
                      prefix + new + file.get_extension()])

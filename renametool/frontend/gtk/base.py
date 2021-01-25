@@ -12,12 +12,12 @@ import frontend.gtk.preferences as preferences
 
 
 class Base(Gtk.VBox):
-    def __init__(self, preview, colors, list_files, transient, *args, **kwargs):
+    def __init__(self, preview, color_settings, list_files, transient, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
-        self.colors = colors
+        self.color_settings = color_settings
         self.list_files = list_files
         self.transient = transient
 
@@ -132,7 +132,7 @@ class Base(Gtk.VBox):
 
         if status_error:
             if status_error != 'hidden-file-error':
-                prefix = '<span color="{}">→</span>  '.format(self.colors['error-color'])
+                prefix = '<span color="{}">→</span>  '.format(self.color_settings['error-color'])
                 self.label_error.set_markup(
                     prefix + self.message[status_error])
                 self.can_rename = False
@@ -145,7 +145,7 @@ class Base(Gtk.VBox):
                 if sensitive:
                     self.button_rename.set_sensitive(False)
             elif status_error == 'hidden-file-error':
-                prefix = '<span color="{}">→</span>  '.format(self.colors['warning-color'])
+                prefix = '<span color="{}">→</span>  '.format(self.color_settings['warning-color'])
                 self.label_warning.set_markup(
                     prefix + self.message[status_error])
                 self.can_rename = True

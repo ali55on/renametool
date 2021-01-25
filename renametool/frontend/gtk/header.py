@@ -92,6 +92,7 @@ class StackHeader(Gtk.VBox):
         self.changed_work_tab = True
 
 
+# noinspection SpellCheckingInspection
 class TabRename(Gtk.VBox):
     """"""
     def __init__(self, markup_settings, *args, **kwargs):
@@ -110,6 +111,7 @@ class TabRename(Gtk.VBox):
             text=self.markup_settings['[original-name]'], margin_start=50,
             activates_default=True, editable=True)
         self.entry.connect('backspace', self.on_backspace_signal)
+        self.entry.connect("key-press-event", self.on_key_press_event)
         self.text_box.pack_start(self.entry, True, True, 0)
 
         # Entry button (+ Add)
@@ -187,6 +189,13 @@ class TabRename(Gtk.VBox):
             self.entry.set_text(new_txt)
             self.entry.do_move_cursor(
                 self.entry, Gtk.MovementStep.LOGICAL_POSITIONS, cursor_position, False)
+
+    # noinspection PyUnusedLocal
+    def on_key_press_event(self, widget, event):
+        # key = Gdk.keyval_name(event.keyval)
+        # entry_text = self.entry.get_text()
+        # cursor_position = self.entry.get_position()
+        pass
 
     def get_rename_text(self):
         """"""
