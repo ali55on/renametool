@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
+import threading
+import time
+
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GLib
 
 import frontend.gtk.utils.hackstring as hack_string
 
@@ -161,7 +165,7 @@ class TabRename(Gtk.VBox):
                     # ele (Gtk) "come" um caractere (*), por isso o novo
                     # texto recebe um caractere que será deletado quando o
                     # cursor voltar a posição esperada.
-                    new_txt = txt.replace(template, '*')
+                    new_txt = txt.replace(template, ' ')
                     can_delete_template = True
                     break
 
@@ -192,10 +196,32 @@ class TabRename(Gtk.VBox):
 
     # noinspection PyUnusedLocal
     def on_key_press_event(self, widget, event):
-        # key = Gdk.keyval_name(event.keyval)
-        # entry_text = self.entry.get_text()
-        # cursor_position = self.entry.get_position()
-        pass
+        entry_text = self.entry.get_text()
+        cursor = self.entry.get_position()
+        key = Gdk.keyval_name(event.keyval)
+        keys = ['BackSpace', 'Right', 'Left', 'Up', 'Down', 'Control_R', 'Control_L',
+                'Shift_R', 'Shift_L', 'Caps_Lock', 'Tab', 'Alt_L', 'ISO_Level3_Shift']
+
+        template_found = None
+        if key not in keys:
+            for template in self.markup_settings.values():
+                for num in range(1, len(entry_text) + 1):
+                    if entry_text[cursor - num: cursor] + entry_text[cursor:(cursor + len(template)) - num] == template:
+                        template_found = template
+                        break
+
+            # Preview threading
+            thread = threading.Thread(target=self.on_key_press_event_threading, args=[template_found])
+            thread.daemon = True
+            thread.start()
+
+    def on_key_press_event_threading(self, template_found):
+        time.sleep(0.01)
+        if template_found and template_found not in self.entry.get_text():
+            GLib.idle_add(self.on_key_press_event_threading_glib)
+
+    def on_key_press_event_threading_glib(self):
+        self.entry.do_delete_from_cursor(self.entry, 0, -1)
 
     def get_rename_text(self):
         """"""
