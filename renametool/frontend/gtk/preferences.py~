@@ -18,4 +18,3 @@ class PreferencesBox(Gtk.VBox):
         """"""
         Gtk.VBox.__init__(self, margin=18, *args, **kwargs)
         self.pack_start(Gtk.Label(label='Preferences'), True, True, 0)
-
