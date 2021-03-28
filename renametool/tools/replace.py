@@ -2,7 +2,7 @@
 import os
 import re
 
-import backend.utils.file as file
+import tools.utils.file as file
 
 
 class Replace(object):

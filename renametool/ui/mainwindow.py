@@ -6,15 +6,15 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-import backend.title as title
-import backend.utils.file as file
-import backend.settings as settings
-import frontend.gtk.header as header
-import frontend.gtk.preview as preview
-import frontend.gtk.base as base
+import tools.title as title
+import tools.utils.file as file
+import tools.settings as settings
+import ui.header as header
+import ui.preview as preview
+import ui.base as base
 
 
-class MyWindow(Gtk.Window):
+class RenameToolWindow(Gtk.Window):
     def __init__(self, list_files: list = list):
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     ls = os.listdir(os.path.dirname(os.path.abspath(__file__)))
     l_files = list(file.File(x) for x in sys.argv)
 
-    win = MyWindow(l_files)
+    win = RenameToolWindow(l_files)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()

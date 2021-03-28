@@ -7,7 +7,7 @@ from gi.repository import Gtk
 class PreferencesWindow(Gtk.Window):
     def __init__(self, *args, **kwargs):
         Gtk.Window.__init__(
-            self, icon_name='preferences-system-symbolic',
+            self, icon_name='preferences-system-symbolic', modal=True,
             type_hint=1, title='Rename Tool - Preferences', *args, **kwargs)
         self.main_box = PreferencesBox()
         self.add(self.main_box)
@@ -18,3 +18,4 @@ class PreferencesBox(Gtk.VBox):
         """"""
         Gtk.VBox.__init__(self, margin=18, *args, **kwargs)
         self.pack_start(Gtk.Label(label='Preferences'), True, True, 0)
+

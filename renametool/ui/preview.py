@@ -6,8 +6,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import GLib
 
-import backend.rename as rename
-import backend.replace as replace
+import tools.rename as rename
+import tools.replace as replace
 
 
 class Preview(Gtk.VBox):

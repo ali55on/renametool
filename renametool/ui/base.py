@@ -8,7 +8,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib
 
-import frontend.gtk.preferences as preferences
+import ui.preferences as preferences
 
 
 class Base(Gtk.VBox):

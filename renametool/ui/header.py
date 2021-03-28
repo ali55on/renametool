@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+import threading
+import time
+
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
-
-import frontend.gtk.utils.hackstring as hack_string
+from gi.repository import GLib
 
 
 class StackHeader(Gtk.VBox):
@@ -21,11 +23,6 @@ class StackHeader(Gtk.VBox):
         self.active_work_tab = 'rename'
         self.changed_work_tab = True
 
-        # Hacking - same size strings
-        hack_str = hack_string.SameSizeString(
-            first_str='Rename using a template',
-            last_str='Search and replace text')
-
         # Create Stack
         self.stack = Gtk.Stack()
         self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
@@ -33,34 +30,28 @@ class StackHeader(Gtk.VBox):
 
         # "Rename" Stack-Page
         self.tab_rename = TabRename(markup_settings=self.markup_settings)
-        self.stack.add_titled(self.tab_rename, 'rename', hack_str.get_first_str())
+        self.stack.add_titled(self.tab_rename, 'rename', 'Rename using a template')
 
         # "Replace" Stack-Page
         self.tab_replace = TabReplace()
-        self.stack.add_titled(self.tab_replace, 'replace', hack_str.get_last_str())
+        self.stack.add_titled(self.tab_replace, 'replace', 'Search and replace text')
 
-        # Create Stack-Switcher on top
-        self.stack_switcher = Gtk.StackSwitcher(halign=Gtk.Align.CENTER)
-        self.stack_switcher.set_stack(self.stack)
-        self.pack_start(self.stack_switcher, True, True, 0)
+        # Set Switch Button on top
+        self.box_switch = Gtk.HBox(
+            margin_start=50, margin_end=50, spacing=6, halign=Gtk.Align.START)
+        self.pack_start(self.box_switch, True, True, 0)
+
+        self.switch = Gtk.Switch()
+        self.switch.connect('notify::active', self.on_switch_activated)
+        self.switch.set_active(False)
+        self.box_switch.pack_start(self.switch, True, True, 0)
+
+        self.label_switch = Gtk.Label(label='Search and replace text')
+        self.box_switch.pack_start(self.label_switch, True, True, 0)
 
         # Set Stack-Pages on bottom
         self.pack_start(self.stack, True, True, 0)
 
-        # Set current page
-        self.stack_switcher.connect('button-release-event', self.__set_page)
-
-        # Style
-        self.stack_switcher.set_name('stack-switcher')
-        css = b"""
-            #stack-switcher{
-                font-family: Ubuntu Mono;
-            }
-            """
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data(css)
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def get_active_work_tab(self):
         """"""
@@ -86,11 +77,15 @@ class StackHeader(Gtk.VBox):
         """"""
         return self.tab_replace.get_replace_text()
 
-    # noinspection PyUnusedLocal
-    def __set_page(self, widget, data):
-        self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
+    def on_switch_activated(self, widget, gparam):
+        # self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
+        if self.active_work_tab == 'rename':
+            self.stack.set_visible_child(self.tab_replace)
+            self.active_work_tab = 'replace'
+        else:
+            self.stack.set_visible_child(self.tab_rename)
+            self.active_work_tab = 'rename'
         self.changed_work_tab = True
-
 
 # noinspection SpellCheckingInspection
 class TabRename(Gtk.VBox):
@@ -161,7 +156,7 @@ class TabRename(Gtk.VBox):
                     # ele (Gtk) "come" um caractere (*), por isso o novo
                     # texto recebe um caractere que será deletado quando o
                     # cursor voltar a posição esperada.
-                    new_txt = txt.replace(template, '*')
+                    new_txt = txt.replace(template, ' ')
                     can_delete_template = True
                     break
 
@@ -192,10 +187,32 @@ class TabRename(Gtk.VBox):
 
     # noinspection PyUnusedLocal
     def on_key_press_event(self, widget, event):
-        # key = Gdk.keyval_name(event.keyval)
-        # entry_text = self.entry.get_text()
-        # cursor_position = self.entry.get_position()
-        pass
+        entry_text = self.entry.get_text()
+        cursor = self.entry.get_position()
+        key = Gdk.keyval_name(event.keyval)
+        keys = ['BackSpace', 'Right', 'Left', 'Up', 'Down', 'Control_R', 'Control_L',
+                'Shift_R', 'Shift_L', 'Caps_Lock', 'Tab', 'Alt_L', 'ISO_Level3_Shift']
+
+        template_found = None
+        if key not in keys:
+            for template in self.markup_settings.values():
+                for num in range(1, len(entry_text) + 1):
+                    if entry_text[cursor - num: cursor] + entry_text[cursor:(cursor + len(template)) - num] == template:
+                        template_found = template
+                        break
+
+            # Preview threading
+            thread = threading.Thread(target=self.on_key_press_event_threading, args=[template_found])
+            thread.daemon = True
+            thread.start()
+
+    def on_key_press_event_threading(self, template_found):
+        time.sleep(0.01)
+        if template_found and template_found not in self.entry.get_text():
+            GLib.idle_add(self.on_key_press_event_threading_glib)
+
+    def on_key_press_event_threading_glib(self):
+        self.entry.do_delete_from_cursor(self.entry, 0, -1)
 
     def get_rename_text(self):
         """"""
