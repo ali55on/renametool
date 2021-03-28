@@ -6,12 +6,12 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-import backend.title as title
-import backend.utils.file as file
-import backend.settings as settings
-import frontend.gtk.header as header
-import frontend.gtk.preview as preview
-import frontend.gtk.base as base
+import tools.title as title
+import tools.utils.file as file
+import tools.settings as settings
+import ui.header as header
+import ui.preview as preview
+import ui.base as base
 
 
 class MyWindow(Gtk.Window):

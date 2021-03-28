@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-import sys
 import os
+import sys
 
-path = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, path)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import frontend.ui
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
+import ui.gtkmain as gtk_main
+import tools.utils.file as file
 
 
-ui = frontend.ui.ChangeUi()
-ui.main()
+del(sys.argv[0])
+list_files = list(file.File(x) for x in sys.argv)
+
+
+if __name__ == '__main__':
+    win = gtk_main.MyWindow(list_files)
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    Gtk.main()
