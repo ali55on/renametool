@@ -9,11 +9,20 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 import ui.mainwindow as main_window
+import ui.emptystartwindow as empty_start_window
 import tools.utils.file as file
 
 
 del(sys.argv[0])
-list_files = list(file.File(x) for x in sys.argv)
+if sys.argv:
+    list_files = list(file.File(x) for x in sys.argv)
+else:
+    files = empty_start_window.EmptyWindow().get_file_list()
+    print(files)
+    if files:
+        list_files = list(file.File(x) for x in files)
+    else:
+        exit(1)
 
 
 if __name__ == '__main__':

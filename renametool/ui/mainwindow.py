@@ -19,6 +19,7 @@ class RenameToolWindow(Gtk.Window):
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
             icon_name='document-edit-symbolic')
+        
         # Args
         self.list_files = list_files
 
