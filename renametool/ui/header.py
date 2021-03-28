@@ -42,7 +42,7 @@ class StackHeader(Gtk.VBox):
         self.pack_start(self.box_switch, True, True, 0)
 
         self.switch = Gtk.Switch()
-        self.switch.connect("notify::active", self.on_switch_activated)
+        self.switch.connect('notify::active', self.on_switch_activated)
         self.switch.set_active(False)
         self.box_switch.pack_start(self.switch, True, True, 0)
 

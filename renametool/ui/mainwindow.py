@@ -14,7 +14,7 @@ import ui.preview as preview
 import ui.base as base
 
 
-class MyWindow(Gtk.Window):
+class RenameToolWindow(Gtk.Window):
     def __init__(self, list_files: list = list):
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     ls = os.listdir(os.path.dirname(os.path.abspath(__file__)))
     l_files = list(file.File(x) for x in sys.argv)
 
-    win = MyWindow(l_files)
+    win = RenameToolWindow(l_files)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()
