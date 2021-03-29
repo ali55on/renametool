@@ -22,6 +22,9 @@ class Preview(Gtk.VBox):
         self.markup_settings = markup_settings
         self.status_error = None
 
+        # Flag
+        self.preview_daemon = False
+
         # Scrolled Window
         self.scrolled_window = Gtk.ScrolledWindow(
             propagate_natural_height=True, propagate_natural_width=True)
@@ -54,10 +57,20 @@ class Preview(Gtk.VBox):
         self.prev_replace_text = self.header.get_replace_text()
         self.is_the_first_preview_loop = True
 
+        if self.list_files:
+            self.preview_daemon = True
+            self.__init_daemon_for_preview()
+
+    def __init_daemon_for_preview(self):
         # Preview threading
         thread = threading.Thread(target=self.preview_threading)
         thread.daemon = True
         thread.start()
+
+    def set_list_files(self, list_files):
+        self.list_files = list_files
+        if not self.preview_daemon:
+            self.__init_daemon_for_preview()
 
     def preview_threading(self):
         GLib.idle_add(self.preview_threading_glib)

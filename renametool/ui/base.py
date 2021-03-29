@@ -107,6 +107,9 @@ class Base(Gtk.VBox):
         thread.daemon = True
         thread.start()
 
+    def set_list_files(self, list_files):
+        self.list_files = list_files
+
     # noinspection PyUnusedLocal,PyMethodMayBeStatic
     def on_preferences(self, widget):
         preferences_win = preferences.PreferencesWindow(transient_for=self.transient)

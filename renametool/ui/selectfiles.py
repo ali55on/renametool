@@ -3,6 +3,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
+import tools.utils.file as file
+
 
 class SelectFiles(Gtk.VBox):
     """docstring for EmptyStartWindow"""
@@ -40,8 +42,8 @@ class SelectFiles(Gtk.VBox):
         response = dialog.run()
         
         if response != Gtk.ResponseType.CANCEL:
-            self.file_list = dialog.get_uris()
-            # self.set_visible(False)
+            self.file_list = list(file.File(x) for x in dialog.get_uris())
+            # self.file_list = dialog.get_uris()
 
         dialog.destroy()
 

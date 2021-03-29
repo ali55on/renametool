@@ -105,11 +105,11 @@ class RenameToolWindow(Gtk.Window):
 
     def preview_threading_glib(self):
         self.list_files = self.select_area.get_file_list()
-        print(self.list_files )
         if self.list_files:
             self.files_preview = True
             self.stack.set_visible_child(self.preview)
-            # self.preview.set_list()
+            self.preview.set_list_files(self.list_files)
+            self.base.set_list_files(self.list_files)
 
 
 if __name__ == '__main__':
