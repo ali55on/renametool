@@ -68,8 +68,6 @@ class RenameToolWindow(Gtk.Window):
 
         # Set stack
         # self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
-        # self.stack.set_visible_child(self.preview)
-        # self.stack.set_visible_child(self.select_area)
         if self.list_files:
             self.stack.add_titled(self.preview, 'preview', 'preview')
             self.stack.add_titled(self.select_area, 'select', 'select')
@@ -96,14 +94,14 @@ class RenameToolWindow(Gtk.Window):
         self.activate_default()
         self.set_default(self.base.button_rename)
 
-        self.preview_threading()
+        self.preview_daemon()
 
-    def preview_threading(self):
+    def preview_daemon(self):
         if not self.files_preview:
-            GLib.idle_add(self.preview_threading_glib)
-        GLib.timeout_add(300, self.preview_threading)
+            GLib.idle_add(self.preview_daemon_glib)
+        GLib.timeout_add(300, self.preview_daemon)
 
-    def preview_threading_glib(self):
+    def preview_daemon_glib(self):
         self.list_files = self.select_area.get_file_list()
         if self.list_files:
             self.files_preview = True

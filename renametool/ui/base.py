@@ -58,7 +58,7 @@ class Base(Gtk.VBox):
         self.buttons_base_box = Gtk.HBox(homogeneous=True)
         self.pack_start(self.buttons_base_box, True, True, 0)
 
-        # Preferences and redo
+        # Preferences
         self.buttons_incon_box = Gtk.HBox(spacing=6, homogeneous=True, halign=Gtk.Align.START)
         self.buttons_base_box.pack_start(self.buttons_incon_box, True, True, 0)
 
@@ -67,12 +67,6 @@ class Base(Gtk.VBox):
             image=self.icon_preferences, always_show_image=True, tooltip_text='Preferences')
         self.button_preferences.connect('clicked', self.on_preferences)
         self.buttons_incon_box.pack_start(self.button_preferences, True, True, 0)
-
-        self.icon_redo = Gtk.Image(icon_name='edit-redo-symbolic')
-        self.button_redo = Gtk.Button(
-            image=self.icon_redo, always_show_image=True, tooltip_text='Redo file selection')
-        self.button_redo.connect('clicked', self.on_redo)
-        self.buttons_incon_box.pack_start(self.button_redo, True, True, 0)
 
         # Cancel and rename
         self.buttons_box = Gtk.HBox(spacing=6, homogeneous=True)
@@ -114,9 +108,6 @@ class Base(Gtk.VBox):
     def on_preferences(self, widget):
         preferences_win = preferences.PreferencesWindow(transient_for=self.transient)
         preferences_win.show_all()
-
-    def on_redo(self, widget):
-        print('redo')
 
     # noinspection PyUnusedLocal
     def on_rename(self, widget):
@@ -173,9 +164,13 @@ class Base(Gtk.VBox):
                 if not sensitive:
                     self.button_rename.set_sensitive(True)
         else:
-            self.can_rename = True
-            if not sensitive:
-                self.button_rename.set_sensitive(True)
+            if not self.list_files:
+                self.button_rename.set_sensitive(False)
+                self.can_rename = False
+            else:
+                self.can_rename = True
+                if not sensitive:
+                    self.button_rename.set_sensitive(True)
             if visible_war:
                 self.label_warning.set_visible(False)
             if visible_err:
