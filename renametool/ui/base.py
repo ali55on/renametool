@@ -12,13 +12,13 @@ import ui.preferences as preferences
 
 
 class Base(Gtk.VBox):
-    def __init__(self, preview, color_settings, list_files, transient, *args, **kwargs):
+    def __init__(self, preview, color_settings, file_list, transient, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
         self.color_settings = color_settings
-        self.list_files = list_files
+        self.file_list = file_list
         self.transient = transient
 
         # Flags
@@ -101,8 +101,8 @@ class Base(Gtk.VBox):
         thread.daemon = True
         thread.start()
 
-    def set_list_files(self, list_files):
-        self.list_files = list_files
+    def set_file_list(self, file_list):
+        self.file_list = file_list
 
     # noinspection PyUnusedLocal,PyMethodMayBeStatic
     def on_preferences(self, widget):
@@ -112,7 +112,7 @@ class Base(Gtk.VBox):
     # noinspection PyUnusedLocal
     def on_rename(self, widget):
         if self.can_rename:
-            for file in self.list_files:
+            for file in self.file_list:
                 path = file.get_path()
                 ext = file.get_extension()
                 old_name = path + file.get_original_name() + ext
@@ -121,10 +121,12 @@ class Base(Gtk.VBox):
                 if new_name != old_name:
                     os.rename(old_name, new_name)
             Gtk.main_quit()
+            exit(0)
 
     # noinspection PyUnusedLocal,PyMethodMayBeStatic
     def on_cancel(self, widget):
         Gtk.main_quit()
+        exit(1)
 
     def status_error_threading(self):
         GLib.idle_add(self.status_error_threading_glib)
@@ -164,7 +166,7 @@ class Base(Gtk.VBox):
                 if not sensitive:
                     self.button_rename.set_sensitive(True)
         else:
-            if not self.list_files:
+            if not self.file_list:
                 self.button_rename.set_sensitive(False)
                 self.can_rename = False
             else:

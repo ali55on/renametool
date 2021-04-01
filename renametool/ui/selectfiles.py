@@ -8,11 +8,11 @@ import tools.utils.file as file
 
 class SelectFiles(Gtk.VBox):
     """docstring for EmptyStartWindow"""
-    def __init__(self, list_files):
-        Gtk.VBox.__init__(self, height_request=300)
+    def __init__(self, file_list, *args, **kwargs):
+        Gtk.VBox.__init__(self, height_request=300, *args, **kwargs)
 
         # Flag
-        self.file_list = list_files
+        self.file_list = file_list
         self.can_update_list = False
 
         # Choose Files Box
@@ -23,7 +23,7 @@ class SelectFiles(Gtk.VBox):
         self.label_choose_files = Gtk.Label(label='Choose files to rename')
         self.box_choose_files.pack_start(self.label_choose_files, True, True, 0)
 
-        # Choose Files Button
+        # Choose Files Button # FileChooserButton
         self.icon_open = Gtk.Image(icon_name='folder-open-symbolic')
         self.button_choose_files = Gtk.Button(image=self.icon_open, always_show_image=True)
         self.button_choose_files.connect('clicked', self.__on_select_files)
@@ -43,7 +43,6 @@ class SelectFiles(Gtk.VBox):
         
         if response != Gtk.ResponseType.CANCEL:
             self.file_list = list(file.File(x) for x in dialog.get_uris())
-            # self.file_list = dialog.get_uris()
 
         dialog.destroy()
 

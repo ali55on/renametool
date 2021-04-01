@@ -12,13 +12,13 @@ import tools.replace as replace
 
 class Preview(Gtk.VBox):
     """"""
-    def __init__(self, header, color_settings, markup_settings, list_files, *args, **kwargs):
+    def __init__(self, header, color_settings, markup_settings, file_list, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(self, *args, **kwargs)
         # Args
         self.header = header
         self.color_settings = color_settings
-        self.list_files = list_files
+        self.file_list = file_list
         self.markup_settings = markup_settings
         self.status_error = None
 
@@ -57,7 +57,7 @@ class Preview(Gtk.VBox):
         self.prev_replace_text = self.header.get_replace_text()
         self.is_the_first_preview_loop = True
 
-        if self.list_files:
+        if self.file_list:
             self.preview_daemon = True
             self.__init_daemon_for_preview()
 
@@ -67,8 +67,8 @@ class Preview(Gtk.VBox):
         thread.daemon = True
         thread.start()
 
-    def set_list_files(self, list_files):
-        self.list_files = list_files
+    def set_file_list(self, file_list):
+        self.file_list = file_list
         if not self.preview_daemon:
             self.__init_daemon_for_preview()
 
@@ -135,7 +135,7 @@ class Preview(Gtk.VBox):
         # Rename files
         rename_status = rename.Rename(
             markup_settings=self.markup_settings,
-            list_files=self.list_files, new_name=rename_text)
+            file_list=self.file_list, new_name=rename_text)
         error_found = rename_status.get_error_found()
 
         # Check errors
@@ -146,7 +146,7 @@ class Preview(Gtk.VBox):
             self.status_error = None
 
         # Config ListStore
-        for i in self.list_files:
+        for i in self.file_list:
             note = i.get_note()
             # Error
             if note and note != 'hidden-file-error' and note == error_found:
@@ -178,7 +178,7 @@ class Preview(Gtk.VBox):
 
         # Rename/Replace files
         replace_status = replace.Replace(
-            list_files=self.list_files, search_text=search_text, replace_text=replace_text)
+            file_list=self.file_list, search_text=search_text, replace_text=replace_text)
         error_found = replace_status.get_error_found()
 
         # Check errors
@@ -192,7 +192,7 @@ class Preview(Gtk.VBox):
         old_color = '<span background="{}">'.format(self.color_settings['old-matching-color'])
         new_color = '<span background="{}">'.format(self.color_settings['new-matching-color'])
         end_color = '</span>'
-        for file in self.list_files:
+        for file in self.file_list:
             note = file.get_note()
             old = file.get_original_name().replace(search_text, old_color + search_text + end_color)
             new = file.get_original_name().replace(search_text, new_color + replace_text + end_color)

@@ -17,13 +17,13 @@ import ui.base as base
 
 
 class RenameToolWindow(Gtk.Window):
-    def __init__(self, list_files: list = list):
+    def __init__(self, file_list: list = list, *args, **kwargs):
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
-            icon_name='document-edit-symbolic')
+            icon_name='document-edit-symbolic', *args, **kwargs)
         
         # Args
-        self.list_files = list_files
+        self.file_list = file_list
 
         # Settings
         self.settings = settings.UserSettings()
@@ -35,8 +35,8 @@ class RenameToolWindow(Gtk.Window):
         self.files_preview = False
 
         # Window title
-        if self.list_files:
-            title_obj = title.Title(self.list_files)
+        if self.file_list:
+            title_obj = title.Title(self.file_list)
             self.set_title(title_obj.get_title())
         else:
             self.set_title('Rename Tool')
@@ -61,14 +61,14 @@ class RenameToolWindow(Gtk.Window):
         self.preview = preview.Preview(
             header=self.header, color_settings=self.color_settings,
             markup_settings=self.markup_settings,
-            list_files=self.list_files)
+            file_list=self.file_list)
 
         # Select
-        self.select_area = select_files.SelectFiles(list_files=self.list_files)
+        self.select_area = select_files.SelectFiles(file_list=self.file_list)
 
         # Set stack
         # self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
-        if self.list_files:
+        if self.file_list:
             self.stack.add_titled(self.preview, 'preview', 'preview')
             self.stack.add_titled(self.select_area, 'select', 'select')
         else:
@@ -82,7 +82,7 @@ class RenameToolWindow(Gtk.Window):
         self.main_box.pack_start(sep_dw, True, True, 0)
 
         self.base = base.Base(
-            preview=self.preview, color_settings=self.color_settings, list_files=self.list_files,
+            preview=self.preview, color_settings=self.color_settings, file_list=self.file_list,
             transient=self)
         self.main_box.pack_start(self.base, True, True, 0)
 
@@ -102,12 +102,12 @@ class RenameToolWindow(Gtk.Window):
         GLib.timeout_add(300, self.preview_daemon)
 
     def preview_daemon_glib(self):
-        self.list_files = self.select_area.get_file_list()
-        if self.list_files:
+        self.file_list = self.select_area.get_file_list()
+        if self.file_list:
             self.files_preview = True
             self.stack.set_visible_child(self.preview)
-            self.preview.set_list_files(self.list_files)
-            self.base.set_list_files(self.list_files)
+            self.preview.set_file_list(self.file_list)
+            self.base.set_file_list(self.file_list)
 
 
 if __name__ == '__main__':

@@ -5,9 +5,9 @@ import tools.utils.file as file
 
 
 class Rename(object):
-    def __init__(self, markup_settings, list_files: list, new_name: str):
+    def __init__(self, markup_settings, file_list: list, new_name: str):
         # Args
-        self.__list_files = list_files
+        self.__file_list = file_list
         self.markup_settings = markup_settings
         self.__new_name = new_name
 
@@ -26,7 +26,7 @@ class Rename(object):
         # Renomear arquivos
         all_names = list()
         errors_found = dict()
-        for item_file, item_markup_num in zip(self.__list_files, list_markup_nums):
+        for item_file, item_markup_num in zip(self.__file_list, list_markup_nums):
             item_file.set_note(None)
             new_name = self.__new_name.replace(self.markup_settings['[1, 2, 3]'], item_markup_num)
             new_name = new_name.replace(self.markup_settings['[01, 02, 03]'], item_markup_num)
@@ -84,7 +84,7 @@ class Rename(object):
                 break
 
     def __generate_markup_numbers(self):
-        num_items = len(self.__list_files) + 1
+        num_items = len(self.__file_list) + 1
         if self.markup_settings['[1, 2, 3]'] in self.__new_name:
             nums = list(str(x) for x in range(1, num_items))
         elif self.markup_settings['[01, 02, 03]'] in self.__new_name:
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     }
     rename_status = Rename(
         markup_settings=markup_template,
-        list_files=l_files, new_name='.Gambá [original-name] [1, 2, 3]')
+        file_list=l_files, new_name='.Gambá [original-name] [1, 2, 3]')
 
     if rename_status.get_error_found():
         print('ERROR:', rename_status.get_error_found())

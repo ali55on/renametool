@@ -6,9 +6,9 @@ import tools.utils.file as file
 
 
 class Replace(object):
-    def __init__(self, list_files: list, search_text: str, replace_text: str):
+    def __init__(self, file_list: list, search_text: str, replace_text: str):
         # Args
-        self.__list_files = list_files
+        self.__file_list = file_list
         self.__search_text = search_text
         self.__replace_text = replace_text
 
@@ -27,7 +27,7 @@ class Replace(object):
     def __rename_file_in_the_list(self):
         all_names = list()
         errors_found = dict()
-        for item_file in self.__list_files:
+        for item_file in self.__file_list:
             item_file.set_note(None)
             path = item_file.get_path()
             extension = item_file.get_extension()
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         l_files.append(file.File(file_url=url))
 
     # Replace
-    replace_status = Replace(list_files=l_files, search_text='re', replace_text='RE')
+    replace_status = Replace(file_list=l_files, search_text='re', replace_text='RE')
 
     if replace_status.get_error_found():
         print('ERROR:', replace_status.get_error_found())
