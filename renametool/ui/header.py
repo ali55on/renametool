@@ -10,8 +10,13 @@ from gi.repository import GLib
 
 
 class StackHeader(Gtk.VBox):
-    """"""
-    def __init__(self, markup_settings, *args, **kwargs):
+    """Create an object of type 'StackHeader'
+
+    Contains two pages (Gtk.Stack), one to rename and another to replace a
+    text. Above the pages there is a change button to switch between them.
+    Each of the two pages is a separate object (class).
+    """
+    def __init__(self, markup_settings, *args, **kwargs) -> None:
         """"""
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
@@ -20,8 +25,7 @@ class StackHeader(Gtk.VBox):
         self.markup_settings = markup_settings
 
         # Flags
-        self.active_work_tab = 'rename'
-        self.changed_work_tab = True
+        self.active_work_stack_name = 'rename'
 
         # Create Stack
         self.stack = Gtk.Stack()
@@ -42,7 +46,7 @@ class StackHeader(Gtk.VBox):
         self.pack_start(self.box_switch, True, True, 0)
 
         self.switch = Gtk.Switch()
-        self.switch.connect('notify::active', self.on_switch_activated)
+        self.switch.connect('notify::active', self.__on_switch_activated)
         self.switch.set_active(False)
         self.box_switch.pack_start(self.switch, True, True, 0)
 
@@ -53,43 +57,60 @@ class StackHeader(Gtk.VBox):
         self.pack_start(self.stack, True, True, 0)
 
 
-    def get_active_work_tab(self):
-        """"""
-        return self.active_work_tab
+    def get_active_stack_name(self) -> str:
+        """Get active stack name
 
-    def get_changed_work_tab(self):
-        """"""
-        return self.changed_work_tab
+        When the Gtk.Switch button is disabled, the 'active' page is
+        the "rename" page, and when it is activated, the 'active' page is
+        the "replace" page. Then returns the string "rename" or "replace".
 
-    def set_changed_work_tab(self, changed: bool):
-        """"""
-        self.changed_work_tab = changed
+        :return: String containing the name of the active stack
+        """
+        return self.active_work_stack_name
 
-    def get_rename_text(self):
-        """"""
+    def get_rename_text(self) -> str:
+        """...
+
+        ...
+        
+        :return: ...
+        """
         return self.tab_rename.get_rename_text()
 
-    def get_existing_text(self):
-        """"""
+    def get_existing_text(self) -> str:
+        """...
+
+        ...
+        
+        :return: ...
+        """
         return self.tab_replace.get_existing_text()
 
-    def get_replace_text(self):
-        """"""
+    def get_replace_text(self) -> str:
+        """...
+
+        ...
+        
+        :return: ...
+        """
         return self.tab_replace.get_replace_text()
 
-    def on_switch_activated(self, widget, gparam):
-        # self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
-        if self.active_work_tab == 'rename':
+    def __on_switch_activated(self, widget, gparam):
+        # self.active_work_stack_name = self.stack_switcher.get_stack().get_visible_child_name()
+        if self.active_work_stack_name == 'rename':
             self.stack.set_visible_child(self.tab_replace)
-            self.active_work_tab = 'replace'
+            self.active_work_stack_name = 'replace'
         else:
             self.stack.set_visible_child(self.tab_rename)
-            self.active_work_tab = 'rename'
-        self.changed_work_tab = True
+            self.active_work_stack_name = 'rename'
 
-# noinspection SpellCheckingInspection
+
 class TabRename(Gtk.VBox):
-    """"""
+    """...
+
+    ...
+
+    """
     def __init__(self, markup_settings, *args, **kwargs):
         """"""
         Gtk.VBox.__init__(

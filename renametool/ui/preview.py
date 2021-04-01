@@ -55,6 +55,7 @@ class Preview(Gtk.VBox):
         self.prev_rename_text = self.header.get_rename_text()
         self.prev_existing_text = self.header.get_existing_text()
         self.prev_replace_text = self.header.get_replace_text()
+        self.active_stack_name = self.header.get_active_stack_name()
         self.is_the_first_preview_loop = True
 
         if self.file_list:
@@ -78,14 +79,14 @@ class Preview(Gtk.VBox):
 
     def preview_threading_glib(self):
         # Rename
-        if self.header.get_active_work_tab() == 'rename':
+        if self.header.get_active_stack_name() == 'rename':
             rename_text = self.header.get_rename_text()
 
             if self.can_update_rename_preview(rename_text=rename_text):
                 self.rename_preview(rename_text=rename_text)
 
         # Replace
-        else:  # get_active_work_tab() = 'replace':
+        else:
             search_text = self.header.get_existing_text()
             replace_text = self.header.get_replace_text()
 
@@ -96,32 +97,43 @@ class Preview(Gtk.VBox):
 
     def can_update_rename_preview(self, rename_text: str) -> bool:
         condition = [
-            # Check if the Gtk.Entry text is new updated text
-            rename_text != self.prev_rename_text,
-            self.is_the_first_preview_loop,
-            self.header.get_changed_work_tab()
+            rename_text != self.prev_rename_text,  # Check if the Gtk.Entry text is new updated text
+            self.header.get_active_stack_name() != self.active_stack_name,
+            self.is_the_first_preview_loop
         ]
-        if any(condition):
-            # Update information
-            self.prev_rename_text = rename_text
-            self.header.set_changed_work_tab(changed=False)
-            self.is_the_first_preview_loop = False
+        if any(condition):  # Update information
+            
+            if self.prev_rename_text != rename_text:
+                self.prev_rename_text = rename_text
+
+            if self.header.get_active_stack_name() != self.active_stack_name:
+                self.active_stack_name = self.header.get_active_stack_name()
+            
+            if self.is_the_first_preview_loop:
+                self.is_the_first_preview_loop = False
+            
             return True
+
         return False
 
     def can_update_replace_preview(self, search_text: str, replace_text: str) -> bool:
         condition = [
-            # Check if the Gtk.Entry text is new updated text
-            search_text != self.prev_existing_text,
-            replace_text != self.prev_replace_text,
-            self.header.get_changed_work_tab()
+            search_text != self.prev_existing_text,  # Check if the Gtk.Entry text
+            replace_text != self.prev_replace_text,  # is new updated text
+            self.header.get_active_stack_name() != self.active_stack_name
         ]
-        if any(condition):
-            # Update information
-            self.prev_existing_text = search_text
-            self.prev_replace_text = replace_text
-            self.header.set_changed_work_tab(changed=False)
+        if any(condition):  # Update information
+            if search_text != self.prev_existing_text:
+                self.prev_existing_text = search_text
+
+            if replace_text != self.prev_replace_text:
+                self.prev_replace_text = replace_text
+
+            if self.header.get_active_stack_name() != self.active_stack_name:
+                self.active_stack_name = self.header.get_active_stack_name()
+            
             return True
+
         return False
 
     def rename_preview(self, rename_text: str):

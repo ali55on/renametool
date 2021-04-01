@@ -35,6 +35,3 @@ if __name__ == '__main__':
         run_main_app(file_list=file_list)
 
 exit(1)
-
-
-    
