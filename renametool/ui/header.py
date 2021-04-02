@@ -34,11 +34,11 @@ class StackHeader(Gtk.VBox):
 
         # "Rename" Stack-Page
         self.tab_rename = TabRename(markup_settings=self.markup_settings)
-        self.stack.add_titled(self.tab_rename, 'rename', 'Rename using a template')
+        self.stack.add_titled(self.tab_rename, 'rename', 'Rename stack')
 
         # "Replace" Stack-Page
         self.tab_replace = TabReplace()
-        self.stack.add_titled(self.tab_replace, 'replace', 'Search and replace text')
+        self.stack.add_titled(self.tab_replace, 'replace', 'Replace stack')
 
         # Set Switch Button on top
         self.box_switch = Gtk.HBox(
@@ -69,34 +69,37 @@ class StackHeader(Gtk.VBox):
         return self.active_work_stack_name
 
     def get_rename_text(self) -> str:
-        """...
+        """Gets the new name entered in the Gtk.Entry
 
-        ...
-        
-        :return: ...
+        The text with the markings in the main Gtk.Entry, when
+        Gtk.Switch (replace option) is disabled.
+
+        :return: String containing the text of the new name 
         """
         return self.tab_rename.get_rename_text()
 
     def get_existing_text(self) -> str:
-        """...
+        """Gets the text from the match search
 
-        ...
-        
-        :return: ...
+        The search text by correspondence, when GTKSwitch ("search and
+        replace text") is activated.
+
+        :return: String containing the search text
         """
         return self.tab_replace.get_existing_text()
 
     def get_replace_text(self) -> str:
-        """...
+        """Gets the replacement text
 
-        ...
-        
-        :return: ...
+        The replacement text, when GTKSwitch ("search and replace text")
+        is activated.
+
+        :return: String containing the replacement text
         """
         return self.tab_replace.get_replace_text()
 
     def __on_switch_activated(self, widget, gparam):
-        # self.active_work_stack_name = self.stack_switcher.get_stack().get_visible_child_name()
+        # == self.stack_switcher.get_stack().get_visible_child_name()
         if self.active_work_stack_name == 'rename':
             self.stack.set_visible_child(self.tab_replace)
             self.active_work_stack_name = 'replace'
