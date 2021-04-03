@@ -43,8 +43,9 @@ class RenameToolWindow(Gtk.Window):
         self.header = StackHeader(markup_settings=self.markup_settings)
         self.main_box.pack_start(self.header, True, True, 0)
 
-        sep_up = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.END)
-        self.main_box.pack_start(sep_up, True, True, 0)
+        self.separator_top = Gtk.Separator(
+            orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.END)
+        self.main_box.pack_start(self.separator_top, True, True, 0)
 
         # Create Stack
         self.stack = Gtk.Stack()
@@ -72,8 +73,9 @@ class RenameToolWindow(Gtk.Window):
         self.main_box.pack_start(self.stack, True, True, 0)
 
         # Footer
-        sep_dw = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.START)
-        self.main_box.pack_start(sep_dw, True, True, 0)
+        self.separator_bottom = Gtk.Separator(
+            orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.START)
+        self.main_box.pack_start(self.separator_bottom, True, True, 0)
 
         self.footer = Footer(
             preview=self.preview, color_settings=self.color_settings, file_list=self.file_list,
@@ -96,12 +98,20 @@ class RenameToolWindow(Gtk.Window):
         GLib.timeout_add(300, self.preview_daemon)
 
     def preview_daemon_glib(self):
+        if self.header.get_sensitive():
+            self.header.set_sensitive(False)
+            self.separator_top.set_visible(False)
+            self.separator_bottom.set_visible(False)
+
         self.file_list = self.select_area.get_file_list()
         if self.file_list:
             self.files_preview = True
             self.stack.set_visible_child(self.preview)
             self.preview.set_file_list(self.file_list)
             self.footer.set_file_list(self.file_list)
+            self.header.set_sensitive(True)
+            self.separator_top.set_visible(True)
+            self.separator_bottom.set_visible(True)
             self.__set_title()
 
     def __set_title(self):
