@@ -4,16 +4,14 @@ import os
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
-from gi.repository import Gdk
-from gi.repository import GLib
+from gi.repository import Gtk, Gdk, GLib
 
 import ui.preferences as preferences
 
 
 class Base(Gtk.VBox):
     def __init__(self, preview, color_settings, file_list, transient, *args, **kwargs):
-        """"""
+        #
         Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
