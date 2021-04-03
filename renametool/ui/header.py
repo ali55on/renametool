@@ -8,7 +8,7 @@ from gi.repository import Gtk, Gdk, GLib
 
 
 class StackHeader(Gtk.VBox):
-    """Create an object of type 'StackHeader'
+    """Program header
 
     Contains two pages (Gtk.Stack), one to rename and another to
     replace a text. Above the pages there is a change button to switch
@@ -335,7 +335,7 @@ class PopoverMenu(Gtk.PopoverMenu):
     """
     def __init__(
             self, parent_widget, interaction_widget,
-            markup_settings, *args, **kwargs):
+            markup_settings, *args, **kwargs) -> None:
         # class constructor
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
         # Args

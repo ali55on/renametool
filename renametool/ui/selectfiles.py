@@ -3,7 +3,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-import tools.utils.file as file
+from tools.utils.file import File
 
 
 class SelectFiles(Gtk.VBox):
@@ -42,7 +42,7 @@ class SelectFiles(Gtk.VBox):
         response = dialog.run()
         
         if response != Gtk.ResponseType.CANCEL:
-            self.file_list = list(file.File(x) for x in dialog.get_uris())
+            self.file_list = list(File(x) for x in dialog.get_uris())
 
         dialog.destroy()
 

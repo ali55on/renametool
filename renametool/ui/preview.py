@@ -5,8 +5,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 
-import tools.rename as rename
-import tools.replace as replace
+from tools.rename import Rename
+from tools.replace import Replace
 
 
 class Preview(Gtk.VBox):
@@ -144,7 +144,7 @@ class Preview(Gtk.VBox):
             rename_text = self.markup_settings['[original-name]']
 
         # Rename files
-        rename_status = rename.Rename(
+        rename_status = Rename(
             markup_settings=self.markup_settings,
             file_list=self.file_list, new_name=rename_text)
         error_found = rename_status.get_error_found()
@@ -188,7 +188,7 @@ class Preview(Gtk.VBox):
             replace_text = ''
 
         # Rename/Replace files
-        replace_status = replace.Replace(
+        replace_status = Replace(
             file_list=self.file_list, search_text=search_text, replace_text=replace_text)
         error_found = replace_status.get_error_found()
 

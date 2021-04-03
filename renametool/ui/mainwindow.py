@@ -7,13 +7,12 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import GLib
 
-import tools.title as title
-import tools.utils.file as file
-import tools.settings as settings
-import ui.header as header
-import ui.selectfiles as select_files
-import ui.preview as preview
-import ui.base as base
+from tools.title import Title
+from tools.settings import UserSettings
+from ui.header import StackHeader
+from ui.selectfiles import SelectFiles
+from ui.preview import Preview
+from ui.footer import Footer
 
 
 class RenameToolWindow(Gtk.Window):
@@ -26,27 +25,22 @@ class RenameToolWindow(Gtk.Window):
         self.file_list = file_list
 
         # Settings
-        self.settings = settings.UserSettings()
+        self.settings = UserSettings()
         self.markup_settings = self.settings.get_markup_settings()
         self.color_settings = self.settings.get_color_settings()
 
         # Flags
-        self.status_error = None
         self.files_preview = False
 
         # Window title
-        if self.file_list:
-            title_obj = title.Title(self.file_list)
-            self.set_title(title_obj.get_title())
-        else:
-            self.set_title('Rename Tool')
+        self.__set_title()
 
         # Main box
         self.main_box = Gtk.VBox()
         self.add(self.main_box)
 
         # Header
-        self.header = header.StackHeader(markup_settings=self.markup_settings)
+        self.header = StackHeader(markup_settings=self.markup_settings)
         self.main_box.pack_start(self.header, True, True, 0)
 
         sep_up = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.END)
@@ -58,13 +52,13 @@ class RenameToolWindow(Gtk.Window):
         self.stack.set_transition_duration(300)
 
         # Preview
-        self.preview = preview.Preview(
+        self.preview = Preview(
             header=self.header, color_settings=self.color_settings,
             markup_settings=self.markup_settings,
             file_list=self.file_list)
 
         # Select
-        self.select_area = select_files.SelectFiles(file_list=self.file_list)
+        self.select_area = SelectFiles(file_list=self.file_list)
 
         # Set stack
         # self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
@@ -77,14 +71,14 @@ class RenameToolWindow(Gtk.Window):
 
         self.main_box.pack_start(self.stack, True, True, 0)
 
-        # Base
+        # Footer
         sep_dw = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.START)
         self.main_box.pack_start(sep_dw, True, True, 0)
 
-        self.base = base.Base(
+        self.footer = Footer(
             preview=self.preview, color_settings=self.color_settings, file_list=self.file_list,
             transient=self)
-        self.main_box.pack_start(self.base, True, True, 0)
+        self.main_box.pack_start(self.footer, True, True, 0)
 
         # Focus
         self.activate_focus()
@@ -92,7 +86,7 @@ class RenameToolWindow(Gtk.Window):
 
         # Default
         self.activate_default()
-        self.set_default(self.base.button_rename)
+        self.set_default(self.footer.button_rename)
 
         self.preview_daemon()
 
@@ -107,15 +101,12 @@ class RenameToolWindow(Gtk.Window):
             self.files_preview = True
             self.stack.set_visible_child(self.preview)
             self.preview.set_file_list(self.file_list)
-            self.base.set_file_list(self.file_list)
+            self.footer.set_file_list(self.file_list)
+            self.__set_title()
 
-
-if __name__ == '__main__':
-    del (sys.argv[0])
-    ls = os.listdir(os.path.dirname(os.path.abspath(__file__)))
-    l_files = list(file.File(x) for x in sys.argv)
-
-    win = RenameToolWindow(l_files)
-    win.connect("destroy", Gtk.main_quit)
-    win.show_all()
-    Gtk.main()
+    def __set_title(self):
+        if self.file_list:
+            title_obj = Title(self.file_list)
+            self.set_title(title_obj.get_title())
+        else:
+            self.set_title('Rename Tool')

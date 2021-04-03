@@ -6,12 +6,18 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 
-import ui.preferences as preferences
+from ui.preferences import PreferencesWindow
 
 
-class Base(Gtk.VBox):
-    def __init__(self, preview, color_settings, file_list, transient, *args, **kwargs):
-        #
+class Footer(Gtk.VBox):
+    """Program footer
+
+    Contains the program's 'Rename', 'Cancel' and 'Preferences' buttons.
+    """
+    def __init__(
+            self, preview, color_settings, file_list,
+            transient, *args, **kwargs) -> None:
+        # class constructor
         Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
@@ -79,7 +85,7 @@ class Base(Gtk.VBox):
         self.buttons_box.pack_start(self.button_rename, True, True, 0)
 
         # self.activate_focus()
-        # self.set_focus(self.button_ok)
+        # self.set_focus(self.button_rename)
         self.button_rename.set_can_focus(True)
         self.button_rename.set_receives_default(True)
         self.button_rename.get_style_context().add_class('suggested-action')
@@ -102,12 +108,10 @@ class Base(Gtk.VBox):
     def set_file_list(self, file_list):
         self.file_list = file_list
 
-    # noinspection PyUnusedLocal,PyMethodMayBeStatic
     def on_preferences(self, widget):
-        preferences_win = preferences.PreferencesWindow(transient_for=self.transient)
+        preferences_win = PreferencesWindow(transient_for=self.transient)
         preferences_win.show_all()
 
-    # noinspection PyUnusedLocal
     def on_rename(self, widget):
         if self.can_rename:
             for file in self.file_list:
@@ -121,7 +125,6 @@ class Base(Gtk.VBox):
             Gtk.main_quit()
             exit(0)
 
-    # noinspection PyUnusedLocal,PyMethodMayBeStatic
     def on_cancel(self, widget):
         Gtk.main_quit()
         exit(1)
