@@ -4,20 +4,18 @@ import time
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
-from gi.repository import Gdk
-from gi.repository import GLib
+from gi.repository import Gtk, Gdk, GLib
 
 
 class StackHeader(Gtk.VBox):
     """Create an object of type 'StackHeader'
 
-    Contains two pages (Gtk.Stack), one to rename and another to replace a
-    text. Above the pages there is a change button to switch between them.
-    Each of the two pages is a separate object (class).
+    Contains two pages (Gtk.Stack), one to rename and another to
+    replace a text. Above the pages there is a change button to switch
+    between them. Each of the two pages is a separate object (class).
     """
     def __init__(self, markup_settings, *args, **kwargs) -> None:
-        """"""
+        # class constructor
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
             width_request=550, margin=18, margin_bottom=0, *args, **kwargs)
@@ -33,11 +31,11 @@ class StackHeader(Gtk.VBox):
         self.stack.set_transition_duration(300)
 
         # "Rename" Stack-Page
-        self.tab_rename = TabRename(markup_settings=self.markup_settings)
+        self.tab_rename = RenameArea(markup_settings=self.markup_settings)
         self.stack.add_titled(self.tab_rename, 'rename', 'Rename stack')
 
         # "Replace" Stack-Page
-        self.tab_replace = TabReplace()
+        self.tab_replace = ReplaceArea()
         self.stack.add_titled(self.tab_replace, 'replace', 'Replace stack')
 
         # Set Switch Button on top
@@ -61,8 +59,9 @@ class StackHeader(Gtk.VBox):
         """Get active stack name
 
         When the Gtk.Switch button is disabled, the 'active' page is
-        the "rename" page, and when it is activated, the 'active' page is
-        the "replace" page. Then returns the string "rename" or "replace".
+        the "rename" page, and when it is activated, the 'active' page
+        is the "replace" page. Then returns the string "rename" or
+        "replace".
 
         :return: String containing the name of the active stack
         """
@@ -109,19 +108,13 @@ class StackHeader(Gtk.VBox):
             self.active_work_stack_name = 'rename'
 
 
-class TabRename(Gtk.VBox):
-    """...
+class RenameArea(Gtk.VBox):
+    """Area to rename files
 
-    ...
-
+    Box where Gtk.Entry is located to type the new file name.
     """
     def __init__(self, markup_settings, *args, **kwargs) -> None:
-        """...
-
-        ...
-
-        :return: ...
-        """
+        # class constructor
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, *args, **kwargs)
         # Args
@@ -135,15 +128,15 @@ class TabRename(Gtk.VBox):
         self.entry = Gtk.Entry(
             text=self.markup_settings['[original-name]'], margin_start=50,
             activates_default=True, editable=True)
-        self.entry.connect('backspace', self.on_backspace_signal)
-        self.entry.connect("key-press-event", self.on_key_press_event)
+        self.entry.connect('backspace', self.__on_backspace_signal)
+        self.entry.connect("key-press-event", self.__on_key_press_event)
         self.text_box.pack_start(self.entry, True, True, 0)
 
         # Entry button (+ Add)
         self.icon = Gtk.Image(icon_name='list-add-symbolic')
         self.button = Gtk.Button(
-            image=self.icon, margin_end=50,
-            always_show_image=True, label='Add', halign=Gtk.Align.END)
+            image=self.icon, margin_end=50, always_show_image=True,
+            label='Add', halign=Gtk.Align.END)
         self.button.connect('clicked', self.__on_menu)
         self.text_box.pack_start(self.button, False, True, 0)
 
@@ -154,12 +147,12 @@ class TabRename(Gtk.VBox):
             #entry{
                 border-top-right-radius: 0px;
                 border-bottom-right-radius: 0px;
-            }
+                }
             #button{
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
                 border-left: 0px;
-            }
+                }
             '''
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(css)
@@ -168,19 +161,14 @@ class TabRename(Gtk.VBox):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def __on_menu(self, widget) -> None:
-        #
+        # Gtk.Button of Gtk.Entry (+ Add)
+        # Open PopoverMenu
         PopoverMenu(
             parent_widget=widget, interaction_widget=self.entry,
             markup_settings=self.markup_settings)
 
-    # noinspection PyUnusedLocal
-    def on_backspace_signal(self, widget) -> None:
-        """...
-
-        ...
-
-        :return: ...
-        """
+    def __on_backspace_signal(self, widget) -> None:
+        # Delete template-markup when Backspace key is pressed
         can_delete_template = False
         txt = self.entry.get_text()
         cursor = self.entry.get_position()
@@ -195,8 +183,8 @@ class TabRename(Gtk.VBox):
                 if init_text + end_text == template:
                     # Quando o cursor é movido para a posição correta,
                     # ele (Gtk) "come" um caractere (*), por isso o novo
-                    # texto recebe um caractere que será deletado quando o
-                    # cursor voltar a posição esperada.
+                    # texto recebe um caractere que será deletado quando
+                    # o cursor voltar a posição esperada.
                     new_txt = txt.replace(template, ' ')
                     can_delete_template = True
                     break
@@ -211,13 +199,13 @@ class TabRename(Gtk.VBox):
                 cursor_position = step + 1
                 break
 
-        # O range() para achar a posição correta do cursor, é feito no texto
-        # novo e menor para evitar o erro -> "IndexError: string index out
-        # of range". Por essa razão, quando o range chega no fim texto sem
-        # achar a diferença, significa que o 'template de marcação' que foi
-        # removido, ficava originalmente no fim do texto. Então se o
-        # cursor_position não foi configurado (None), significa que ele deveria
-        # ficar no fim do texto.
+        # O range() para achar a posição correta do cursor, é feito no
+        # texto novo e menor para evitar o erro -> "IndexError: string
+        # index out of range". Por essa razão, quando o range chega no
+        # fim texto sem achar a diferença, significa que o 'template de
+        # marcação' que foi removido, ficava originalmente no fim do
+        # texto. Então se o cursor_position não foi configurado (None),
+        # significa que ele deveria ficar no fim do texto.
         if cursor_position is None:
             cursor_position = len(new_txt)
 
@@ -228,14 +216,8 @@ class TabRename(Gtk.VBox):
                 self.entry, Gtk.MovementStep.LOGICAL_POSITIONS,
                 cursor_position, False)
 
-    # noinspection PyUnusedLocal
-    def on_key_press_event(self, widget, event) -> None:
-        """...
-
-        ...
-
-        :return: ...
-        """
+    def __on_key_press_event(self, widget, event) -> None:
+        # Check if a character has been added within a template-markup
         entry_text = self.entry.get_text()
         cursor = self.entry.get_position()
         key = Gdk.keyval_name(event.keyval)
@@ -256,45 +238,46 @@ class TabRename(Gtk.VBox):
 
             # Preview threading
             thread = threading.Thread(
-                target=self.on_key_press_event_threading,
+                target=self.__on_key_press_event_threading,
                 args=[template_found])
             thread.daemon = True
             thread.start()
 
-    def on_key_press_event_threading(self, template_found) -> None:
-        """...
-
-        ...
-
-        :return: ...
-        """
+    def __on_key_press_event_threading(self, template_found) -> None:
+        # If I need to modify Gtk.Entry.text, this action is
+        # delegated to this 'threading', and UI flows.
         time.sleep(0.01)
+        # the new text captured in real time by xxxx, will
+        # be marked differently if a character was inserted
         if template_found and template_found not in self.entry.get_text():
-            GLib.idle_add(self.on_key_press_event_threading_glib)
+            GLib.idle_add(self.__on_key_press_event_threading_glib)
 
-    def on_key_press_event_threading_glib(self) -> None:
-        """...
-
-        ...
-
-        :return: ...
-        """
+    def __on_key_press_event_threading_glib(self) -> None:
+        # Modify Gtk.Entry.text (restore template-markup)
         self.entry.do_delete_from_cursor(self.entry, 0, -1)
 
     def get_rename_text(self) -> str:
-        """...
+        """Gets the new name to rename
 
-        ...
+        The text with the marks typed in Gtk.Entry.
 
-        :return: ...
+        :return: String containing text in Gtk.Entry
         """
         return self.entry.get_text()
 
 
-class TabReplace(Gtk.HBox):
-    """"""
-    def __init__(self, *args, **kwargs):
-        """"""
+class ReplaceArea(Gtk.HBox):
+    """Area for renaming files
+
+    Contains a "Search Entry", which is used to type a text that will
+    be used as a "template-text" to find a corresponding text in the
+    file name.
+    Also contains a "Replacement Entry", which is used to type a text
+    that will be used to replace the "template-text" of the
+    "Search Entry" in the file name.
+    """
+    def __init__(self, *args, **kwargs) -> None:
+        # class constructor
         Gtk.HBox.__init__(self, spacing=6, *args, **kwargs)
         # Label box
         self.label_box = Gtk.VBox(spacing=6, margin_start=50)
@@ -324,21 +307,36 @@ class TabReplace(Gtk.HBox):
         self.replace_entry = Gtk.Entry(activates_default=True)
         self.entry_box.pack_start(self.replace_entry, True, True, 0)
 
-    def get_existing_text(self):
-        """"""
+    def get_existing_text(self) -> str:
+        """Gets the existing text
+
+        The search text on Gtk.Entry.
+
+        :return: String containing the Gtk.Entry text
+        """
         return self.search_entry.get_text()
 
     def get_replace_text(self):
-        """"""
+        """Gets the text to replace
+
+        The text in Gtk.Entry for replacement.
+
+        :return: String containing the Gtk.Entry text
+        """
         return self.replace_entry.get_text()
 
 
 class PopoverMenu(Gtk.PopoverMenu):
-    """"""
+    """Template PopoverMenu
+
+    The "+ Add" button menu next to the "Gtk.Entry" that receives the
+    text to rename the files.
+    This menu has items that add 'markings' to the "Gtk.Entry" text.
+    """
     def __init__(
-        self, parent_widget, interaction_widget, markup_settings,
-        *args, **kwargs):
-        """"""
+            self, parent_widget, interaction_widget,
+            markup_settings, *args, **kwargs):
+        # class constructor
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
         # Args
         self.parent_widget = parent_widget
@@ -357,21 +355,21 @@ class PopoverMenu(Gtk.PopoverMenu):
         self.button_1 = Gtk.ModelButton(
             label=self.markup_settings['[1, 2, 3]'][1:-1],
             halign=Gtk.Align.START)
-        self.button_1.connect('clicked', self.on_button_1)
+        self.button_1.connect('clicked', self.__on_button_1)
         self.vbox.pack_start(self.button_1, True, True, 0)
 
         # Button - Automatic numbers 01, 02, 03
         self.button_01 = Gtk.ModelButton(
             label=self.markup_settings['[01, 02, 03]'][1:-1],
             halign=Gtk.Align.START)
-        self.button_01.connect('clicked', self.on_button_01)
+        self.button_01.connect('clicked', self.__on_button_01)
         self.vbox.pack_start(self.button_01, True, True, 0)
 
         # Button - Automatic numbers 001, 002, 003
         self.button_001 = Gtk.ModelButton(
             label=self.markup_settings['[001, 002, 003]'][1:-1],
             halign=Gtk.Align.START)
-        self.button_001.connect('clicked', self.on_button_001)
+        self.button_001.connect('clicked', self.__on_button_001)
         self.vbox.pack_start(self.button_001, True, True, 0)
 
         # Separator
@@ -384,7 +382,7 @@ class PopoverMenu(Gtk.PopoverMenu):
             label=self.markup_settings['[original-name]'][1:-1],
             halign=Gtk.Align.START)
         self.button_original_name.connect('clicked',
-            self.on_button_original_name)
+            self.__on_button_original_name)
         self.vbox.pack_start(self.button_original_name, True, True, 0)
 
         # Config PopoverMenu
@@ -397,27 +395,29 @@ class PopoverMenu(Gtk.PopoverMenu):
 
         self.__check_sensitive_buttons()
 
-    # noinspection PyUnusedLocal
-    def on_button_1(self, widget):
+    def __on_button_1(self, widget):
+        # Add the mark '[1, 2, 3]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[1, 2, 3]'])
 
-    # noinspection PyUnusedLocal
-    def on_button_01(self, widget):
+    def __on_button_01(self, widget):
+        # Add the mark '[01, 02, 03]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[01, 02, 03]'])
 
-    # noinspection PyUnusedLocal
-    def on_button_001(self, widget):
+    def __on_button_001(self, widget):
+        # Add the mark '[001, 002, 003]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[001, 002, 003]'])
 
-    # noinspection PyUnusedLocal
-    def on_button_original_name(self, widget):
+    def __on_button_original_name(self, widget):
+        # Add the mark '[original-name]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[original-name]'])
 
     def __block_num_buttons(self, block: bool):
+        # Blocks "markup-numbers" items in the menu.
+        # Only if there is already a "markup-numbers" in Gtk.Entry.text
         buttons = [self.button_1, self.button_01, self.button_001]
         if block:
             for button in buttons:
@@ -427,7 +427,7 @@ class PopoverMenu(Gtk.PopoverMenu):
                 button.set_sensitive(True)
 
     def __check_sensitive_buttons(self):
-        # Text
+        # Checks the initial "sensitivity" of the PopoverMenu buttons 
         text = self.entry_widget.get_text()
 
         # Numbers
