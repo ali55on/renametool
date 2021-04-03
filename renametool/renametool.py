@@ -17,6 +17,7 @@ def run_main_app(file_list: list) -> None:
 
     Calls the application designed to work with more than one file name
     at the same time.
+    Need a list of objects of type "File".
     """
     win = RenameToolWindow(file_list=file_list)
     win.connect('destroy', Gtk.main_quit)
@@ -24,12 +25,13 @@ def run_main_app(file_list: list) -> None:
     Gtk.main()
 
 
-def run_mini_app():
+def run_mini_app(file: File) -> None:
     """Run mini app
 
     Calls the application designed to work with only one file name.
+    Need a object of type "File".
     """
-    pass
+    print(type(file))
 
 
 def main() -> None:
@@ -41,7 +43,8 @@ def main() -> None:
     del(sys.argv[0])
     if sys.argv:
         if len(sys.argv) == 1:
-            run_mini_app()
+            file = File(sys.argv[0])
+            run_mini_app(file=file)
 
         else:
             file_list = list(File(x) for x in sys.argv)
