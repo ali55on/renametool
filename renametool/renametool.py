@@ -23,12 +23,14 @@ def run_main_app(file_list: list) -> None:
     win.show_all()
     Gtk.main()
 
+
 def run_mini_app():
     """Run mini app
 
     Calls the application designed to work with only one file name.
     """
     pass
+
 
 def main() -> None:
     """Main function
