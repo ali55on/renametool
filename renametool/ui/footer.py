@@ -12,12 +12,22 @@ from ui.preferences import PreferencesWindow
 class Footer(Gtk.VBox):
     """Program footer
 
-    Contains the program's 'Rename', 'Cancel' and 'Preferences' buttons.
+    Contains the program's 'Rename', 'Cancel' and 'Preferences'
+    buttons, and above the buttons contains an error notification
+    area that is visible only when necessary.
     """
     def __init__(
             self, preview, color_settings, file_list,
             transient, *args, **kwargs) -> None:
-        # class constructor
+        """class constructor
+
+        Initializes the program's footer widgets.
+
+        :param preview: An inherited 'Gtk.Widget' called 'Preview'
+        :param color_settings: A 'dictionary' with color settings
+        :param file_list: Python 'list' of 'File' objects
+        :param transient: Parent 'Gtk.Window'
+        """
         Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
@@ -69,7 +79,7 @@ class Footer(Gtk.VBox):
         self.icon_preferences = Gtk.Image(icon_name='preferences-other-symbolic')
         self.button_preferences = Gtk.Button(
             image=self.icon_preferences, always_show_image=True, tooltip_text='Preferences')
-        self.button_preferences.connect('clicked', self.on_preferences)
+        self.button_preferences.connect('clicked', self.__on_preferences)
         self.buttons_incon_box.pack_start(self.button_preferences, True, True, 0)
 
         # Cancel and rename
@@ -77,11 +87,11 @@ class Footer(Gtk.VBox):
         self.buttons_base_box.pack_start(self.buttons_box, True, True, 0)
 
         self.button_cancel = Gtk.Button(label='Cancel')
-        self.button_cancel.connect('clicked', self.on_cancel)
+        self.button_cancel.connect('clicked', self.__on_cancel)
         self.buttons_box.pack_start(self.button_cancel, True, True, 0)
 
         self.button_rename = Gtk.Button(label='Rename', can_default=True)
-        self.button_rename.connect('clicked', self.on_rename)
+        self.button_rename.connect('clicked', self.__on_rename)
         self.buttons_box.pack_start(self.button_rename, True, True, 0)
 
         # self.activate_focus()
@@ -101,18 +111,26 @@ class Footer(Gtk.VBox):
             'hidden-file-error': 'Files that the name starts with a dot will be hidden'}
 
         # Iniciar pré visualização
-        thread = threading.Thread(target=self.status_error_threading)
+        thread = threading.Thread(target=self.__status_error_threading)
         thread.daemon = True
         thread.start()
 
-    def set_file_list(self, file_list):
+    def set_file_list(self, file_list: list) -> None:
+        """Set the file list
+
+        Makes the file list the one passed in the parameter.
+
+        :param file_list: Python 'list' of 'File' objects 
+        """
         self.file_list = file_list
 
-    def on_preferences(self, widget):
+    def __on_preferences(self, widget) -> None:
+        # Opens the preferences window
         preferences_win = PreferencesWindow(transient_for=self.transient)
         preferences_win.show_all()
 
-    def on_rename(self, widget):
+    def __on_rename(self, widget) -> None:
+        # Renames files
         if self.can_rename:
             for file in self.file_list:
                 path = file.get_path()
@@ -125,15 +143,18 @@ class Footer(Gtk.VBox):
             Gtk.main_quit()
             exit(0)
 
-    def on_cancel(self, widget):
+    def __on_cancel(self, widget) -> None:
+        # Cancels exiting the program
         Gtk.main_quit()
         exit(1)
 
-    def status_error_threading(self):
-        GLib.idle_add(self.status_error_threading_glib)
-        GLib.timeout_add(300, self.status_error_threading)
+    def __status_error_threading(self) -> None:
+        # Starts daemon that maps errors to the new name entered
+        GLib.idle_add(self.__status_error_threading_glib)
+        GLib.timeout_add(300, self.__status_error_threading)
 
-    def status_error_threading_glib(self):
+    def __status_error_threading_glib(self) -> None:
+        # Maps errors to the new name entered
         status_error = self.preview.status_error
         sensitive = self.button_rename.get_sensitive()
         visible_war = self.label_warning.get_visible()

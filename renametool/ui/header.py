@@ -15,7 +15,12 @@ class StackHeader(Gtk.VBox):
     between them. Each of the two pages is a separate object (class).
     """
     def __init__(self, markup_settings, *args, **kwargs) -> None:
-        # class constructor
+        """class constructor
+
+        Initializes the program's header widgets.
+
+        :param markup_settings: A 'dictionary' with markup settings
+        """
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
             width_request=550, margin=18, margin_bottom=0, *args, **kwargs)
@@ -114,7 +119,12 @@ class RenameArea(Gtk.VBox):
     Box where Gtk.Entry is located to type the new file name.
     """
     def __init__(self, markup_settings, *args, **kwargs) -> None:
-        # class constructor
+        """class constructor
+
+        Initializes the area with the widgets to rename the files.
+
+        :param markup_settings: A 'dictionary' with markup settings
+        """
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, *args, **kwargs)
         # Args
@@ -277,7 +287,11 @@ class ReplaceArea(Gtk.HBox):
     "Search Entry" in the file name.
     """
     def __init__(self, *args, **kwargs) -> None:
-        # class constructor
+        """class constructor
+
+        Initializes the area with the widgets to replace text in the
+        file name.
+        """
         Gtk.HBox.__init__(self, spacing=6, *args, **kwargs)
         # Label box
         self.label_box = Gtk.VBox(spacing=6, margin_start=50)
@@ -336,7 +350,15 @@ class PopoverMenu(Gtk.PopoverMenu):
     def __init__(
             self, parent_widget, interaction_widget,
             markup_settings, *args, **kwargs) -> None:
-        # class constructor
+        """class constructor
+
+        Initializes PopoverMenu widgets.
+        
+        :param parent_widget: Parent 'Gtk.Widget'
+        :param interaction_widget: 'Gtk.Widget' that will receive the
+            actions of the menu buttons
+        :param markup_settings: A 'dictionary' with markup settings
+        """
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
         # Args
         self.parent_widget = parent_widget
