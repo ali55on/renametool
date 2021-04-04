@@ -7,8 +7,17 @@ from tools.utils.file import File
 
 
 class SelectFiles(Gtk.VBox):
-    """docstring for EmptyStartWindow"""
+    """Select files
+
+    Adds a button to select the files to be renamed
+    """
     def __init__(self, file_list, *args, **kwargs):
+         """Class constructor
+
+        Initializes SelectFiles widgets.
+
+        :param file_list: Python 'list' of 'File' objects
+        """
         Gtk.VBox.__init__(self, height_request=300, *args, **kwargs)
 
         # Flag
@@ -30,6 +39,7 @@ class SelectFiles(Gtk.VBox):
         self.box_choose_files.pack_start(self.button_choose_files, True, True, 0)
 
     def __on_select_files(self, widget):
+        # Opens the dialog for selecting files
         dialog = Gtk.FileChooserDialog(
             title="Please choose a file", 
             action=Gtk.FileChooserAction.OPEN, select_multiple=True)
@@ -47,4 +57,5 @@ class SelectFiles(Gtk.VBox):
         dialog.destroy()
 
     def get_file_list(self):
+        """Get python 'list' of 'File' objects"""
         return self.file_list

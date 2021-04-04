@@ -100,15 +100,15 @@ class RenameToolWindow(Gtk.Window):
         self.activate_default()
         self.set_default(self.footer.button_rename)
 
-        self.__preview_daemon()
+        self.__widget_sensitivity_daemon ()
 
-    def __preview_daemon(self) -> None:
-        # Starts the preview daemon
+    def __widget_sensitivity_daemon (self) -> None:
+        # Starts widget sensitivity daemon
         if not self.files_preview:
-            GLib.idle_add(self.__preview_daemon_glib)
-        GLib.timeout_add(300, self.__preview_daemon)
+            GLib.idle_add(self.__change_widgets_sensitivity)
+        GLib.timeout_add(300, self.__widget_sensitivity_daemon )
 
-    def __preview_daemon_glib(self) -> None:
+    def __change_widgets_sensitivity(self) -> None:
         # Sets the sensitivity of the widgets according to the
         # filling of the file list
         if self.header.get_sensitive():

@@ -227,7 +227,8 @@ class RenameArea(Gtk.VBox):
                 cursor_position, False)
 
     def __on_key_press_event(self, widget, event) -> None:
-        # Check if a character has been added within a template-markup
+        # Check if a character has been added within a
+        # template-markup and delete it
         entry_text = self.entry.get_text()
         cursor = self.entry.get_position()
         key = Gdk.keyval_name(event.keyval)
@@ -246,7 +247,6 @@ class RenameArea(Gtk.VBox):
                         template_found = template
                         break
 
-            # Preview threading
             thread = threading.Thread(
                 target=self.__on_key_press_event_threading,
                 args=[template_found])

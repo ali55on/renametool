@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import threading
 import os
 
 import gi
@@ -119,10 +118,7 @@ class Footer(Gtk.VBox):
             'length-error': 'Filename too long',
             'hidden-file-error': 'Files that the name starts with a dot will be hidden'}
 
-        # Iniciar pré visualização
-        thread = threading.Thread(target=self.__status_error_threading)
-        thread.daemon = True
-        thread.start()
+        self.__status_error_threading()
 
     def set_file_list(self, file_list: list) -> None:
         """Set the file list
