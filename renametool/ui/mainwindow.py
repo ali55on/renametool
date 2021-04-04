@@ -16,7 +16,17 @@ from ui.footer import Footer
 
 
 class RenameToolWindow(Gtk.Window):
-    def __init__(self, file_list: list = list, *args, **kwargs):
+    """Rename tool Window
+
+    Main application window with all widgets.
+    """
+    def __init__(self, file_list: list = list, *args, **kwargs) -> None:
+        """Class constructor
+
+        Initializes RenameToolWindow widgets.
+
+        :param file_list: Python 'list' of 'File' objects
+        """
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
             icon_name='document-edit-symbolic', *args, **kwargs)
@@ -62,7 +72,7 @@ class RenameToolWindow(Gtk.Window):
         self.select_area = SelectFiles(file_list=self.file_list)
 
         # Set stack
-        # self.active_work_tab = self.stack_switcher.get_stack().get_visible_child_name()
+        # self.stack_switcher.get_stack().get_visible_child_name()
         if self.file_list:
             self.stack.add_titled(self.preview, 'preview', 'preview')
             self.stack.add_titled(self.select_area, 'select', 'select')
@@ -78,8 +88,8 @@ class RenameToolWindow(Gtk.Window):
         self.main_box.pack_start(self.separator_bottom, True, True, 0)
 
         self.footer = Footer(
-            preview=self.preview, color_settings=self.color_settings, file_list=self.file_list,
-            transient=self)
+            preview=self.preview, color_settings=self.color_settings,
+            file_list=self.file_list, transient=self)
         self.main_box.pack_start(self.footer, True, True, 0)
 
         # Focus
@@ -90,14 +100,17 @@ class RenameToolWindow(Gtk.Window):
         self.activate_default()
         self.set_default(self.footer.button_rename)
 
-        self.preview_daemon()
+        self.__preview_daemon()
 
-    def preview_daemon(self):
+    def __preview_daemon(self) -> None:
+        # starts the preview daemon
         if not self.files_preview:
-            GLib.idle_add(self.preview_daemon_glib)
-        GLib.timeout_add(300, self.preview_daemon)
+            GLib.idle_add(self.__preview_daemon_glib)
+        GLib.timeout_add(300, self.__preview_daemon)
 
-    def preview_daemon_glib(self):
+    def __preview_daemon_glib(self) -> None:
+        # Sets the sensitivity of the widgets according to the
+        # filling of the file list
         if self.header.get_sensitive():
             self.header.set_sensitive(False)
             self.separator_top.set_visible(False)
@@ -114,7 +127,8 @@ class RenameToolWindow(Gtk.Window):
             self.separator_bottom.set_visible(True)
             self.__set_title()
 
-    def __set_title(self):
+    def __set_title(self) -> None:
+        # Sets the title of the application window
         if self.file_list:
             title_obj = Title(self.file_list)
             self.set_title(title_obj.get_title())

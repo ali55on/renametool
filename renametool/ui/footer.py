@@ -19,7 +19,7 @@ class Footer(Gtk.VBox):
     def __init__(
             self, preview, color_settings, file_list,
             transient, *args, **kwargs) -> None:
-        """class constructor
+        """Class constructor
 
         Initializes the program's footer widgets.
 
@@ -28,7 +28,8 @@ class Footer(Gtk.VBox):
         :param file_list: Python 'list' of 'File' objects
         :param transient: Parent 'Gtk.Window'
         """
-        Gtk.VBox.__init__(self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
+        Gtk.VBox.__init__(
+            self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
         self.color_settings = color_settings
@@ -43,11 +44,13 @@ class Footer(Gtk.VBox):
         self.pack_start(self.warning_box, True, True, 0)
 
         # Warning - Warning
-        self.label_warning = Gtk.Label(use_markup=True, ellipsize=3, halign=Gtk.Align.START)
+        self.label_warning = Gtk.Label(
+            use_markup=True, ellipsize=3, halign=Gtk.Align.START)
         self.warning_box.pack_start(self.label_warning, True, True, 0)
 
         # Warning - Error
-        self.label_error = Gtk.Label(use_markup=True, ellipsize=3, halign=Gtk.Align.START)
+        self.label_error = Gtk.Label(
+            use_markup=True, ellipsize=3, halign=Gtk.Align.START)
         self.warning_box.pack_start(self.label_error, True, True, 0)
 
         # Style
@@ -66,21 +69,27 @@ class Footer(Gtk.VBox):
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(css)
         Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            Gdk.Screen.get_default(), style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         # Buttons
-        self.buttons_base_box = Gtk.HBox(homogeneous=True)
+        self.buttons_base_box = Gtk.HBox(
+            homogeneous=True, valign=Gtk.Align.END)
         self.pack_start(self.buttons_base_box, True, True, 0)
 
         # Preferences
-        self.buttons_incon_box = Gtk.HBox(spacing=6, homogeneous=True, halign=Gtk.Align.START)
+        self.buttons_incon_box = Gtk.HBox(
+            spacing=6, homogeneous=True, halign=Gtk.Align.START)
         self.buttons_base_box.pack_start(self.buttons_incon_box, True, True, 0)
 
-        self.icon_preferences = Gtk.Image(icon_name='preferences-other-symbolic')
+        self.icon_preferences = Gtk.Image(
+            icon_name='preferences-other-symbolic')
         self.button_preferences = Gtk.Button(
-            image=self.icon_preferences, always_show_image=True, tooltip_text='Preferences')
+            image=self.icon_preferences, always_show_image=True,
+            tooltip_text='Preferences')
         self.button_preferences.connect('clicked', self.__on_preferences)
-        self.buttons_incon_box.pack_start(self.button_preferences, True, True, 0)
+        self.buttons_incon_box.pack_start(
+            self.button_preferences, True, True, 0)
 
         # Cancel and rename
         self.buttons_box = Gtk.HBox(spacing=6, homogeneous=True)
@@ -162,7 +171,8 @@ class Footer(Gtk.VBox):
 
         if status_error:
             if status_error != 'hidden-file-error':
-                prefix = '<span color="{}">→</span>  '.format(self.color_settings['error-color'])
+                prefix = '<span color="{}">→</span>  '.format(
+                    self.color_settings['error-color'])
                 self.label_error.set_markup(
                     prefix + self.message[status_error])
                 self.can_rename = False
@@ -175,7 +185,8 @@ class Footer(Gtk.VBox):
                 if sensitive:
                     self.button_rename.set_sensitive(False)
             elif status_error == 'hidden-file-error':
-                prefix = '<span color="{}">→</span>  '.format(self.color_settings['warning-color'])
+                prefix = '<span color="{}">→</span>  '.format(
+                    self.color_settings['warning-color'])
                 self.label_warning.set_markup(
                     prefix + self.message[status_error])
                 self.can_rename = True

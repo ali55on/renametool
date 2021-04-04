@@ -15,7 +15,7 @@ class StackHeader(Gtk.VBox):
     between them. Each of the two pages is a separate object (class).
     """
     def __init__(self, markup_settings, *args, **kwargs) -> None:
-        """class constructor
+        """Class constructor
 
         Initializes the program's header widgets.
 
@@ -119,7 +119,7 @@ class RenameArea(Gtk.VBox):
     Box where Gtk.Entry is located to type the new file name.
     """
     def __init__(self, markup_settings, *args, **kwargs) -> None:
-        """class constructor
+        """Class constructor
 
         Initializes the area with the widgets to rename the files.
 
@@ -287,7 +287,7 @@ class ReplaceArea(Gtk.HBox):
     "Search Entry" in the file name.
     """
     def __init__(self, *args, **kwargs) -> None:
-        """class constructor
+        """Class constructor
 
         Initializes the area with the widgets to replace text in the
         file name.
@@ -330,7 +330,7 @@ class ReplaceArea(Gtk.HBox):
         """
         return self.search_entry.get_text()
 
-    def get_replace_text(self):
+    def get_replace_text(self) -> str:
         """Gets the text to replace
 
         The text in Gtk.Entry for replacement.
@@ -350,7 +350,7 @@ class PopoverMenu(Gtk.PopoverMenu):
     def __init__(
             self, parent_widget, interaction_widget,
             markup_settings, *args, **kwargs) -> None:
-        """class constructor
+        """Class constructor
 
         Initializes PopoverMenu widgets.
         
@@ -417,27 +417,27 @@ class PopoverMenu(Gtk.PopoverMenu):
 
         self.__check_sensitive_buttons()
 
-    def __on_button_1(self, widget):
+    def __on_button_1(self, widget) -> None:
         # Add the mark '[1, 2, 3]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[1, 2, 3]'])
 
-    def __on_button_01(self, widget):
+    def __on_button_01(self, widget) -> None:
         # Add the mark '[01, 02, 03]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[01, 02, 03]'])
 
-    def __on_button_001(self, widget):
+    def __on_button_001(self, widget) -> None:
         # Add the mark '[001, 002, 003]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[001, 002, 003]'])
 
-    def __on_button_original_name(self, widget):
+    def __on_button_original_name(self, widget) -> None:
         # Add the mark '[original-name]' in the Gtk.Entry text 
         self.entry_widget.do_insert_at_cursor(
             self.entry_widget, self.markup_settings['[original-name]'])
 
-    def __block_num_buttons(self, block: bool):
+    def __block_num_buttons(self, block: bool) -> None:
         # Blocks "markup-numbers" items in the menu.
         # Only if there is already a "markup-numbers" in Gtk.Entry.text
         buttons = [self.button_1, self.button_01, self.button_001]
@@ -448,7 +448,7 @@ class PopoverMenu(Gtk.PopoverMenu):
             for button in buttons:
                 button.set_sensitive(True)
 
-    def __check_sensitive_buttons(self):
+    def __check_sensitive_buttons(self) -> None:
         # Checks the initial "sensitivity" of the PopoverMenu buttons 
         text = self.entry_widget.get_text()
 
