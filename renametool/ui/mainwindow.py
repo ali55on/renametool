@@ -103,7 +103,7 @@ class RenameToolWindow(Gtk.Window):
         self.__preview_daemon()
 
     def __preview_daemon(self) -> None:
-        # starts the preview daemon
+        # Starts the preview daemon
         if not self.files_preview:
             GLib.idle_add(self.__preview_daemon_glib)
         GLib.timeout_add(300, self.__preview_daemon)

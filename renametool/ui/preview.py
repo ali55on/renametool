@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-import threading
-
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib, Gdk
@@ -10,9 +8,20 @@ from tools.replace import Replace
 
 
 class Preview(Gtk.VBox):
-    """"""
+    """Preview Box
+
+    List with preview of changes to file names.
+    """
     def __init__(self, header, color_settings, markup_settings, file_list, *args, **kwargs):
-        """"""
+        """Class constructor
+
+        Initializes Preview widgets.
+
+        :param header: Program header (Gtk.Widget/Gtk.Box) object
+        :param color_settings: A 'dictionary' with color settings
+        :param markup_settings: A 'dictionary' with markup settings
+        :param file_list: Python 'list' of 'File' objects
+        """
         Gtk.VBox.__init__(self, *args, **kwargs)
         # Args
         self.header = header
@@ -20,9 +29,6 @@ class Preview(Gtk.VBox):
         self.file_list = file_list
         self.markup_settings = markup_settings
         self.status_error = None
-
-        # Flag
-        self.preview_daemon = False
 
         # Scrolled Window
         self.scrolled_window = Gtk.ScrolledWindow(
@@ -58,25 +64,13 @@ class Preview(Gtk.VBox):
         self.is_the_first_preview_loop = True
 
         if self.file_list:
-            self.preview_daemon = True
-            self.__init_daemon_for_preview()
+            self.__preview_daemon()
 
-    def __init_daemon_for_preview(self):
-        # Preview threading
-        thread = threading.Thread(target=self.preview_threading)
-        thread.daemon = True
-        thread.start()
+    def __preview_daemon(self):
+        GLib.idle_add(self.__change_preview_gtk_widgets)
+        GLib.timeout_add(300, self.__preview_daemon)
 
-    def set_file_list(self, file_list):
-        self.file_list = file_list
-        if not self.preview_daemon:
-            self.__init_daemon_for_preview()
-
-    def preview_threading(self):
-        GLib.idle_add(self.preview_threading_glib)
-        GLib.timeout_add(300, self.preview_threading)
-
-    def preview_threading_glib(self):
+    def __change_preview_gtk_widgets(self):
         # Rename
         if self.header.get_active_stack_name() == 'rename':
             rename_text = self.header.get_rename_text()
@@ -223,3 +217,13 @@ class Preview(Gtk.VBox):
                 list_store.append([old + file.get_extension() + '   ', '   → ' + new + file.get_extension()])
         # Set TreeView model
         self.tree_view.set_model(list_store)
+
+    def set_file_list(self, file_list):
+        """Set the file list
+
+        Makes the file list the one passed in the parameter.
+
+        :param file_list: Python 'list' of 'File' objects 
+        """
+        self.file_list = file_list
+        self.__preview_daemon()
