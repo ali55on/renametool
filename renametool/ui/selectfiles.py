@@ -12,7 +12,7 @@ class SelectFiles(Gtk.VBox):
     Adds a button to select the files to be renamed
     """
     def __init__(self, file_list, *args, **kwargs):
-         """Class constructor
+        """Class constructor
 
         Initializes SelectFiles widgets.
 

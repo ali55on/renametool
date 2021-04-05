@@ -68,6 +68,21 @@ class Preview(Gtk.VBox):
         self.active_stack_name = self.header.get_active_stack_name()
         self.is_the_first_preview_loop = True
 
+        # Error and Warning color
+        self.error_color = self.color_settings['error-color']
+        self.warning_color = self.color_settings['warning-color']
+
+        # Arrows
+        self.arrow_character  = '→'
+
+        self.error_arrow = '   <span color="{}">{}</span> '.format(
+            self.error_color, self.arrow_character)
+        
+        self.warning_arrow = '   <span color="{}">{}</span> '.format(
+            self.warning_color, self.arrow_character)
+        
+        self.normal_arrow = '   {} '.format(self.arrow_character)
+        
         if self.file_list:
             self.__preview_daemon()
 
@@ -166,24 +181,21 @@ class Preview(Gtk.VBox):
         # Config ListStore
         for i in self.file_list:
             note = i.get_note()
+
+            old_name = i.get_original_name() + i.get_extension() + '   '
+            typed_name = i.get_name() + i.get_extension()
+
             # Error
             if note and note != 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(
-                    self.color_settings['error-color'])
-                list_store.append(
-                    [i.get_original_name() + i.get_extension() + '   ',
-                     prefix + i.get_name() + i.get_extension()])
+                list_store.append([old_name, self.error_arrow + typed_name])
+
             # Warning
             elif note and note == 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(
-                    self.color_settings['warning-color'])
-                list_store.append(
-                    [i.get_original_name() + i.get_extension() + '   ',
-                     prefix + i.get_name() + i.get_extension()])
+                list_store.append([old_name, self.warning_arrow + typed_name])
+
+            # Normal
             else:
-                list_store.append(
-                    [i.get_original_name() + i.get_extension() + '   ',
-                     '   → ' + i.get_name() + i.get_extension()])
+                list_store.append([old_name, self.normal_arrow + typed_name])
 
         # Set TreeView model
         self.tree_view.set_model(list_store)
@@ -210,38 +222,37 @@ class Preview(Gtk.VBox):
         else:
             self.status_error = None
 
-        # Config ListStore
+        # Matching colors prefix
         old_color = '<span background="{}">'.format(
             self.color_settings['old-matching-color'])
         new_color = '<span background="{}">'.format(
             self.color_settings['new-matching-color'])
         end_color = '</span>'
+
+        # Config ListStore
         for file in self.file_list:
             note = file.get_note()
-            old = file.get_original_name().replace(
+
+            old_name_match = file.get_original_name().replace(
                 search_text, old_color + search_text + end_color)
-            new = file.get_original_name().replace(
+            old_name = old_name_match + file.get_extension() + '   '
+
+            typed_name_match = file.get_original_name().replace(
                 search_text, new_color + replace_text + end_color)
+            typed_name = typed_name_match + file.get_extension()
+
             # Error
             if note and note != 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(
-                    self.color_settings['error-color'])
-                list_store.append(
-                    [old + file.get_extension() + '   ',
-                     prefix + new + file.get_extension()])
+                list_store.append([old_name, self.error_arrow + typed_name])
+            
             # Warning
             elif note and note == 'hidden-file-error' and note == error_found:
-                prefix = '   <span color="{}">→</span> '.format(
-                    self.color_settings['warning-color'])
-                list_store.append(
-                    [old + file.get_extension() + '   ',
-                     prefix + new + file.get_extension()])
+                list_store.append([old_name, self.warning_arrow + typed_name])
+
+            # Normal
             else:
-                list_store.append(
-                    [old + file.get_extension()
-                    + '   ', '   → '
-                    + new + file.get_extension()]
-                    )
+                list_store.append([old_name, self.normal_arrow + typed_name])
+
         # Set TreeView model
         self.tree_view.set_model(list_store)
 
