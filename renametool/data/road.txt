@@ -1,0 +1,5 @@
+Dialog select files and folders
+
+script to install
+
+include 'match text' for extensions in "Search and repalce" option

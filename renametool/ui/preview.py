@@ -140,8 +140,8 @@ class Preview(Gtk.VBox):
             # Check if the Gtk.Entry text
             search_text != self.prev_existing_text,
             replace_text != self.prev_replace_text,  # is new updated text
-            self.header.get_active_stack_name() != self.active_stack_name
-        ]
+            self.header.get_active_stack_name() != self.active_stack_name]
+            
         if any(condition):  # Update information
             if search_text != self.prev_existing_text:
                 self.prev_existing_text = search_text

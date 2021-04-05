@@ -110,13 +110,41 @@ class Footer(Gtk.VBox):
 
         # Messages
         self.message = {
-            'completely-unnamed': 'Unnamed file',
-            'repeated-name-error': 'More than one file with the same name',
-            'character-error': 'The slash character is not allowed in the filename',
-            'name-not-allowed-error': 'One dot or two dots are not allowed as filenames',
-            'existing-name-error': 'Filename already exists in the directory',
-            'length-error': 'Filename too long',
-            'hidden-file-error': 'Files that the name starts with a dot will be hidden'}
+            'completely-unnamed': (
+                'Unnamed file'),
+
+            'repeated-name-error': (
+                'More than one file with the same name'),
+
+            'character-error': (
+                'The slash character is not allowed in the filename'),
+
+            'name-not-allowed-error': (
+                'One dot or two dots are not allowed as filenames'),
+
+            'existing-name-error': (
+                'Filename already exists in the directory'),
+
+            'length-error': (
+                'Filename too long'),
+
+            'hidden-file-error': (
+                'Files that the name starts with a dot will be hidden')}
+
+        # Error and Warning color
+        self.error_color = self.color_settings['error-color']
+        self.warning_color = self.color_settings['warning-color']
+
+        # Arrows
+        self.arrow_character  = '→'
+
+        self.error_arrow = '<span color="{}">{}</span> '.format(
+            self.error_color, self.arrow_character)
+        
+        self.warning_arrow = '<span color="{}">{}</span> '.format(
+            self.warning_color, self.arrow_character)
+        
+        self.normal_arrow = '{} '.format(self.arrow_character)
 
         self.__status_error_threading()
 
@@ -167,10 +195,8 @@ class Footer(Gtk.VBox):
 
         if status_error:
             if status_error != 'hidden-file-error':
-                prefix = '<span color="{}">→</span>  '.format(
-                    self.color_settings['error-color'])
                 self.label_error.set_markup(
-                    prefix + self.message[status_error])
+                    self.error_arrow + self.message[status_error])
                 self.can_rename = False
 
                 if not visible_err:
@@ -180,11 +206,10 @@ class Footer(Gtk.VBox):
 
                 if sensitive:
                     self.button_rename.set_sensitive(False)
+
             elif status_error == 'hidden-file-error':
-                prefix = '<span color="{}">→</span>  '.format(
-                    self.color_settings['warning-color'])
                 self.label_warning.set_markup(
-                    prefix + self.message[status_error])
+                    self.warning_arrow + self.message[status_error])
                 self.can_rename = True
 
                 if not visible_war:

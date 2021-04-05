@@ -1,0 +1,25 @@
+Nautilus Python
+
+Pacote:
+    nautilus-python
+
+Fonte:
+    https://gitlab.gnome.org/GNOME/nautilus-python/
+
+Projeto:
+    https://wiki.gnome.org/Projects/NautilusPython/
+    
+
+###########
+Nemo Python
+
+Pacote:
+    nemo-python
+
+Fonte:
+    https://github.com/linuxmint/nemo-extensions/tree/master/nemo-python
+    
+    
+##############
+Restart nautilus:
+    nautilus -q; sleep 2; nautilus
