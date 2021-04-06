@@ -16,7 +16,7 @@ class Footer(Gtk.VBox):
     area that is visible only when necessary.
     """
     def __init__(
-            self, preview, color_settings, file_list,
+            self, preview, markup_settings, color_settings, file_list,
             transient_for, *args, **kwargs) -> None:
         """Class constructor
 
@@ -31,6 +31,7 @@ class Footer(Gtk.VBox):
             self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
+        self.markup_settings = markup_settings
         self.color_settings = color_settings
         self.file_list = file_list
         self.transient = transient_for
@@ -159,7 +160,11 @@ class Footer(Gtk.VBox):
 
     def __on_menu(self, widget) -> None:
         # Open PopoverMenu
-        PopoverMenu(parent_widget=widget, transient_for=self.transient)
+        PopoverMenu(
+            markup_settings=self.markup_settings,
+            color_settings=self.color_settings,
+            parent_widget=widget,
+            transient_for=self.transient)
 
     def __on_rename(self, widget) -> None:
         # Renames files
@@ -239,7 +244,10 @@ class PopoverMenu(Gtk.PopoverMenu):
     text to rename the files.
     This menu has items that add 'markings' to the "Gtk.Entry" text.
     """
-    def __init__(self, parent_widget, transient_for, *args, **kwargs) -> None:
+    def __init__(
+        self, markup_settings, color_settings,
+        parent_widget, transient_for,
+        *args, **kwargs) -> None:
         """Class constructor
 
         Initializes PopoverMenu widgets.
@@ -248,6 +256,8 @@ class PopoverMenu(Gtk.PopoverMenu):
         """
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
         # Args
+        self.markup_settings = markup_settings
+        self.color_settings = color_settings
         self.parent_widget = parent_widget
         self.transient = transient_for
 
@@ -269,14 +279,17 @@ class PopoverMenu(Gtk.PopoverMenu):
         # Config PopoverMenu
         self.vbox.show_all()
         self.add(self.vbox)
-        self.set_position(Gtk.PositionType.BOTTOM)
+        self.set_position(Gtk.PositionType.TOP)
         self.set_relative_to(self.parent_widget)
         self.show_all()
         self.popup()
 
     def __on_preferences(self, widget) -> None:
         # Opens the preferences window
-        preferences_win = PreferencesWindow(transient_for=self.transient)
+        preferences_win = PreferencesWindow(
+            markup_settings=self.markup_settings,
+            color_settings=self.color_settings,
+            transient_for=self.transient)
         preferences_win.show_all()
 
     def __on_about(self, widget) -> None:
