@@ -6,6 +6,11 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 
+from tools.settings import UserSettings
+
+
+settings = UserSettings()
+
 
 class StackHeader(Gtk.VBox):
     """Program header
@@ -14,7 +19,7 @@ class StackHeader(Gtk.VBox):
     replace a text. Above the pages there is a change button to switch
     between them. Each of the two pages is a separate object (class).
     """
-    def __init__(self, markup_settings, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes the program's header widgets.
@@ -24,8 +29,6 @@ class StackHeader(Gtk.VBox):
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, halign=Gtk.Align.CENTER,
             width_request=550, margin=18, margin_bottom=0, *args, **kwargs)
-        # Args
-        self.markup_settings = markup_settings
 
         # Flags
         self.active_work_stack_name = 'rename'
@@ -49,7 +52,7 @@ class StackHeader(Gtk.VBox):
         self.stack.set_transition_duration(300)
 
         # "Rename" Stack-Page
-        self.tab_rename = RenameArea(markup_settings=self.markup_settings)
+        self.tab_rename = RenameArea()
         self.stack.add_titled(self.tab_rename, 'rename', 'Rename stack')
 
         # "Replace" Stack-Page
@@ -118,7 +121,7 @@ class RenameArea(Gtk.VBox):
 
     Box where Gtk.Entry is located to type the new file name.
     """
-    def __init__(self, markup_settings, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes the area with the widgets to rename the files.
@@ -127,8 +130,9 @@ class RenameArea(Gtk.VBox):
         """
         Gtk.VBox.__init__(
             self, spacing=6, valign=Gtk.Align.START, *args, **kwargs)
-        # Args
-        self.markup_settings = markup_settings
+        
+        # Settings
+        self.markup_settings = settings.get_markup_settings()
 
         # Main box
         self.text_box = Gtk.HBox()
@@ -173,9 +177,7 @@ class RenameArea(Gtk.VBox):
     def __on_menu(self, widget) -> None:
         # Gtk.Button of Gtk.Entry (+ Add)
         # Open PopoverMenu
-        PopoverMenu(
-            parent_widget=widget, interaction_widget=self.entry,
-            markup_settings=self.markup_settings)
+        PopoverMenu(parent_widget=widget, interaction_widget=self.entry)
 
     def __on_backspace_signal(self, widget) -> None:
         # Delete template-markup when Backspace key is pressed
@@ -348,8 +350,7 @@ class PopoverMenu(Gtk.PopoverMenu):
     This menu has items that add 'markings' to the "Gtk.Entry" text.
     """
     def __init__(
-            self, parent_widget, interaction_widget,
-            markup_settings, *args, **kwargs) -> None:
+            self, parent_widget, interaction_widget, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes PopoverMenu widgets.
@@ -360,10 +361,13 @@ class PopoverMenu(Gtk.PopoverMenu):
         :param markup_settings: A 'dictionary' with markup settings
         """
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
+        
         # Args
         self.parent_widget = parent_widget
         self.entry_widget = interaction_widget
-        self.markup_settings = markup_settings
+
+        # Settings
+        self.markup_settings = settings.get_markup_settings()
 
         # Main box
         self.vbox = Gtk.VBox(margin=12)

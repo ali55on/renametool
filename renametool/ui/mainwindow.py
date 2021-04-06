@@ -8,7 +8,6 @@ from gi.repository import Gtk
 from gi.repository import GLib
 
 from tools.title import Title
-from tools.settings import UserSettings
 from ui.header import StackHeader
 from ui.selectfiles import SelectFiles
 from ui.preview import Preview
@@ -34,11 +33,6 @@ class RenameToolWindow(Gtk.Window):
         # Args
         self.file_list = file_list
 
-        # Settings
-        self.settings = UserSettings()
-        self.markup_settings = self.settings.get_markup_settings()
-        self.color_settings = self.settings.get_color_settings()
-
         # Flags
         self.files_preview = False
 
@@ -50,7 +44,7 @@ class RenameToolWindow(Gtk.Window):
         self.add(self.main_box)
 
         # Header
-        self.header = StackHeader(markup_settings=self.markup_settings)
+        self.header = StackHeader()
         self.main_box.pack_start(self.header, True, True, 0)
 
         self.separator_top = Gtk.Separator(
@@ -63,10 +57,7 @@ class RenameToolWindow(Gtk.Window):
         self.stack.set_transition_duration(300)
 
         # Preview
-        self.preview = Preview(
-            header=self.header, color_settings=self.color_settings,
-            markup_settings=self.markup_settings,
-            file_list=self.file_list)
+        self.preview = Preview(header=self.header, file_list=self.file_list)
 
         # Select
         self.select_area = SelectFiles(file_list=self.file_list)
@@ -89,8 +80,6 @@ class RenameToolWindow(Gtk.Window):
 
         self.footer = Footer(
             preview=self.preview,
-            markup_settings=self.markup_settings,
-            color_settings=self.color_settings,
             file_list=self.file_list,
             transient_for=self)
         self.main_box.pack_start(self.footer, True, True, 0)

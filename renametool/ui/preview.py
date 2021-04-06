@@ -5,6 +5,10 @@ from gi.repository import Gtk, GLib, Gdk
 
 from tools.rename import Rename
 from tools.replace import Replace
+from tools.settings import UserSettings
+
+
+settings = UserSettings()
 
 
 class Preview(Gtk.VBox):
@@ -12,9 +16,7 @@ class Preview(Gtk.VBox):
 
     List with preview of changes to file names.
     """
-    def __init__(
-            self, header, color_settings, markup_settings,
-            file_list, *args, **kwargs):
+    def __init__(self, header, file_list, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes Preview widgets.
@@ -27,10 +29,12 @@ class Preview(Gtk.VBox):
         Gtk.VBox.__init__(self, *args, **kwargs)
         # Args
         self.header = header
-        self.color_settings = color_settings
         self.file_list = file_list
-        self.markup_settings = markup_settings
         self.status_error = None
+
+        # Settings
+        self.markup_settings = settings.get_markup_settings()
+        self.color_settings = settings.get_color_settings()
 
         # Scrolled Window
         self.scrolled_window = Gtk.ScrolledWindow(

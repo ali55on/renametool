@@ -6,6 +6,10 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 
 from ui.preferences import PreferencesWindow
+from tools.settings import UserSettings
+
+
+settings = UserSettings()
 
 
 class Footer(Gtk.VBox):
@@ -16,7 +20,7 @@ class Footer(Gtk.VBox):
     area that is visible only when necessary.
     """
     def __init__(
-            self, preview, markup_settings, color_settings, file_list,
+            self, preview, file_list,
             transient_for, *args, **kwargs) -> None:
         """Class constructor
 
@@ -31,10 +35,11 @@ class Footer(Gtk.VBox):
             self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
-        self.markup_settings = markup_settings
-        self.color_settings = color_settings
         self.file_list = file_list
         self.transient = transient_for
+
+        # Settings
+        self.color_settings = settings.get_color_settings()
 
         # Flags
         self.can_rename = False
@@ -160,11 +165,7 @@ class Footer(Gtk.VBox):
 
     def __on_menu(self, widget) -> None:
         # Open PopoverMenu
-        PopoverMenu(
-            markup_settings=self.markup_settings,
-            color_settings=self.color_settings,
-            parent_widget=widget,
-            transient_for=self.transient)
+        PopoverMenu(parent_widget=widget, transient_for=self.transient)
 
     def __on_rename(self, widget) -> None:
         # Renames files
@@ -245,9 +246,7 @@ class PopoverMenu(Gtk.PopoverMenu):
     This menu has items that add 'markings' to the "Gtk.Entry" text.
     """
     def __init__(
-        self, markup_settings, color_settings,
-        parent_widget, transient_for,
-        *args, **kwargs) -> None:
+        self, parent_widget, transient_for, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes PopoverMenu widgets.
@@ -256,8 +255,6 @@ class PopoverMenu(Gtk.PopoverMenu):
         """
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
         # Args
-        self.markup_settings = markup_settings
-        self.color_settings = color_settings
         self.parent_widget = parent_widget
         self.transient = transient_for
 
@@ -286,10 +283,7 @@ class PopoverMenu(Gtk.PopoverMenu):
 
     def __on_preferences(self, widget) -> None:
         # Opens the preferences window
-        preferences_win = PreferencesWindow(
-            markup_settings=self.markup_settings,
-            color_settings=self.color_settings,
-            transient_for=self.transient)
+        preferences_win = PreferencesWindow(transient_for=self.transient)
         preferences_win.show_all()
 
     def __on_about(self, widget) -> None:

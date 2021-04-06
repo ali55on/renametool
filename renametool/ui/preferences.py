@@ -3,16 +3,18 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
+from tools.settings import UserSettings
+
+
+settings = UserSettings()
+
 
 class PreferencesWindow(Gtk.Window):
     """Preferences Window
 
     RenameTool application preferences window.
     """
-    def __init__(
-            self, 
-            markup_settings: dict, color_settings: dict,
-            *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes Preferences Window widgets.
@@ -23,29 +25,25 @@ class PreferencesWindow(Gtk.Window):
             self, icon_name='preferences-system-symbolic', modal=True,
             type_hint=1, title='Rename Tool - Preferences', *args, **kwargs)
 
-        # Args
-        self.markup_settings = markup_settings
-        self.color_settings = color_settings
-
         # Main container
         self.notebook = Gtk.Notebook(show_border=False)
         self.add(self.notebook)
 
-        self.app_page = AppPage()  # app_settings=self.app_settings
+        self.app_page = AppPage()
         self.notebook.append_page(self.app_page, Gtk.Label(label="App"))
 
-        self.markup_page = MarkupPage(markup_settings=self.markup_settings)
+        self.markup_page = MarkupPage()
         self.notebook.append_page(
             self.markup_page, Gtk.Label(label="Templates"))
 
-        self.color_page = ColorPage(color_settings=self.color_settings)
+        self.color_page = ColorPage()
         self.notebook.append_page(
             self.color_page, Gtk.Label(label="Colors"))
 
 
 class AppPage(Gtk.VBox):
     """App Page box"""
-    def __init__(self, app_settings: dict = None, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes App Page widgets.
@@ -53,16 +51,12 @@ class AppPage(Gtk.VBox):
         :param app_settings: A 'dictionary' with app settings
         """
         Gtk.Box.__init__(self, margin=18, *args, **kwargs)
-
-        # Args
-        self.app_settings = app_settings
-
         self.pack_start(Gtk.Label(label='App Preferences'), True, True, 0)
 
 
 class MarkupPage(Gtk.VBox):
     """Markup Page box"""
-    def __init__(self, markup_settings: dict = None, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes Markup Page widgets.
@@ -71,15 +65,14 @@ class MarkupPage(Gtk.VBox):
         """
         Gtk.Box.__init__(self, margin=18, *args, **kwargs)
 
-        # Args
-        self.markup_settings = markup_settings
-
+        # Settings
+        self.markup_settings = settings.get_markup_settings()
         self.pack_start(Gtk.Label(label='Template Preferences'), True, True, 0)
 
 
 class ColorPage(Gtk.VBox):
     """Color Page box"""
-    def __init__(self, color_settings: dict = None, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes Color Page widgets.
@@ -88,10 +81,8 @@ class ColorPage(Gtk.VBox):
         """
         Gtk.Box.__init__(self, margin=18, *args, **kwargs)
 
-        # Args
-        self.color_settings = color_settings
-        print(self.color_settings)
-
+        # Settings
+        self.color_settings = settings.get_color_settings()
         self.pack_start(Gtk.Label(label='Color Preferences'), True, True, 0)
 
 
