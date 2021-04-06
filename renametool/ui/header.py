@@ -30,19 +30,6 @@ class StackHeader(Gtk.VBox):
         # Flags
         self.active_work_stack_name = 'rename'
 
-        # Create Stack
-        self.stack = Gtk.Stack()
-        self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
-        self.stack.set_transition_duration(300)
-
-        # "Rename" Stack-Page
-        self.tab_rename = RenameArea(markup_settings=self.markup_settings)
-        self.stack.add_titled(self.tab_rename, 'rename', 'Rename stack')
-
-        # "Replace" Stack-Page
-        self.tab_replace = ReplaceArea()
-        self.stack.add_titled(self.tab_replace, 'replace', 'Replace stack')
-
         # Set Switch Button on top
         self.box_switch = Gtk.HBox(
             margin_start=50, margin_end=50, spacing=6, halign=Gtk.Align.START)
@@ -55,6 +42,19 @@ class StackHeader(Gtk.VBox):
 
         self.label_switch = Gtk.Label(label='Search and replace text')
         self.box_switch.pack_start(self.label_switch, True, True, 0)
+
+        # Create Stack
+        self.stack = Gtk.Stack()
+        self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_UP_DOWN)
+        self.stack.set_transition_duration(300)
+
+        # "Rename" Stack-Page
+        self.tab_rename = RenameArea(markup_settings=self.markup_settings)
+        self.stack.add_titled(self.tab_rename, 'rename', 'Rename stack')
+
+        # "Replace" Stack-Page
+        self.tab_replace = ReplaceArea()
+        self.stack.add_titled(self.tab_replace, 'replace', 'Replace stack')
 
         # Set Stack-Pages on bottom
         self.pack_start(self.stack, True, True, 0)

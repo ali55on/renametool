@@ -17,7 +17,7 @@ class Footer(Gtk.VBox):
     """
     def __init__(
             self, preview, color_settings, file_list,
-            transient, *args, **kwargs) -> None:
+            transient_for, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes the program's footer widgets.
@@ -33,7 +33,7 @@ class Footer(Gtk.VBox):
         self.preview = preview
         self.color_settings = color_settings
         self.file_list = file_list
-        self.transient = transient
+        self.transient = transient_for
 
         # Flags
         self.can_rename = False
@@ -76,19 +76,19 @@ class Footer(Gtk.VBox):
             homogeneous=True, valign=Gtk.Align.END)
         self.pack_start(self.buttons_base_box, True, True, 0)
 
-        # Preferences
+        # Menu
         self.buttons_incon_box = Gtk.HBox(
             spacing=6, homogeneous=True, halign=Gtk.Align.START)
         self.buttons_base_box.pack_start(self.buttons_incon_box, True, True, 0)
 
-        self.icon_preferences = Gtk.Image(
-            icon_name='preferences-other-symbolic')
-        self.button_preferences = Gtk.Button(
-            image=self.icon_preferences, always_show_image=True,
-            tooltip_text='Preferences')
-        self.button_preferences.connect('clicked', self.__on_preferences)
+        self.icon_menu = Gtk.Image( 
+            icon_name='open-menu-symbolic')  # 'preferences-other-symbolic'
+        self.button_menu = Gtk.Button(
+            image=self.icon_menu, always_show_image=True,
+            tooltip_text='Menu')
+        self.button_menu.connect('clicked', self.__on_menu)
         self.buttons_incon_box.pack_start(
-            self.button_preferences, True, True, 0)
+            self.button_menu, True, True, 0)
 
         # Cancel and rename
         self.buttons_box = Gtk.HBox(spacing=6, homogeneous=True)
@@ -157,10 +157,9 @@ class Footer(Gtk.VBox):
         """
         self.file_list = file_list
 
-    def __on_preferences(self, widget) -> None:
-        # Opens the preferences window
-        preferences_win = PreferencesWindow(transient_for=self.transient)
-        preferences_win.show_all()
+    def __on_menu(self, widget) -> None:
+        # Open PopoverMenu
+        PopoverMenu(parent_widget=widget, transient_for=self.transient)
 
     def __on_rename(self, widget) -> None:
         # Renames files
@@ -231,3 +230,54 @@ class Footer(Gtk.VBox):
                 self.label_warning.set_visible(False)
             if visible_err:
                 self.label_error.set_visible(False)
+
+
+class PopoverMenu(Gtk.PopoverMenu):
+    """Template PopoverMenu
+
+    The "+ Add" button menu next to the "Gtk.Entry" that receives the
+    text to rename the files.
+    This menu has items that add 'markings' to the "Gtk.Entry" text.
+    """
+    def __init__(self, parent_widget, transient_for, *args, **kwargs) -> None:
+        """Class constructor
+
+        Initializes PopoverMenu widgets.
+        
+        :param parent_widget: Parent 'Gtk.Widget'
+        """
+        Gtk.PopoverMenu.__init__(self, *args, **kwargs)
+        # Args
+        self.parent_widget = parent_widget
+        self.transient = transient_for
+
+        # Main box
+        self.vbox = Gtk.VBox(margin=12)
+
+        # 'preferences-other-symbolic'
+        self.button_preferences = Gtk.ModelButton(
+            label='Preferences', halign=Gtk.Align.START)
+        self.button_preferences.connect('clicked', self.__on_preferences)
+        self.vbox.pack_start(self.button_preferences, True, True, 0)
+
+        # 'preferences-other-symbolic'
+        self.button_about = Gtk.ModelButton(
+            label='About', halign=Gtk.Align.START)
+        self.button_about.connect('clicked', self.__on_about)
+        self.vbox.pack_start(self.button_about, True, True, 0)
+
+        # Config PopoverMenu
+        self.vbox.show_all()
+        self.add(self.vbox)
+        self.set_position(Gtk.PositionType.BOTTOM)
+        self.set_relative_to(self.parent_widget)
+        self.show_all()
+        self.popup()
+
+    def __on_preferences(self, widget) -> None:
+        # Opens the preferences window
+        preferences_win = PreferencesWindow(transient_for=self.transient)
+        preferences_win.show_all()
+
+    def __on_about(self, widget) -> None:
+        print('About')

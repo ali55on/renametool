@@ -89,7 +89,7 @@ class RenameToolWindow(Gtk.Window):
 
         self.footer = Footer(
             preview=self.preview, color_settings=self.color_settings,
-            file_list=self.file_list, transient=self)
+            file_list=self.file_list, transient_for=self)
         self.main_box.pack_start(self.footer, True, True, 0)
 
         # Focus
