@@ -5,3 +5,4 @@ FileChooserButton
 rename only one file by context
 about dialog
 translate
+json api

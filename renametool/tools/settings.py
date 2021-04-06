@@ -9,8 +9,6 @@ class UserSettings(object):
         self.__settings_path = os.getenv('HOME') + '/.config/rename_tool'
         self.__markup_settings_file = self.__settings_path + '/settings_markup.json'
         self.__colors_settings_file = self.__settings_path + '/settings_colors.json'
-        self.__markup_settings = self.__load_markup_settings()
-        self.__color_settings = self.__load_color_settings()
 
     def __markup_settings_already_exist(self) -> bool:
         try:
@@ -87,11 +85,13 @@ class UserSettings(object):
 
     def get_markup_settings(self):
         """"""
-        return self.__markup_settings
+        markup_settings = self.__load_markup_settings()
+        return markup_settings
 
     def get_color_settings(self):
         """"""
-        return self.__color_settings
+        color_settings = self.__load_color_settings()
+        return color_settings
 
     def set_markup_settings(self, settings: dict):
         """"""
