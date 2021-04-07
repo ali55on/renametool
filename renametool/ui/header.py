@@ -294,7 +294,9 @@ class ReplaceArea(Gtk.HBox):
         Initializes the area with the widgets to replace text in the
         file name.
         """
-        Gtk.HBox.__init__(self, spacing=6, *args, **kwargs)
+        Gtk.HBox.__init__(
+            self, spacing=6, margin_bottom=6,
+            valign=Gtk.Align.START, *args, **kwargs)
         # Label box
         self.label_box = Gtk.VBox(spacing=6, margin_start=50)
         self.pack_start(self.label_box, False, True, 0)

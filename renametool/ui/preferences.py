@@ -30,15 +30,16 @@ class PreferencesWindow(Gtk.Window):
         self.add(self.notebook)
 
         self.app_page = AppPage()
-        self.notebook.append_page(self.app_page, Gtk.Label(label="Application"))
-
-        self.markup_page = MarkupPage()
         self.notebook.append_page(
-            self.markup_page, Gtk.Label(label="Rename tools"))
+            self.app_page, Gtk.Label(label='Application'))
 
-        self.color_page = ColorPage()
+        self.rename_page = RenamePage()
         self.notebook.append_page(
-            self.color_page, Gtk.Label(label="Replace text"))
+            self.rename_page, Gtk.Label(label='Rename tools'))
+
+        self.replace_page = ReplacePage()
+        self.notebook.append_page(
+            self.replace_page, Gtk.Label(label='Replace text'))
 
 
 class AppPage(Gtk.VBox):
@@ -54,7 +55,7 @@ class AppPage(Gtk.VBox):
         self.pack_start(Gtk.Label(label='App Preferences'), True, True, 0)
 
 
-class MarkupPage(Gtk.VBox):
+class RenamePage(Gtk.VBox):
     """Markup Page box"""
     def __init__(self, *args, **kwargs) -> None:
         """Class constructor
@@ -63,20 +64,24 @@ class MarkupPage(Gtk.VBox):
 
         :param markup_settings: A 'dictionary' with markup settings
         """
-        Gtk.Box.__init__(self, margin=18, *args, **kwargs)
+        Gtk.Box.__init__(
+            self, margin=18, *args, **kwargs)
 
         # Settings
         self.markup_settings = settings.get_markup_settings()
+
+        self.main_box = Gtk.VBox(halign=Gtk.Align.START, valign=Gtk.Align.START)
+        self.pack_start(self.main_box, True, True, 0)
 
         # Automatic numbers title
         aut_num_title = Gtk.Label(
             label='Automatic numbers templates',
             halign=Gtk.Align.START, margin_bottom=12)
-        self.pack_start(aut_num_title, True, True, 0)
+        self.main_box.pack_start(aut_num_title, True, True, 0)
 
         # Automatic numbers containers
         aut_num_main_box = Gtk.HBox(halign=Gtk.Align.END, spacing=6)
-        self.pack_start(aut_num_main_box, True, True, 0)
+        self.main_box.pack_start(aut_num_main_box, True, True, 0)
 
         aut_num_labels = Gtk.VBox(spacing=6)
         aut_num_main_box.pack_start(aut_num_labels, True, True, 0)
@@ -115,11 +120,10 @@ class MarkupPage(Gtk.VBox):
         orig_filename_title = Gtk.Label(
             label='Original filename template',
             halign=Gtk.Align.START, margin_top=18, margin_bottom=12)
-        self.pack_start(orig_filename_title, True, True, 0)
+        self.main_box.pack_start(orig_filename_title, True, True, 0)
 
-        # Original filename container
         orig_filename_box = Gtk.HBox(halign=Gtk.Align.END, spacing=6)
-        self.pack_start(orig_filename_box, True, True, 0)
+        self.main_box.pack_start(orig_filename_box, True, True, 0)
 
         label_orig_filename = Gtk.Label(
             label='Original filename', halign=Gtk.Align.END)
@@ -128,10 +132,27 @@ class MarkupPage(Gtk.VBox):
 
         self.entry_filename = EntryMarkup(halign=Gtk.Align.END)
         orig_filename_box.pack_start(self.entry_filename, True, True, 0)
-        self.entry_filename.set_text(self.markup_settings['[original-name]'][1:-1])
+        self.entry_filename.set_text(
+            self.markup_settings['[original-name]'][1:-1])
+
+        # Base
+        base_box = Gtk.HBox(
+            margin_top=18, spacing=6,
+            halign=Gtk.Align.START, valign=Gtk.Align.END)
+        self.pack_start(base_box, True, True, 0)
+
+        self.icon_redo = Gtk.Image(icon_name='edit-redo-symbolic')
+        self.button_redo = Gtk.Button(
+            image=self.icon_redo, tooltip_text='Reset to default')
+        base_box.pack_start(self.button_redo, True, True, 0)
+
+        self.icon_clear = Gtk.Image(icon_name='edit-clear-all-symbolic')
+        self.button_clear = Gtk.Button(
+            image=self.icon_clear, tooltip_text='Clear edits')
+        base_box.pack_start(self.button_clear, True, True, 0)
 
 
-class ColorPage(Gtk.VBox):
+class ReplacePage(Gtk.VBox):
     """Color Page box"""
     def __init__(self, *args, **kwargs) -> None:
         """Class constructor
@@ -144,7 +165,32 @@ class ColorPage(Gtk.VBox):
 
         # Settings
         self.color_settings = settings.get_color_settings()
-        self.pack_start(Gtk.Label(label='Color Preferences'), True, True, 0)
+
+        #
+        self.main_box = Gtk.VBox(halign=Gtk.Align.START, valign=Gtk.Align.START)
+        self.pack_start(self.main_box, True, True, 0)
+
+        # Automatic numbers title
+        aut_num_title = Gtk.Label(
+            label='Replace text',
+            halign=Gtk.Align.START, margin_bottom=12)
+        self.main_box.pack_start(aut_num_title, True, True, 0)
+
+        # Base
+        base_box = Gtk.HBox(
+            margin_top=18, spacing=6,
+            halign=Gtk.Align.START, valign=Gtk.Align.END)
+        self.pack_start(base_box, True, True, 0)
+
+        self.icon_redo = Gtk.Image(icon_name='edit-redo-symbolic')
+        self.button_redo = Gtk.Button(
+            image=self.icon_redo, tooltip_text='Reset to default')
+        base_box.pack_start(self.button_redo, True, True, 0)
+
+        self.icon_clear = Gtk.Image(icon_name='edit-clear-all-symbolic')
+        self.button_clear = Gtk.Button(
+            image=self.icon_clear, tooltip_text='Clear edits')
+        base_box.pack_start(self.button_clear, True, True, 0)
 
 
 class EntryMarkup(Gtk.HBox):

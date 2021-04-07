@@ -98,7 +98,7 @@ class RenameToolWindow(Gtk.Window):
         # Starts widget sensitivity daemon
         if not self.files_preview:
             GLib.idle_add(self.__change_widgets_sensitivity)
-        GLib.timeout_add(300, self.__widget_sensitivity_daemon )
+        GLib.timeout_add(300, self.__widget_sensitivity_daemon)
 
     def __change_widgets_sensitivity(self) -> None:
         # Sets the sensitivity of the widgets according to the
