@@ -26,8 +26,11 @@ class PreferencesWindow(Gtk.Window):
             type_hint=1, title='Rename Tool - Preferences', *args, **kwargs)
 
         # Main container
+        self.main_box = Gtk.VBox()
+        self.add(self.main_box)
+
         self.notebook = Gtk.Notebook(show_border=False)
-        self.add(self.notebook)
+        self.main_box.pack_start(self.notebook, True, True, 0)
 
         self.app_page = AppPage()
         self.notebook.append_page(
@@ -40,6 +43,22 @@ class PreferencesWindow(Gtk.Window):
         self.replace_page = ReplacePage()
         self.notebook.append_page(
             self.replace_page, Gtk.Label(label='Replace text'))
+
+        # Base
+        base_box = Gtk.HBox(
+            margin=18, spacing=6,
+            halign=Gtk.Align.START, valign=Gtk.Align.END)
+        self.main_box.pack_start(base_box, True, True, 0)
+
+        self.icon_redo = Gtk.Image(icon_name='edit-redo-symbolic')
+        self.button_redo = Gtk.Button(
+            image=self.icon_redo, tooltip_text='Reset to default')
+        base_box.pack_start(self.button_redo, True, True, 0)
+
+        self.icon_clear = Gtk.Image(icon_name='edit-clear-all-symbolic')
+        self.button_clear = Gtk.Button(
+            image=self.icon_clear, tooltip_text='Clear edits')
+        base_box.pack_start(self.button_clear, True, True, 0)
 
 
 class AppPage(Gtk.VBox):
@@ -55,7 +74,46 @@ class AppPage(Gtk.VBox):
         # highlights warning color
         # highlights error color
         Gtk.Box.__init__(self, margin=18, *args, **kwargs)
-        self.pack_start(Gtk.Label(label='App Preferences'), True, True, 0)
+
+        # Settings
+        self.color_settings = settings.get_color_settings()
+        
+        # Container
+        self.main_box = Gtk.VBox(
+            spacing=6, halign=Gtk.Align.START, valign=Gtk.Align.START)
+        self.pack_start(self.main_box, True, True, 0)
+
+        # Messages colors Title
+        messages_colors_itle = Gtk.Label(
+            label='Warning and error messages color highlight',
+            halign=Gtk.Align.START, margin_bottom=6)
+        self.main_box.pack_start(messages_colors_itle, True, True, 0)
+
+        # Warning color
+        warning_color_box = Gtk.HBox(spacing=6, halign=Gtk.Align.END)
+        self.main_box.pack_start(warning_color_box, True, True, 0)
+
+        label_warning_color = Gtk.Label('Warning color')
+        label_warning_color.set_sensitive(False)
+        warning_color_box.pack_start(label_warning_color, True, True, 0)
+
+        self.entry_warning_color = Gtk.Entry()
+        self.entry_warning_color.set_text(
+            self.color_settings['warning-color'])
+        warning_color_box.pack_start(self.entry_warning_color, True, True, 0)
+
+        # Error color
+        error_color_box = Gtk.HBox(spacing=6, halign=Gtk.Align.END)
+        self.main_box.pack_start(error_color_box, True, True, 0)
+
+        label_error_color = Gtk.Label('Error color')
+        label_error_color.set_sensitive(False)
+        error_color_box.pack_start(label_error_color, True, True, 0)
+
+        self.entry_error_color = Gtk.Entry()
+        self.entry_error_color.set_text(
+            self.color_settings['error-color'])
+        error_color_box.pack_start(self.entry_error_color, True, True, 0)
 
 
 class RenamePage(Gtk.VBox):
@@ -67,12 +125,12 @@ class RenamePage(Gtk.VBox):
 
         :param markup_settings: A 'dictionary' with markup settings
         """
-        Gtk.Box.__init__(
-            self, margin=18, *args, **kwargs)
+        Gtk.Box.__init__(self, margin=18, *args, **kwargs)
 
         # Settings
         self.markup_settings = settings.get_markup_settings()
 
+        # Container
         self.main_box = Gtk.VBox(
             spacing=6, halign=Gtk.Align.START, valign=Gtk.Align.START)
         self.pack_start(self.main_box, True, True, 0)
@@ -161,22 +219,6 @@ class RenamePage(Gtk.VBox):
         label_orig_filename_close = Gtk.Label(']')
         orig_filename_box.pack_start(label_orig_filename_close, True, True, 0)
 
-        # Base
-        base_box = Gtk.HBox(
-            margin_top=18, spacing=6,
-            halign=Gtk.Align.START, valign=Gtk.Align.END)
-        self.pack_start(base_box, True, True, 0)
-
-        self.icon_redo = Gtk.Image(icon_name='edit-redo-symbolic')
-        self.button_redo = Gtk.Button(
-            image=self.icon_redo, tooltip_text='Reset to default')
-        base_box.pack_start(self.button_redo, True, True, 0)
-
-        self.icon_clear = Gtk.Image(icon_name='edit-clear-all-symbolic')
-        self.button_clear = Gtk.Button(
-            image=self.icon_clear, tooltip_text='Clear edits')
-        base_box.pack_start(self.button_clear, True, True, 0)
-
 
 class ReplacePage(Gtk.VBox):
     """Color Page box"""
@@ -192,7 +234,7 @@ class ReplacePage(Gtk.VBox):
         # Settings
         self.color_settings = settings.get_color_settings()
 
-        #
+        # Container
         self.main_box = Gtk.VBox(
             spacing=6, halign=Gtk.Align.START, valign=Gtk.Align.START)
         self.pack_start(self.main_box, True, True, 0)
@@ -228,19 +270,3 @@ class ReplacePage(Gtk.VBox):
         self.entry_match_color.set_text(
             self.color_settings['new-matching-color'])
         color_match_box.pack_start(self.entry_match_color, True, True, 0)
-
-        # Base
-        base_box = Gtk.HBox(
-            margin_top=18, spacing=6,
-            halign=Gtk.Align.START, valign=Gtk.Align.END)
-        self.pack_start(base_box, True, True, 0)
-
-        self.icon_redo = Gtk.Image(icon_name='edit-redo-symbolic')
-        self.button_redo = Gtk.Button(
-            image=self.icon_redo, tooltip_text='Reset to default')
-        base_box.pack_start(self.button_redo, True, True, 0)
-
-        self.icon_clear = Gtk.Image(icon_name='edit-clear-all-symbolic')
-        self.button_clear = Gtk.Button(
-            image=self.icon_clear, tooltip_text='Clear edits')
-        base_box.pack_start(self.button_clear, True, True, 0)
