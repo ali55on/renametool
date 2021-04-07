@@ -33,7 +33,7 @@ class SelectFiles(Gtk.VBox):
         self.box_choose_files.pack_start(self.label_choose_files, True, True, 0)
 
         # Choose Files Button # FileChooserButton
-        self.icon_open = Gtk.Image(icon_name='folder-open-symbolic')
+        self.icon_open = Gtk.Image(icon_name='document-open-symbolic')
         self.button_choose_files = Gtk.Button(image=self.icon_open, always_show_image=True)
         self.button_choose_files.connect('clicked', self.__on_select_files)
         self.box_choose_files.pack_start(self.button_choose_files, True, True, 0)
