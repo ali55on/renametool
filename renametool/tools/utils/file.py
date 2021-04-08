@@ -191,6 +191,27 @@ class File(object):
         self.__url = self.__path + name + self.__extension
         self.__name = name
 
+    def set_extension(self, extension: str) -> None:
+        """Sets a new extension for the file
+
+        ››› file = File('/home/user/user name.txt')
+        ››› file.get_extension()
+        .txt
+        ››› file.set_extension('foobar')
+        ››› file.get_extension()
+        .foobar
+        ››› file.get_url()
+        /home/user/user name.foobar
+
+        :param extension: New extension for the file
+        """
+        if extension and extension != ' ':
+            if extension[0] != '.':
+                extension = '.{}'.format(extension)
+            
+        self.__url = self.__path + self.__name + extension
+        self.__extension = extension
+
     def get_note(self):
         return self.__note
 

@@ -80,6 +80,7 @@ class RenameToolWindow(Gtk.Window):
 
         self.footer = Footer(
             preview=self.preview,
+            header=self.header,
             file_list=self.file_list,
             transient_for=self)
         self.main_box.pack_start(self.footer, True, True, 0)

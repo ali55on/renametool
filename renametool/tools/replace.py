@@ -6,8 +6,12 @@ import tools.utils.file as file
 
 
 class Replace(object):
-    def __init__(self, file_list: list, search_text: str, replace_text: str):
+    def __init__(
+        self, text_replacement_affects_extension: bool,
+        file_list: list, search_text: str, replace_text: str):
         # Args
+        self.__text_replacement_affects_extension = (
+            text_replacement_affects_extension)
         self.__file_list = file_list
         self.__search_text = search_text
         self.__replace_text = replace_text
@@ -31,9 +35,21 @@ class Replace(object):
             item_file.set_note(None)
             path = item_file.get_path()
             extension = item_file.get_extension()
+            name = item_file.get_name()
+            original_name = item_file.get_original_name()
 
-            new_name = item_file.get_original_name().replace(self.__search_text, self.__replace_text)
-            item_file.set_name(new_name)
+            if self.__text_replacement_affects_extension:
+                new_name = (
+                    item_file.get_original_name() + item_file.get_extension()
+                    ).replace(self.__search_text, self.__replace_text)
+                item_file.set_name(new_name)
+
+                original_name += extension
+                extension = ''
+            else:
+                new_name = item_file.get_original_name().replace(
+                    self.__search_text, self.__replace_text)
+                item_file.set_name(new_name)
 
             # Completely unnamed
             if new_name + extension == '':
@@ -57,7 +73,8 @@ class Replace(object):
 
             # 'A file with that name already exists in the directory'
             elif new_name + extension in os.listdir(path):
-                if new_name + extension != item_file.get_original_name() + extension:
+                # if new_name + extension != item_file.get_original_name() + extension:
+                if new_name + extension != original_name + extension:
                     item_file.set_note('existing-name-error')
                     errors_found['existing-name-error'] = True
 
@@ -73,7 +90,10 @@ class Replace(object):
                     errors_found['hidden-file-error'] = True
 
             # Registrar para comparar nome repetido
-            all_names.append(new_name + item_file.get_extension())
+            if self.__text_replacement_affects_extension:
+                all_names.append(new_name)
+            else:
+                all_names.append(new_name + item_file.get_extension())
 
         # Highest level error
         errors_list = [

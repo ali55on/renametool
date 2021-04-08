@@ -35,6 +35,7 @@ class Preview(Gtk.VBox):
         # Settings
         self.markup_settings = settings.get_markup_settings()
         self.color_settings = settings.get_color_settings()
+        self.app_settings = settings.get_app_settings()
 
         # Scrolled Window
         self.scrolled_window = Gtk.ScrolledWindow(
@@ -215,6 +216,8 @@ class Preview(Gtk.VBox):
 
         # Rename/Replace files
         replace_status = Replace(
+            text_replacement_affects_extension=(
+                self.app_settings['text-replacement-affects-extension']),
             file_list=self.file_list, search_text=search_text,
             replace_text=replace_text)
         error_found = replace_status.get_error_found()
@@ -237,13 +240,27 @@ class Preview(Gtk.VBox):
         for file in self.file_list:
             note = file.get_note()
 
-            old_name_match = file.get_original_name().replace(
-                search_text, old_color + search_text + end_color)
-            old_name = old_name_match + file.get_extension() + '   '
+            if self.app_settings['text-replacement-affects-extension']:
+                old_name_match = (
+                    file.get_original_name() + file.get_extension()
+                    ).replace(
+                    search_text, old_color + search_text + end_color)
+                old_name = old_name_match + '   '
 
-            typed_name_match = file.get_original_name().replace(
-                search_text, new_color + replace_text + end_color)
-            typed_name = typed_name_match + file.get_extension()
+                typed_name_match = (
+                    file.get_original_name() + file.get_extension()
+                    ).replace(
+                    search_text, new_color + replace_text + end_color)
+                typed_name = typed_name_match
+
+            else:
+                old_name_match = file.get_original_name().replace(
+                    search_text, old_color + search_text + end_color)
+                old_name = old_name_match + file.get_extension() + '   '
+
+                typed_name_match = file.get_original_name().replace(
+                    search_text, new_color + replace_text + end_color)
+                typed_name = typed_name_match + file.get_extension()
 
             # Error
             if note and note != 'hidden-file-error' and note == error_found:

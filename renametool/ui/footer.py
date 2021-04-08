@@ -20,7 +20,7 @@ class Footer(Gtk.VBox):
     area that is visible only when necessary.
     """
     def __init__(
-            self, preview, file_list,
+            self, preview, header, file_list,
             transient_for, *args, **kwargs) -> None:
         """Class constructor
 
@@ -35,11 +35,13 @@ class Footer(Gtk.VBox):
             self, margin=18, margin_top=6, spacing=6, *args, **kwargs)
         # Args
         self.preview = preview
+        self.header = header
         self.file_list = file_list
         self.transient = transient_for
 
         # Settings
         self.color_settings = settings.get_color_settings()
+        self.app_settings = settings.get_app_settings()
 
         # Flags
         self.can_rename = False
@@ -173,8 +175,16 @@ class Footer(Gtk.VBox):
             for file in self.file_list:
                 path = file.get_path()
                 ext = file.get_extension()
-                old_name = path + file.get_original_name() + ext
-                new_name = path + file.get_name() + ext
+                cond = [
+                    self.app_settings['text-replacement-affects-extension'],
+                    self.header.active_work_stack_name == 'replace',
+                ]
+                if all(cond):
+                    old_name = path + file.get_original_name() + ext
+                    new_name = path + file.get_name()
+                else:
+                    old_name = path + file.get_original_name() + ext
+                    new_name = path + file.get_name() + ext
 
                 if new_name != old_name:
                     os.rename(old_name, new_name)
