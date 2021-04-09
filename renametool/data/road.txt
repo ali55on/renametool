@@ -1,8 +1,10 @@
-Dialog select files and folders
-script to install
-include 'match text' for extensions in "Search and repalce" option
-FileChooserButton
+# 1
 rename only one file by context
-about dialog
 translate
+script to install
+
+# 2
 json api
+
+# 3
+Dialog select files and folders
