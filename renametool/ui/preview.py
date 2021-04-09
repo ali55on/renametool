@@ -244,13 +244,13 @@ class Preview(Gtk.VBox):
                 old_name_match = (
                     file.get_original_name() + file.get_extension()
                     ).replace(
-                    search_text, old_color + search_text + end_color)
+                        search_text, old_color + search_text + end_color)
                 old_name = old_name_match + '   '
 
                 typed_name_match = (
                     file.get_original_name() + file.get_extension()
                     ).replace(
-                    search_text, new_color + replace_text + end_color)
+                        search_text, new_color + replace_text + end_color)
                 typed_name = typed_name_match
 
             else:

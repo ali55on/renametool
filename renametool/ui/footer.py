@@ -3,9 +3,10 @@ import os
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib, GdkPixbuf
 
 from ui.preferences import PreferencesWindow
+from ui.about import AboutWindow
 from tools.settings import UserSettings
 
 
@@ -297,4 +298,6 @@ class PopoverMenu(Gtk.PopoverMenu):
         preferences_win.show_all()
 
     def __on_about(self, widget) -> None:
-        print('About')
+        # Opens the preferences window
+        about_win = AboutWindow(transient_for=self.transient)
+        about_win.show_all()

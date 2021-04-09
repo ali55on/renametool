@@ -33,21 +33,21 @@ class Replace(object):
         errors_found = dict()
         for item_file in self.__file_list:
             item_file.set_note(None)
+
             path = item_file.get_path()
             extension = item_file.get_extension()
             name = item_file.get_name()
             original_name = item_file.get_original_name()
 
             if self.__text_replacement_affects_extension:
-                new_name = (
-                    item_file.get_original_name() + item_file.get_extension()
-                    ).replace(self.__search_text, self.__replace_text)
+                new_name = (original_name + extension).replace(
+                    self.__search_text, self.__replace_text)
                 item_file.set_name(new_name)
 
                 original_name += extension
                 extension = ''
             else:
-                new_name = item_file.get_original_name().replace(
+                new_name = original_name.replace(
                     self.__search_text, self.__replace_text)
                 item_file.set_name(new_name)
 

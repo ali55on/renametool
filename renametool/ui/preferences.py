@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
@@ -7,6 +9,7 @@ from tools.settings import UserSettings
 
 
 settings = UserSettings()
+path = os.path.dirname(os.path.abspath(__file__))
 
 
 class PreferencesWindow(Gtk.Window):
@@ -22,9 +25,12 @@ class PreferencesWindow(Gtk.Window):
         :param markup_settings: A 'dictionary' with markup settings
         """
         Gtk.Window.__init__(
-            self, icon_name='preferences-system-symbolic', modal=True,
-            type_hint=1, title='Rename Tool - Preferences',
+            self, modal=True,
+            type_hint=1, title='Preferences',
             resizable=False, *args, **kwargs)
+        # Icon
+        icon_url = path.replace('ui', 'data{}rename-tool.svg'.format(os.sep))
+        self.set_default_icon_from_file(icon_url)
 
         # Main container
         self.main_box = Gtk.VBox()

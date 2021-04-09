@@ -8,10 +8,14 @@ from gi.repository import Gtk
 from gi.repository import GLib
 
 from tools.title import Title
+from tools.utils.file import File
 from ui.header import StackHeader
 from ui.selectfiles import SelectFiles
 from ui.preview import Preview
 from ui.footer import Footer
+
+
+path = os.path.dirname(os.path.abspath(__file__))
 
 
 class RenameToolWindow(Gtk.Window):
@@ -28,10 +32,13 @@ class RenameToolWindow(Gtk.Window):
         """
         Gtk.Window.__init__(
             self, window_position=Gtk.WindowPosition.CENTER,
-            icon_name='document-edit-symbolic', *args, **kwargs)
+            *args, **kwargs)
+        # Icon
+        icon_url = path.replace('ui', 'data{}rename-tool.svg'.format(os.sep))
+        self.set_default_icon_from_file(icon_url)
         
         # Args
-        self.file_list = file_list
+        self.file_list = list(File(x) for x in file_list)
 
         # Flags
         self.files_preview = False

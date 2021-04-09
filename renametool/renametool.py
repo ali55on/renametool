@@ -9,7 +9,6 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 from ui.mainwindow import RenameToolWindow
-from tools.utils.file import File
 
 
 def run_main_app(file_list: list) -> None:
@@ -25,7 +24,7 @@ def run_main_app(file_list: list) -> None:
     Gtk.main()
 
 
-def run_mini_app(file: File) -> None:
+def run_mini_app(file: str) -> None:
     """Run mini app
 
     Calls the application designed to work with only one file name.
@@ -43,15 +42,12 @@ def main() -> None:
     del(sys.argv[0])
     if sys.argv:
         if len(sys.argv) == 1:
-            file = File(sys.argv[0])
-            run_mini_app(file=file)
+            run_mini_app(file=sys.argv[0])
 
         else:
-            file_list = list(File(x) for x in sys.argv)
-            run_main_app(file_list=file_list)
+            run_main_app(file_list=sys.argv)
     else:
-        file_list = list()
-        run_main_app(file_list=file_list)
+        run_main_app(file_list=[])
 
     exit(1)
 
