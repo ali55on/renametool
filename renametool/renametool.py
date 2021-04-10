@@ -9,6 +9,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 from ui.mainwindow import RenameToolWindow
+from ui.renamefile import RenameFile
 
 
 def run_main_app(file_list: list) -> None:
@@ -30,7 +31,11 @@ def run_mini_app(file: str) -> None:
     Calls the application designed to work with only one file name.
     Need a object of type "File".
     """
-    print(type(file))
+    win = RenameFile(file=file)
+    win.connect('destroy', Gtk.main_quit)
+    win.show_all()
+    win.fullscreen()
+    Gtk.main()
 
 
 def main() -> None:
