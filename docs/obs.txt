@@ -1,0 +1,87 @@
+Road Map
+
+translate
+script to install
+
+json api
+Dialog select files and folders
+
+
+#########################################################################
+MD
+##Rename Tool
+
+Tool to rename multiple files, just like in Nautilus (Gnome)
+
+Wilden Alisson Gomes https://github.com/w-a-gomes
+
+https://github.com/w-a-gomes/toyrenametool
+
+*Screenshot KDE neon*
+
+![Image](screens/screen.png "Screenshot KDE neon")
+
+
+#########################################################################
+Menu de contexto linux mint e ubuntu
+https://www.pcsteps.com/4434-add-right-click-commands-linux-mint-ubuntu/
+
+Menu de contexto Plasma
+/usr/share/kservices5/ServiceMenus/renameToolPlasma.desktop
+
+------------------------------------------------------------------------
+Nautilus Python
+
+Pacote:
+    nautilus-python
+
+Fonte:
+    https://gitlab.gnome.org/GNOME/nautilus-python/
+
+Projeto:
+    https://wiki.gnome.org/Projects/NautilusPython/
+
+------------------------------------------------------------------------
+Nemo Python
+
+Pacote:
+    nemo-python
+
+Fonte:
+    https://github.com/linuxmint/nemo-extensions/tree/master/nemo-python
+        
+------------------------------------------------------------------------
+Restart nautilus:
+    nautilus -q; sleep 2; nautilus
+    
+    
+#########################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

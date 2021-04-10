@@ -2,5 +2,5 @@
 
 *Screenshots*
 
-![Image](renametool/data/screen.png "screenshot")
+![Image](image/screen.png "screenshot")
 

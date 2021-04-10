@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Rename multiple
-Name[pt]=Renomear vários
-Name[pt_BR]=Renomear vários
-Comment[es]=Renombrar múltiples
-Exec=renametool %U
-Icon=document-edit
-Categories=Utility;

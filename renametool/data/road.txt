@@ -1,5 +1,0 @@
-translate
-script to install
-
-json api
-Dialog select files and folders
