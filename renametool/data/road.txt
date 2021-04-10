@@ -1,10 +1,5 @@
-# 1
-rename only one file by context
 translate
 script to install
 
-# 2
 json api
-
-# 3
 Dialog select files and folders

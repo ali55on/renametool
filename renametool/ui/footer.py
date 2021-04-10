@@ -276,7 +276,7 @@ class PopoverMenu(Gtk.PopoverMenu):
         self.button_preferences = Gtk.ModelButton(
             label='Preferences', halign=Gtk.Align.START)
         self.button_preferences.connect('clicked', self.__on_preferences)
-        self.vbox.pack_start(self.button_preferences, True, True, 0)
+        # self.vbox.pack_start(self.button_preferences, True, True, 0)
 
         # 'preferences-other-symbolic'
         self.button_about = Gtk.ModelButton(
