@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import gettext
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -7,6 +8,12 @@ from gi.repository import Gtk, Gdk
 
 
 path = os.path.dirname(os.path.abspath(__file__))
+path_locales = path.replace('ui', 'locales')
+
+t = gettext.translation('about', path_locales)
+_ = t.gettext
+
+gettext.install('about')
 
 
 class AboutWindow(Gtk.Window):
@@ -22,7 +29,7 @@ class AboutWindow(Gtk.Window):
         Gtk.Window.__init__(
             self,
             modal=True,
-            type_hint=1, title='About',
+            type_hint=1, title=_('About'),
             resizable=False, *args, **kwargs)
         # Icon
         icon_url = path.replace('ui', 'data{}rename-tool.svg'.format(os.sep))
@@ -38,10 +45,10 @@ class AboutWindow(Gtk.Window):
         self.stack.set_transition_duration(300)
 
         self.about_page = AboutPage()
-        self.stack.add_titled(self.about_page, 'about', 'About')
+        self.stack.add_titled(self.about_page, 'about', _('About'))
 
         self.credit_page = CreditPage()
-        self.stack.add_titled(self.credit_page, 'credit', 'Credits')
+        self.stack.add_titled(self.credit_page, 'credit', _('Credits'))
 
         # Stack buttons
         # self.stack_switcher = Gtk.StackSwitcher(
@@ -72,21 +79,27 @@ class AboutPage(Gtk.VBox):
             lines=7,
             ellipsize=3,
             max_width_chars=50)
+
+        title = _('Renames multiple files')
+        page = _('Web page')
+        descript = _('This program comes with ABSOLUTELY NO WARRANTY.')
+        details = _('For more details, visit:')
+
         self.license.set_markup(
             '<small>'
-            'Renames multiple files'
+            '{}'
             '\n\n'
-            '<a href="https://github.com/w-a-gomes/renametool">Web page</a>'
+            '<a href="https://github.com/w-a-gomes/renametool">{}</a>'
             '\n\n'
             '© 2021  Alisson W.A.Gomes'
             '\n\n'
-            'This program comes with ABSOLUTELY NO WARRANTY.\n'
-            'For more details, visit the '
-            '<a href="https://www.gnu.org/licenses/gpl-3.0.html">'
+            '{}\n'
+            '{}'
+            ' <a href="https://www.gnu.org/licenses/gpl-3.0.html">'
             'GNU General Public License, version 3 or later.'
             '</a>'
-            '</small>'
-            )
+            '</small>'.format(
+                title, page, descript, details))
         self.pack_start(self.license, True, True, 0)
 
 
@@ -114,10 +127,12 @@ class CreditPage(Gtk.VBox):
         self.text_buffer_value = self.text_view_value.get_buffer()
 
         # Text
+        created = _('Created by')
+        translated = _('Translated by')
         self.text_buffer_label.set_text(
-            'Criado por\n'
-            'Traduzido por'
-        )
+            '{}\n'
+            '{}'.format(created, translated)
+            )
         self.text_buffer_value.set_text(
             'Alisson W.A.Gomes\n'
             'Alisson W.A.Gomes'
