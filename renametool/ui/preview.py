@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib
 
 from tools.rename import Rename
 from tools.replace import Replace
@@ -78,16 +78,16 @@ class Preview(Gtk.VBox):
         self.warning_color = self.color_settings['warning-color']
 
         # Arrows
-        self.arrow_character  = '→'
+        self.arrow_character = '→'
 
         self.error_arrow = '   <span color="{}">{}</span> '.format(
             self.error_color, self.arrow_character)
-        
+
         self.warning_arrow = '   <span color="{}">{}</span> '.format(
             self.warning_color, self.arrow_character)
-        
+
         self.normal_arrow = '   {} '.format(self.arrow_character)
-        
+
         if self.file_list:
             self.__preview_daemon()
 
@@ -124,16 +124,16 @@ class Preview(Gtk.VBox):
             self.is_the_first_preview_loop
         ]
         if any(condition):  # Update information
-            
+
             if self.prev_rename_text != rename_text:
                 self.prev_rename_text = rename_text
 
             if self.header.get_active_stack_name() != self.active_stack_name:
                 self.active_stack_name = self.header.get_active_stack_name()
-            
+
             if self.is_the_first_preview_loop:
                 self.is_the_first_preview_loop = False
-            
+
             return True
 
         return False
@@ -146,7 +146,7 @@ class Preview(Gtk.VBox):
             search_text != self.prev_existing_text,
             replace_text != self.prev_replace_text,  # is new updated text
             self.header.get_active_stack_name() != self.active_stack_name]
-            
+
         if any(condition):  # Update information
             if search_text != self.prev_existing_text:
                 self.prev_existing_text = search_text
@@ -156,13 +156,13 @@ class Preview(Gtk.VBox):
 
             if self.header.get_active_stack_name() != self.active_stack_name:
                 self.active_stack_name = self.header.get_active_stack_name()
-            
+
             return True
 
         return False
 
     def __update_rename_preview(self, rename_text: str):
-        # Updates the preview linked to the 'Rename' stack 
+        # Updates the preview linked to the 'Rename' stack
         # Create ListStore
         list_store = Gtk.ListStore(str, str)
 
@@ -206,7 +206,7 @@ class Preview(Gtk.VBox):
         self.tree_view.set_model(list_store)
 
     def __update_replace_preview(self, search_text: str, replace_text: str):
-        # Updates the preview linked to the 'Replace' stack 
+        # Updates the preview linked to the 'Replace' stack
         # Create ListStore
         list_store = Gtk.ListStore(str, str)
 
@@ -242,14 +242,12 @@ class Preview(Gtk.VBox):
 
             if self.app_settings['text-replacement-affects-extension']:
                 old_name_match = (
-                    file.get_original_name() + file.get_extension()
-                    ).replace(
+                    file.get_original_name() + file.get_extension()).replace(
                         search_text, old_color + search_text + end_color)
                 old_name = old_name_match + '   '
 
                 typed_name_match = (
-                    file.get_original_name() + file.get_extension()
-                    ).replace(
+                    file.get_original_name() + file.get_extension()).replace(
                         search_text, new_color + replace_text + end_color)
                 typed_name = typed_name_match
 
@@ -265,7 +263,7 @@ class Preview(Gtk.VBox):
             # Error
             if note and note != 'hidden-file-error' and note == error_found:
                 list_store.append([old_name, self.error_arrow + typed_name])
-            
+
             # Warning
             elif note and note == 'hidden-file-error' and note == error_found:
                 list_store.append([old_name, self.warning_arrow + typed_name])
@@ -282,7 +280,7 @@ class Preview(Gtk.VBox):
 
         Makes the file list the one passed in the parameter.
 
-        :param file_list: Python 'list' of 'File' objects 
+        :param file_list: Python 'list' of 'File' objects
         """
         self.file_list = file_list
         self.__preview_daemon()

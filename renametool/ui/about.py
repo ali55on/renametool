@@ -22,7 +22,7 @@ class AboutWindow(Gtk.Window):
         Gtk.Window.__init__(
             self,
             modal=True,
-            type_hint=1, title='Sobre',
+            type_hint=1, title='About',
             resizable=False, *args, **kwargs)
         # Icon
         icon_url = path.replace('ui', 'data{}rename-tool.svg'.format(os.sep))
@@ -39,13 +39,14 @@ class AboutWindow(Gtk.Window):
 
         self.about_page = AboutPage()
         self.stack.add_titled(self.about_page, 'about', 'About')
-        
+
         self.credit_page = CreditPage()
         self.stack.add_titled(self.credit_page, 'credit', 'Credits')
 
         # Stack buttons
-        self.stack_switcher = Gtk.StackSwitcher(stack=self.stack, halign=Gtk.Align.CENTER)
-        self.main_box.pack_start(self.stack_switcher, True, True, 0)
+        # self.stack_switcher = Gtk.StackSwitcher(
+        #     stack=self.stack, halign=Gtk.Align.CENTER)
+        # self.main_box.pack_start(self.stack_switcher, True, True, 0)
 
         # Icon
         self.program_icon = Gtk.Image(file=icon_url, margin=6)
@@ -66,14 +67,26 @@ class AboutPage(Gtk.VBox):
         Gtk.VBox.__init__(self, *args, *kwargs)
 
         self.license = Gtk.Label(
-            use_markup=True, justify=Gtk.Justification.CENTER)
+            use_markup=True,
+            justify=Gtk.Justification.CENTER,
+            lines=7,
+            ellipsize=3,
+            max_width_chars=50)
         self.license.set_markup(
             '<small>'
-            'Este programa vem com absolutamente nenhuma garantia.\n'
-            'Para mais detalhes, visite '
+            'Renames multiple files'
+            '\n\n'
+            '<a href="https://github.com/w-a-gomes/renametool">Web page</a>'
+            '\n\n'
+            '© 2021  Alisson W.A.Gomes'
+            '\n\n'
+            'This program comes with ABSOLUTELY NO WARRANTY.\n'
+            'For more details, visit the '
             '<a href="https://www.gnu.org/licenses/gpl-3.0.html">'
-            'Licença Pública Geral GNU, versão 3 ou posterior.'
-            '</a></small>')
+            'GNU General Public License, version 3 or later.'
+            '</a>'
+            '</small>'
+            )
         self.pack_start(self.license, True, True, 0)
 
 
@@ -124,4 +137,6 @@ class CreditPage(Gtk.VBox):
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(css)
         Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)

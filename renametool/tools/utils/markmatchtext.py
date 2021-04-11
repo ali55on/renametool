@@ -3,7 +3,9 @@ import re
 
 
 class MarkMatchText(object):
-    def __init__(self, text: str, regex_match: str, regex_sub: str, markup_start: str = '<', markup_end: str = '>'):
+    def __init__(
+            self, text: str, regex_match: str, regex_sub: str,
+            markup_start: str = '<', markup_end: str = '>'):
         self.text = text
         self.regex_match = regex_match
         self.regex_sub = regex_sub
@@ -16,7 +18,10 @@ class MarkMatchText(object):
             if re_search:
                 find = re_search.group(0)
                 if find in self.text:
-                    txt = re.sub(find, self.markup_start + find + self.markup_end, self.text)
+                    txt = re.sub(
+                        find,
+                        self.markup_start + find + self.markup_end,
+                        self.text)
                 else:
                     txt = self.text
             else:
@@ -30,7 +35,10 @@ class MarkMatchText(object):
 
     def mark_sub(self) -> str:
         try:
-            txt = re.sub(self.regex_match, self.markup_start + self.regex_sub + self.markup_end, self.text)
+            txt = re.sub(
+                self.regex_match,
+                self.markup_start + self.regex_sub + self.markup_end,
+                self.text)
         except Exception as error:
             print(error)
             txt = self.regex_match

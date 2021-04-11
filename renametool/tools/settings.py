@@ -2,14 +2,28 @@
 import os
 import logging
 import json
+import gettext
+
+
+path = os.path.dirname(os.path.abspath(__file__))
+path_locales = path.replace('tools', 'locales')
+
+t = gettext.translation('settings', path_locales)
+_ = t.gettext
+
+gettext.install('settings')
 
 
 class UserSettings(object):
     def __init__(self):
         self.__settings_path = os.getenv('HOME') + '/.config/rename_tool'
-        self.__markup_settings_file = self.__settings_path + '/settings_markup.json'
-        self.__colors_settings_file = self.__settings_path + '/settings_colors.json'
-        self.__app_settings_file = self.__settings_path + '/settings_app.json'
+
+        self.__markup_settings_file = \
+            self.__settings_path + '/settings_markup.json'
+        self.__colors_settings_file = \
+            self.__settings_path + '/settings_colors.json'
+        self.__app_settings_file = \
+            self.__settings_path + '/settings_app.json'
 
         try:
             os.makedirs(name=self.__settings_path, exist_ok=False)
@@ -52,7 +66,6 @@ class UserSettings(object):
 
         return already_exist
 
-
     def __load_markup_settings(self) -> dict:
         if not self.__markup_settings_already_exist():
             self.__create_markup_settings()
@@ -85,11 +98,15 @@ class UserSettings(object):
         if settings:
             markup_settings = settings
         else:
+            n_1 = _('1, 2, 3')
+            n_01 = _('01, 02, 03')
+            n_001 =_('001, 002, 003')
+            ofn = _('Original filename')
             markup_settings = {
-                '[1, 2, 3]': '[1, 2, 3]',
-                '[01, 02, 03]': '[01, 02, 03]',
-                '[001, 002, 003]': '[001, 002, 003]',
-                '[original-name]': '[Original filename]'
+                '[1, 2, 3]': '[{}]'.format(n_1),
+                '[01, 02, 03]': '[{}]'.format(n_01),
+                '[001, 002, 003]': '[{}]'.format(n_001),
+                '[original-name]': '[{}]'.format(ofn),
             }
         with open(self.__markup_settings_file, 'w') as fp:
             json.dump(markup_settings, fp)

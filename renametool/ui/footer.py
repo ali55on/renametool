@@ -1,14 +1,23 @@
 #!/usr/bin/env python3
 import os
+import gettext
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, GdkPixbuf
+from gi.repository import Gtk, Gdk, GLib
 
 from ui.preferences import PreferencesWindow
 from ui.about import AboutWindow
 from tools.settings import UserSettings
 
+
+path = os.path.dirname(os.path.abspath(__file__))
+path_locales = path.replace('ui', 'locales')
+
+t = gettext.translation('footer', path_locales)
+_ = t.gettext
+
+gettext.install('footer')
 
 settings = UserSettings()
 
@@ -90,7 +99,7 @@ class Footer(Gtk.VBox):
             spacing=6, homogeneous=True, halign=Gtk.Align.START)
         self.buttons_base_box.pack_start(self.buttons_incon_box, True, True, 0)
 
-        self.icon_menu = Gtk.Image( 
+        self.icon_menu = Gtk.Image(
             icon_name='open-menu-symbolic')  # 'preferences-other-symbolic'
         self.button_menu = Gtk.Button(
             image=self.icon_menu, always_show_image=True,
@@ -103,11 +112,11 @@ class Footer(Gtk.VBox):
         self.buttons_box = Gtk.HBox(spacing=6, homogeneous=True)
         self.buttons_base_box.pack_start(self.buttons_box, True, True, 0)
 
-        self.button_cancel = Gtk.Button(label='Cancel')
+        self.button_cancel = Gtk.Button(label=_('Cancel'))
         self.button_cancel.connect('clicked', self.__on_cancel)
         self.buttons_box.pack_start(self.button_cancel, True, True, 0)
 
-        self.button_rename = Gtk.Button(label='Rename', can_default=True)
+        self.button_rename = Gtk.Button(label=_('Rename'), can_default=True)
         self.button_rename.connect('clicked', self.__on_rename)
         self.buttons_box.pack_start(self.button_rename, True, True, 0)
 
@@ -145,14 +154,14 @@ class Footer(Gtk.VBox):
         self.warning_color = self.color_settings['warning-color']
 
         # Arrows
-        self.arrow_character  = '→'
+        self.arrow_character = '→'
 
         self.error_arrow = '<span color="{}">{}</span> '.format(
             self.error_color, self.arrow_character)
-        
+
         self.warning_arrow = '<span color="{}">{}</span> '.format(
             self.warning_color, self.arrow_character)
-        
+
         self.normal_arrow = '{} '.format(self.arrow_character)
 
         self.__status_error_threading()
@@ -162,7 +171,7 @@ class Footer(Gtk.VBox):
 
         Makes the file list the one passed in the parameter.
 
-        :param file_list: Python 'list' of 'File' objects 
+        :param file_list: Python 'list' of 'File' objects
         """
         self.file_list = file_list
 
@@ -257,11 +266,11 @@ class PopoverMenu(Gtk.PopoverMenu):
     This menu has items that add 'markings' to the "Gtk.Entry" text.
     """
     def __init__(
-        self, parent_widget, transient_for, *args, **kwargs) -> None:
+            self, parent_widget, transient_for, *args, **kwargs) -> None:
         """Class constructor
 
         Initializes PopoverMenu widgets.
-        
+
         :param parent_widget: Parent 'Gtk.Widget'
         """
         Gtk.PopoverMenu.__init__(self, *args, **kwargs)
@@ -280,7 +289,7 @@ class PopoverMenu(Gtk.PopoverMenu):
 
         # 'preferences-other-symbolic'
         self.button_about = Gtk.ModelButton(
-            label='About', halign=Gtk.Align.START)
+            label=_('About'), halign=Gtk.Align.START)
         self.button_about.connect('clicked', self.__on_about)
         self.vbox.pack_start(self.button_about, True, True, 0)
 

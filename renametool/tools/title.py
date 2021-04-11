@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 import os
+import gettext
+
+path = os.path.dirname(os.path.abspath(__file__))
+path_locales = path.replace('tools', 'locales')
+
+t = gettext.translation('title', path_locales)
+_ = t.gettext
+
+gettext.install('title')
 
 
 class Title(object):
@@ -25,9 +34,18 @@ class Title(object):
             else:
                 self.__have_files = True
 
+        itens_num = len(self.__file_list)
+        rename_prefix = '{} {} '.format(_('Rename'), str(itens_num))
+
         if self.__have_dirs and self.__have_files:
-            return 'Rename {} files and folders'.format(str(len(self.__file_list)))
+            return rename_prefix +_('files and folders')
+
         elif self.__have_dirs and not self.__have_files:
-            return 'Rename {} folders'.format(str(len(self.__file_list)))
+            if itens_num == 1:
+                return rename_prefix + _('folder')
+            return rename_prefix + _('folders')
+
         elif not self.__have_dirs and self.__have_files:
-            return 'Rename {} files'.format(str(len(self.__file_list)))
+            if itens_num == 1:
+                return rename_prefix + _('file')
+            return rename_prefix + _('files')

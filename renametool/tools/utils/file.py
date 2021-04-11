@@ -18,19 +18,21 @@ class File(object):
 
         A string in the format of a file URL must be provided in order to
         generate the 'File' object.
-        If a list of file extensions is provided in parameter 'use_extensions_list',
-        that list will be used to compare whether the file extension
+        If a list of file extensions is provided in parameter
+        'use_extensions_list', that list will be used to compare whether
+        the file extension
         exists within it, otherwise a pure logic algorithm will be
         used to determine the extension.
 
-        :param file_url: String in the format of a file URL-> "/home/user/foo.txt"
-        :param use_extensions_list: List of file extensions-> [".txt", ".mkv", ".png"]
+        :param file_url: String of a file URL-> "/home/user/foo.txt"
+        :param use_extensions_list: List of extensions-> [".txt", ".mkv"]
         """
         self.extensions_list = use_extensions_list
         self.__url = unquote(r'{}'.format(file_url.replace('file://', '')))
         self.__path = '{}{}'.format(os.path.dirname(self.__url), os.sep)
         self.__extension = self.__resolve_extension()  # need path
-        self.__name = self.__url.replace(self.__path, '').replace(self.__extension, '')
+        self.__name = self.__url.replace(
+            self.__path, '').replace(self.__extension, '')
         self.__original_name = self.__name
         self.__note = None
 
@@ -90,7 +92,7 @@ class File(object):
         # Extrai somente a extensão do arquivo
 
         # splitext não funciona para .tar*
-        # >>> filename, file_extension = os.path.splitext("/home/user/Documentos/Documentos.tar.gz")
+        # >>> filename, file_extension = os.path.splitext("/path/foo.tar.gz")
         # >>> file_extension
         # '.gz'
 
@@ -118,11 +120,11 @@ class File(object):
             return ''
 
         # Divide o nome do arquivo em todos os pontos, criando uma lista.
-        # O último ou últimos items, representam a extensão. Será verificado abaixo.
+        # O último ou últimos items, representam a extensão. Será verificado.
         separate_at_dots = file_name.split('.')
 
-        # Uma lista de 2 itens, representa um arquivo que só tem uma extensão, visto
-        # que anomalias com pontos no início e fim ja foram tratados.
+        # Uma lista de 2 itens, representa um arquivo que só tem uma extensão,
+        # visto que anomalias com pontos no início e fim ja foram tratados.
         # O primeiro item é o nome do arquivo, e último item é a extensão.
         if len(separate_at_dots) == 2:
             ext = '.' + separate_at_dots[-1]
@@ -208,7 +210,7 @@ class File(object):
         if extension and extension != ' ':
             if extension[0] != '.':
                 extension = '.{}'.format(extension)
-            
+
         self.__url = self.__path + self.__name + extension
         self.__extension = extension
 
@@ -221,15 +223,15 @@ class File(object):
 
 if __name__ == '__main__':
     f = File(file_url=os.path.abspath(__file__))
-    print('      url:', f.get_url())
-    print('     path:', f.get_path())
-    print('     name:', f.get_name())
-    print('extension:', '' if os.path.isdir(f.get_url()) else f.get_extension())
-    print('   is dir:', os.path.isdir(f.get_url()))
-    print('  is link:', os.path.islink(f.get_url()))
+    print('    url:', f.get_url())
+    print('   path:', f.get_path())
+    print('   name:', f.get_name())
+    print('    ext:', '' if os.path.isdir(f.get_url()) else f.get_extension())
+    print(' is dir:', os.path.isdir(f.get_url()))
+    print('is link:', os.path.islink(f.get_url()))
     print()
     f.set_name('.foo')
     print()
-    print('     name:', f.get_name())
-    print('      url:', f.get_url())
+    print('   name:', f.get_name())
+    print('    url:', f.get_url())
     print()

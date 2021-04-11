@@ -1,0 +1,33 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-04-11 14:37-0300\n"
+"PO-Revision-Date: 2021-04-11 14:38-0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: tools/settings.py:101
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: tools/settings.py:102
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: tools/settings.py:103
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
+
+#: tools/settings.py:104
+msgid "Original filename"
+msgstr "Nome original do arquivo"

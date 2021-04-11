@@ -26,12 +26,21 @@ class Rename(object):
         # Renomear arquivos
         all_names = list()
         errors_found = dict()
-        for item_file, item_markup_num in zip(self.__file_list, list_markup_nums):
+        for item_file, item_markup_num in zip(
+                self.__file_list, list_markup_nums):
+
             item_file.set_note(None)
-            new_name = self.__new_name.replace(self.markup_settings['[1, 2, 3]'], item_markup_num)
-            new_name = new_name.replace(self.markup_settings['[01, 02, 03]'], item_markup_num)
-            new_name = new_name.replace(self.markup_settings['[001, 002, 003]'], item_markup_num)
-            new_name = new_name.replace(self.markup_settings['[original-name]'], item_file.get_original_name())
+
+            new_name = self.__new_name.replace(
+                self.markup_settings['[1, 2, 3]'], item_markup_num)
+            new_name = new_name.replace(
+                self.markup_settings['[01, 02, 03]'], item_markup_num)
+            new_name = new_name.replace(
+                self.markup_settings['[001, 002, 003]'], item_markup_num)
+            new_name = new_name.replace(
+                self.markup_settings['[original-name]'],
+                item_file.get_original_name())
+
             item_file.set_name(new_name)
 
             # Validar
@@ -48,14 +57,16 @@ class Rename(object):
                 item_file.set_note('character-error')
                 errors_found['character-error'] = True
 
-            # 'It is not possible to use one dot (.) or two dots (..) as a filename'
+            # 'It is not possible to use one dot (.) or
+            # two dots (..) as a filename'
             elif new_name + extension == '.' or new_name + extension == '..':
                 item_file.set_note('name-not-allowed-error')
                 errors_found['name-not-allowed-error'] = True
 
             # 'A file with that name already exists in the directory'
             elif new_name + extension in os.listdir(path):
-                if new_name + extension != item_file.get_original_name() + extension:
+                if (new_name + extension
+                        != item_file.get_original_name() + extension):
                     item_file.set_note('existing-name-error')
                     errors_found['existing-name-error'] = True
 
@@ -111,7 +122,6 @@ class Rename(object):
 
 
 if __name__ == '__main__':
-    import os
     pt = os.path.dirname(os.path.abspath(__file__))
     ls = list(pt + '/' + x for x in os.listdir(pt))
 
@@ -136,6 +146,8 @@ if __name__ == '__main__':
         print('WARNING:', rename_status.get_resume_warning())
 
     for i in l_files:
-        print(i.get_original_name() + i.get_extension() + ' -> ' + i.get_name() + i.get_extension())
+        print(
+            i.get_original_name() + i.get_extension() + ' -> '
+            + i.get_name() + i.get_extension())
 
     print(len(l_files))

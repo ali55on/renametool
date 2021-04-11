@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import sys
 import os
+import gettext
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -16,6 +16,13 @@ from ui.footer import Footer
 
 
 path = os.path.dirname(os.path.abspath(__file__))
+path_locales = path.replace('ui', 'locales')
+path_icon = path.replace('ui', 'data')
+
+t = gettext.translation('mainwindow', path_locales)
+_ = t.gettext
+
+gettext.install('mainwindow')
 
 
 class RenameToolWindow(Gtk.Window):
@@ -34,9 +41,9 @@ class RenameToolWindow(Gtk.Window):
             self, window_position=Gtk.WindowPosition.CENTER,
             *args, **kwargs)
         # Icon
-        icon_url = path.replace('ui', 'data{}rename-tool.svg'.format(os.sep))
+        icon_url = '{}{}rename-tool.svg'.format(path_icon, os.sep)
         self.set_default_icon_from_file(icon_url)
-        
+
         # Args
         self.file_list = list(File(x) for x in file_list)
 
@@ -100,9 +107,9 @@ class RenameToolWindow(Gtk.Window):
         self.activate_default()
         self.set_default(self.footer.button_rename)
 
-        self.__widget_sensitivity_daemon ()
+        self.__widget_sensitivity_daemon()
 
-    def __widget_sensitivity_daemon (self) -> None:
+    def __widget_sensitivity_daemon(self) -> None:
         # Starts widget sensitivity daemon
         if not self.files_preview:
             GLib.idle_add(self.__change_widgets_sensitivity)
@@ -133,4 +140,4 @@ class RenameToolWindow(Gtk.Window):
             title_obj = Title(self.file_list)
             self.set_title(title_obj.get_title())
         else:
-            self.set_title('Rename Tool')
+            self.set_title(_('Rename Tool'))

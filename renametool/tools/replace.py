@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 import os
-import re
 
 import tools.utils.file as file
 
 
 class Replace(object):
     def __init__(
-        self, text_replacement_affects_extension: bool,
-        file_list: list, search_text: str, replace_text: str):
+            self, text_replacement_affects_extension: bool,
+            file_list: list, search_text: str, replace_text: str):
         # Args
         self.__text_replacement_affects_extension = (
             text_replacement_affects_extension)
@@ -36,7 +35,7 @@ class Replace(object):
 
             path = item_file.get_path()
             extension = item_file.get_extension()
-            name = item_file.get_name()
+            # name = item_file.get_name()
             original_name = item_file.get_original_name()
 
             if self.__text_replacement_affects_extension:
@@ -66,14 +65,14 @@ class Replace(object):
                 item_file.set_note('character-error')
                 errors_found['character-error'] = True
 
-            # 'It is not possible to use one dot (.) or two dots (..) as a filename'
+            # 'It is not possible to use one dot (.) or
+            # two dots (..) as a filename'
             elif new_name + extension == '.' or new_name + extension == '..':
                 item_file.set_note('name-not-allowed-error')
                 errors_found['name-not-allowed-error'] = True
 
             # 'A file with that name already exists in the directory'
             elif new_name + extension in os.listdir(path):
-                # if new_name + extension != item_file.get_original_name() + extension:
                 if new_name + extension != original_name + extension:
                     item_file.set_note('existing-name-error')
                     errors_found['existing-name-error'] = True
@@ -108,8 +107,6 @@ class Replace(object):
 
 
 if __name__ == '__main__':
-    import os
-
     pt = os.path.dirname(os.path.abspath(__file__))
     ls = list(pt + '/' + x for x in os.listdir(pt))
 
@@ -118,7 +115,8 @@ if __name__ == '__main__':
         l_files.append(file.File(file_url=url))
 
     # Replace
-    replace_status = Replace(file_list=l_files, search_text='re', replace_text='RE')
+    replace_status = Replace(
+        file_list=l_files, search_text='re', replace_text='RE')
 
     if replace_status.get_error_found():
         print('ERROR:', replace_status.get_error_found())
@@ -126,6 +124,8 @@ if __name__ == '__main__':
         print('WARNING:', replace_status.get_resume_warning())
 
     for i in l_files:
-        print(i.get_original_name() + i.get_extension() + ' -> ' + i.get_name() + i.get_extension())
+        print(
+            i.get_original_name() + i.get_extension() + ' -> '
+            + i.get_name() + i.get_extension())
 
     print(len(l_files))
