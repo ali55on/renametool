@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import os
+
+import gi
+gi.require_version('Nautilus', '3.0')
 from gi.repository import Nautilus, GObject
 
 
@@ -8,7 +11,7 @@ class RenameToolNautilusExtension(GObject.GObject, Nautilus.MenuProvider):
     def get_file_items(self, window, files):
         menuitem = Nautilus.MenuItem(
             name='RenameTool::rename_tool',
-            label='Rename tool',
+            label='Rename Tool',
             tip='Rename tool',
             icon='')
 
