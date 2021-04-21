@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import os
 import gettext
+import locale
 
 path = os.path.dirname(os.path.abspath(__file__))
 path_locales = path.replace('tools', 'locales')
+current_locale, encoding = locale.getdefaultlocale()
 
-t = gettext.translation('title', path_locales)
+t = gettext.translation('title', path_locales, [current_locale])
 _ = t.gettext
 
 gettext.install('title')

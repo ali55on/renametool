@@ -1,0 +1,10 @@
+[default-2]
+name=Default (cópia)
+runtime=host
+toolchain=default
+config-opts=
+run-opts=
+prefix=/home/user/.cache/gnome-builder/install/renametool/host
+app-id=
+postbuild=
+prebuild=

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import os
 import gettext
+import locale
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
-from gi.repository import GLib
+from gi.repository import Gtk, GLib
 
 from tools.title import Title
 from tools.utils.file import File
@@ -14,12 +14,12 @@ from ui.selectfiles import SelectFiles
 from ui.preview import Preview
 from ui.footer import Footer
 
-
+current_locale, encoding = locale.getdefaultlocale()
 path = os.path.dirname(os.path.abspath(__file__))
 path_locales = path.replace('ui', 'locales')
 path_icon = path.replace('ui', 'data')
 
-t = gettext.translation('mainwindow', path_locales)
+t = gettext.translation('mainwindow', path_locales, [current_locale])
 _ = t.gettext
 
 gettext.install('mainwindow')

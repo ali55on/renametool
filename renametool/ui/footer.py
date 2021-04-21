@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import gettext
+import locale
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -11,10 +12,11 @@ from ui.about import AboutWindow
 from tools.settings import UserSettings
 
 
+current_locale, encoding = locale.getdefaultlocale()
 path = os.path.dirname(os.path.abspath(__file__))
 path_locales = path.replace('ui', 'locales')
 
-t = gettext.translation('footer', path_locales)
+t = gettext.translation('footer', path_locales, [current_locale])
 _ = t.gettext
 
 gettext.install('footer')

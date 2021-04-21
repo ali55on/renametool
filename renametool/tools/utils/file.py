@@ -28,13 +28,26 @@ class File(object):
         :param use_extensions_list: List of extensions-> [".txt", ".mkv"]
         """
         self.extensions_list = use_extensions_list
-        self.__url = unquote(r'{}'.format(file_url.replace('file://', '')))
+        self.__url = self.__adjust_url(file_url)
         self.__path = '{}{}'.format(os.path.dirname(self.__url), os.sep)
         self.__extension = self.__resolve_extension()  # need path
         self.__name = self.__url.replace(
             self.__path, '').replace(self.__extension, '')
         self.__original_name = self.__name
         self.__note = None
+
+    def __adjust_url(self, file_url) -> str:
+        first_char = file_url[8]
+        second_char = file_url[9]
+        conditions = [
+            first_char.isalpha(),
+            first_char.isupper(),
+            second_char == ':'
+        ]
+        if all(conditions):
+            return unquote(r'{}'.format(file_url.replace('file:///', '')))
+        else:
+            return unquote(r'{}'.format(file_url.replace('file://', '')))
 
     def get_url(self) -> str:
         """File URL

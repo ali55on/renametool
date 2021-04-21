@@ -142,8 +142,6 @@ if __name__ == '__main__':
 
     if rename_status.get_error_found():
         print('ERROR:', rename_status.get_error_found())
-    if rename_status.get_resume_warning():
-        print('WARNING:', rename_status.get_resume_warning())
 
     for i in l_files:
         print(

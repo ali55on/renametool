@@ -3,6 +3,7 @@ import threading
 import time
 import os
 import gettext
+import locale
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -10,11 +11,11 @@ from gi.repository import Gtk, Gdk, GLib
 
 from tools.settings import UserSettings
 
-
+current_locale, encoding = locale.getdefaultlocale()
 path = os.path.dirname(os.path.abspath(__file__))
 path_locales = path.replace('ui', 'locales')
 
-t = gettext.translation('header', path_locales)
+t = gettext.translation('header', path_locales, [current_locale])
 _ = t.gettext
 
 gettext.install('header')
