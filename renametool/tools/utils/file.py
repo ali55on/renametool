@@ -28,26 +28,13 @@ class File(object):
         :param use_extensions_list: List of extensions-> [".txt", ".mkv"]
         """
         self.extensions_list = use_extensions_list
-        self.__url = self.__adjust_url(file_url)
+        self.__url = unquote(file_url.replace('file://', ''), encoding='utf-8', errors='replace')
         self.__path = '{}{}'.format(os.path.dirname(self.__url), os.sep)
         self.__extension = self.__resolve_extension()  # need path
         self.__name = self.__url.replace(
             self.__path, '').replace(self.__extension, '')
         self.__original_name = self.__name
         self.__note = None
-
-    def __adjust_url(self, file_url) -> str:
-        first_char = file_url[8]
-        second_char = file_url[9]
-        conditions = [
-            first_char.isalpha(),
-            first_char.isupper(),
-            second_char == ':'
-        ]
-        if all(conditions):
-            return unquote(r'{}'.format(file_url.replace('file:///', '')))
-        else:
-            return unquote(r'{}'.format(file_url.replace('file://', '')))
 
     def get_url(self) -> str:
         """File URL
@@ -115,7 +102,7 @@ class File(object):
         # o fim do nome do arquivo a partir do último ponto, não produz o
         # resultado esperado, pois um arquivo de nome '.txt' não pode ser
         # reconhecido como um arquivo de nome vazio '' e extensão '.txt'
-        file_name = self.__url.replace(self.__path, '').lstrip('.')
+        file_name = self.__url.replace(self.__path, '')
 
         # Arquivos sem extensão
         condition = [
@@ -128,6 +115,7 @@ class File(object):
             # pois um ponto '.' no fim, faz parte do nome e pode ser renomeado,
             # i.e, não precisa ser retirado pois não é uma extensão.
             file_name[-1] == '.',
+            file_name[0] == '.',
         ]
         if any(condition):
             return ''

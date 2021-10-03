@@ -30,7 +30,7 @@ class RenameToolWindow(Gtk.Window):
 
     Main application window with all widgets.
     """
-    def __init__(self, file_list: list = list, *args, **kwargs) -> None:
+    def __init__(self, file_list: list = [], *args, **kwargs) -> None:
         """Class constructor
 
         Initializes RenameToolWindow widgets.
@@ -45,7 +45,7 @@ class RenameToolWindow(Gtk.Window):
         self.set_default_icon_from_file(icon_url)
 
         # Args
-        self.file_list = list(File(x) for x in file_list)
+        self.file_list = [File(x) for x in file_list]
 
         # Flags
         self.files_preview = False

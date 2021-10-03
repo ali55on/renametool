@@ -17,8 +17,7 @@ def main():
 
     Run the application
     """
-    del(sys.argv[0])
-    win = RenameToolWindow(file_list=sys.argv)
+    win = RenameToolWindow(file_list=sys.argv[1:])
     win.connect('destroy', Gtk.main_quit)
     win.show_all()
     Gtk.main()
