@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=all/all;
+X-KDE-StartupNotify=false
+X-KDE-Priority=TopLevel
+Actions=toyRenameTool;
+Encoding=UTF-8
+
+[Desktop Action toyRenameTool]
+Name=Rename multiple
+Name[pt]=Renomear vários
+Name[pt_BR]=Renomear vários
+Comment[es]=Renombrar múltiples
+Exec=/usr/share/renametool/renametool/renametool.py %U
+Icon=document-edit
