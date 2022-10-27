@@ -2,7 +2,7 @@
 
 Batch file rename utility
 
-https://github.com/ali55on/renametool
+https://github.com/w-a-gomes/renametool
 
 *Screenshots*
 
